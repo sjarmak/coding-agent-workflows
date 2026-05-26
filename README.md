@@ -1,49 +1,46 @@
-# agentic-coding-practices
+# coding-agent-workflows
 
 A curated, **agent-neutral** set of coding practices — rules, agent roles,
-skills, and workflows — distilled from heavy day-to-day agentic-coding use and
-extended from [Everything Claude Code](https://github.com/affaan-m/everything-claude-code).
+skills, and multi-step workflows — for working with AI coding agents. Use the
+same standards and workflows whether you drive Claude Code, Codex, Amp, Cody, or
+anything that reads `AGENTS.md`, with agent-specific pieces kept where they're
+relevant.
 
-The point: best practices that transfer **regardless of coding agent**, with
-agent-specific content kept where (and only where) it's relevant.
+Everything is **pre-rendered and committed** — there's no build step to run.
 
-## How it works
+## Install
 
-One hand-edited source, rendered to each agent's native format:
-
-```
-source/                  ← THE ONLY THING YOU EDIT
-├── manifest.json        scope map: universal | claude | codex (the one place that decides where things go)
-├── rules/               common principles + go / python / typescript / rust
-├── agents/              reviewer / architect / simplifier / build-resolver roles
-├── skills/              focus, simplify, code-review, distill, verification-loop, …
-└── workflows/           ← the headline: codified multi-step procedures (runtime-neutral)
-
-  ↓ npm run build  (build/render.mjs)
-
-AGENTS.md                universal entry point — Codex, Amp, Cody, Aider, Gemini CLI, anything
-targets/claude/          native Claude Code layout (rules, agents, skills, commands)
-targets/codex/           native Codex layout (AGENTS.md, config.toml, agents/*.toml, prompts/)
+```bash
+git clone https://github.com/sjarmak/coding-agent-workflows.git
+cd coding-agent-workflows
 ```
 
-**Never edit `AGENTS.md` or `targets/` by hand** — they're generated. `npm run check`
-fails CI if they drift from `source/`.
+Then install for your agent:
 
-### Scope tiers
+```bash
+./install.sh claude          # → ./.claude  (project-level; use `./install.sh claude ~` for user-level)
+./install.sh codex           # → AGENTS.md in current dir + config into ~/.codex
+./install.sh agents          # → just AGENTS.md (Amp, Cody, Aider, Gemini CLI, …)
+```
 
-| Scope | Renders to | For |
-|-------|-----------|-----|
-| `universal` | `AGENTS.md` prose **+** both targets | Practices any agent can follow as instructions |
-| `claude` | `targets/claude/` only | Uses the Skill tool, subagents, or hooks |
-| `codex` | `targets/codex/` only | Codex-specific prompt/agent forms |
+Pass a destination as the second argument to target a specific project, e.g.
+`./install.sh claude ~/work/myrepo`.
 
-Universal skills **degrade to prose** in `AGENTS.md` so a non-Claude agent still
-gets the practice, just without the lazy-load mechanism.
+Prefer no script? Just copy what you need:
 
-## Workflows (the part you can't get from a generic style guide)
+- **Claude Code** — copy `targets/claude/{rules,agents,skills,commands}` into a `.claude/` directory.
+- **Codex** — put `AGENTS.md` at your repo root; copy `targets/codex/{config.toml,agents,prompts}` into `~/.codex`.
+- **Amp / Cody / Aider / Gemini CLI / other** — put `AGENTS.md` at your repo root. That single file is the whole integration.
 
-Runtime-neutral ports of orchestration formulas — multi-step DAGs that compose
-the skills into a verify-gated pipeline:
+## What's inside
+
+- **`AGENTS.md`** — the universal layer: principles, agent roster, skills, and full workflows, as prose any agent can follow.
+- **`targets/claude/`** — native Claude Code layout: `rules/`, `agents/` (subagents), `skills/`, `commands/`.
+- **`targets/codex/`** — native Codex layout: `AGENTS.md`, `config.toml`, `agents/*.toml`, `prompts/`.
+
+### The workflows (the part a generic style guide won't give you)
+
+Multi-step procedures that compose the skills into a verify-gated pipeline:
 
 - **implement-review** — plan → execute → simplify → review *as a hard gate* → finalize
 - **research** — diverge → converge → premortem
@@ -51,18 +48,30 @@ the skills into a verify-gated pipeline:
 - **decompose** — split large work into independently-reviewable units
 - **epic-review** — review the assembled whole at the integration boundary
 
-## Use it
-
-```bash
-npm run build        # regenerate AGENTS.md + targets/
-npm run sanitize     # release gate: scan for paths/PII/internal jargon
-npm run release      # build + sanitize
-```
-
-- **Claude Code:** copy `targets/claude/*` into a project `.claude/` (or `~/.claude/`).
-- **Codex:** point at this repo's `AGENTS.md`; copy `targets/codex/*` into `.codex/`.
-- **Amp / Cody / Aider / Gemini CLI / other:** they read `AGENTS.md` directly.
-
 ## Provenance & license
 
-MIT. Derived from ECC (MIT, Affaan Mustafa); see [NOTICE](./NOTICE).
+MIT. Derived from [Everything Claude Code](https://github.com/affaan-m/everything-claude-code)
+(MIT, Affaan Mustafa); the augmented-coding-patterns rule synthesizes the
+[Augmented Coding Patterns](https://lexler.github.io/augmented-coding-patterns/)
+catalog. See [NOTICE](./NOTICE).
+
+---
+
+<details>
+<summary><b>Maintainer notes</b> (you don't need these to <i>use</i> the repo)</summary>
+
+The committed `AGENTS.md` and `targets/` are generated from `source/` — the only
+hand-edited layer. To change the bundle: edit `source/`, then:
+
+```bash
+npm run build      # regenerate AGENTS.md + targets/ from source/
+npm run sanitize   # release gate: scan rendered output for paths/PII/internal jargon
+npm run release    # build + sanitize
+npm run check      # CI: fail if committed output drifted from source/
+```
+
+`source/manifest.json` is the scope map (`universal` | `claude` | `codex`) and
+decides where each artifact renders; `rule_overrides` can mark an individual
+rule file (e.g. `hooks.md`) as Claude-only so it stays out of the universal layer.
+
+</details>
