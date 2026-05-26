@@ -1,0 +1,18 @@
+agentic-coding-practices
+=========================
+
+This project is a curated, extended derivative. Portions of the rules, agent
+definitions, and skills originate from:
+
+  Everything Claude Code (ECC) — https://github.com/affaan-m/everything-claude-code
+  Copyright (c) Affaan Mustafa — MIT License
+
+Workflow specifications under source/workflows/ are runtime-neutral ports of
+orchestration "formulas"; the original runtime-coupled forms are not included.
+
+The architecture principles in source/rules/common/architecture.md adapt the
+Dartantic Architecture Best Practices
+(https://github.com/csells/dartantic/wiki/Architecture-Best-Practices).
+
+External patterns referenced/incorporated:
+  Augmented Coding Patterns — https://lexler.github.io/augmented-coding-patterns/

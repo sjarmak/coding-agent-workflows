@@ -1,0 +1,6 @@
+# Codex configuration — agentic-coding-practices
+# Universal practices live in the AGENTS.md at repo root (Codex reads it automatically).
+# Subagents below mirror the universal Claude reviewers.
+
+[agents]
+# see agents/*.toml

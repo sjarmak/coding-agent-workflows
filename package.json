@@ -1,0 +1,14 @@
+{
+  "name": "agentic-coding-practices",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Curated, agent-neutral coding practices, agent roles, skills, and workflows. One source, rendered to Claude Code + Codex + any AGENTS.md-aware agent.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "node build/render.mjs",
+    "check": "node build/check.mjs",
+    "sanitize": "node build/sanitize.mjs",
+    "release": "npm run build && npm run sanitize"
+  }
+}

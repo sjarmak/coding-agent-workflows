@@ -1,0 +1,62 @@
+{
+  "$comment": "Single source of truth for what ships and to which agents. The render step reads this; nothing is rendered unless listed here. scope: universal = rendered into AGENTS.md prose + every target; claude = .claude/ only (uses Skill tool / subagents / hooks); codex = .codex/ only.",
+  "version": "0.1.0",
+  "rules": {
+    "$comment": "Rules are always universal — they are plain principles. Languages limited to the working set observed in usage (go, python, typescript, rust).",
+    "common": "universal",
+    "go": "universal",
+    "python": "universal",
+    "typescript": "universal",
+    "rust": "universal"
+  },
+  "rule_overrides": {
+    "$comment": "Per-file scope overrides. A rule file marked 'claude' ships to targets/claude/rules but is excluded from the universal AGENTS.md — for content that is genuinely a Claude Code mechanism, not a portable principle.",
+    "common/hooks.md": "claude"
+  },
+  "agents": {
+    "$comment": "Claude subagents map to Codex .codex/agents/*.toml where a clean equivalent exists; the rest are claude-only. Reviewers/architect/explorer translate; build-resolvers are claude-only (tightly tool-coupled).",
+    "code-reviewer": "universal",
+    "security-reviewer": "universal",
+    "architect": "universal",
+    "code-simplifier": "universal",
+    "go-reviewer": "claude",
+    "typescript-reviewer": "claude",
+    "python-reviewer": "claude",
+    "rust-reviewer": "claude",
+    "go-build-resolver": "claude",
+    "rust-build-resolver": "claude",
+    "build-error-resolver": "claude",
+    "planner": "universal",
+    "tdd-guide": "universal",
+    "refactor-cleaner": "claude"
+  },
+  "skills": {
+    "$comment": "Formula-invoked working set. 'claude' ones lean on the Skill/subagent mechanism; 'universal' degrade to AGENTS.md prose so Codex/Amp/Cody still get the practice.",
+    "focus": "universal",
+    "simplify": "universal",
+    "code-review": "universal",
+    "review": "claude",
+    "distill": "universal",
+    "verification-loop": "universal",
+    "brainstorm": "universal",
+    "premortem": "universal",
+    "diverge": "claude",
+    "converge": "claude",
+    "research-project": "claude",
+    "bisect": "universal",
+    "scaffold": "universal",
+    "codebase-onboarding": "universal",
+    "architecture-decision-records": "universal",
+    "security-review": "universal",
+    "tdd-workflow": "universal",
+    "caveman": "claude"
+  },
+  "workflows": {
+    "$comment": "Ported formula step-DAGs, runtime-neutral. The headline artifact. All universal — they render as AGENTS.md workflow sections, .claude/commands, and .codex/prompts.",
+    "implement-review": "universal",
+    "research": "universal",
+    "brainstorm-loop": "universal",
+    "decompose": "universal",
+    "epic-review": "universal"
+  }
+}
