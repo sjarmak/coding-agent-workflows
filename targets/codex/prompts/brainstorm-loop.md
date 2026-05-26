@@ -14,9 +14,9 @@ volume under a uniqueness constraint, then filters by failure analysis.
 
 ### 1. brainstorm
 
-Run `brainstorm`: produce many candidate approaches under a hard constraint —
-**no idea may take the same shape as any prior art or any earlier idea in this
-session.** Volume + shape-uniqueness is what gets past the obvious answer.
+Run `brainstorm`: produce many candidate approaches under one hard constraint.
+No idea may take the same shape as any prior art or any earlier idea in this
+session. Volume plus shape-uniqueness is what gets past the obvious answer.
 
 **Exit:** a set of shape-distinct candidates.
 

@@ -1,10 +1,10 @@
 # Agent Orchestration
 
 Specialized sub-agents handle focused work; a primary agent coordinates them.
-The roles below ship in this repo. How they're invoked depends on the host —
+The roles below ship in this repo. How they're invoked depends on the host:
 Claude Code dispatches them as subagents, Codex via `agents/*.toml`, others by
-following the role description in this file — but the orchestration doctrine is
-the same everywhere.
+following the role description in this file. The orchestration doctrine is the
+same everywhere.
 
 ## Roles
 
@@ -37,12 +37,12 @@ Reach for a specialized role without being asked:
 Run independent agents concurrently, not in sequence:
 
 ```
-GOOD — one dispatch, three agents in parallel:
+GOOD: one dispatch, three agents in parallel:
   1. security analysis of the auth module
   2. review of the cache layer
   3. type/contract check of the shared utilities
 
-BAD — agent 1, then agent 2, then agent 3, for work that has no dependency between them.
+BAD: agent 1, then agent 2, then agent 3, for work that has no dependency between them.
 ```
 
 When the host supports a single batched dispatch (e.g. multiple subagent calls
@@ -60,4 +60,4 @@ blind spots in one are caught by another:
 - redundancy / dead-code reviewer
 
 Where a second model is available (e.g. routing one reviewer to a different
-provider), use it — uncorrelated reviewers catch more than duplicates of the same model.
+provider), use it; uncorrelated reviewers catch more than duplicates of the same model.

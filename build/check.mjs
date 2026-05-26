@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Staleness gate for CI: re-render into a temp dir and diff against the committed
-// targets/ + AGENTS.md. Fails if they differ — i.e. someone edited generated output
+// targets/ + AGENTS.md. Fails if they differ: i.e. someone edited generated output
 // directly, or forgot to run `npm run build` after editing source/.
 
 import { execSync } from 'node:child_process';
@@ -30,7 +30,7 @@ const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
 const stale = [...keys].filter(k => before[k] !== after[k]);
 
 if (stale.length) {
-  console.error('STALE generated output — run `npm run build` and commit:');
+  console.error('STALE generated output: run `npm run build` and commit:');
   for (const k of stale) console.error('  ' + k);
   process.exit(1);
 }

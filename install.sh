@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Install the pre-rendered coding-agent practices into your environment.
-# No build step — the artifacts in AGENTS.md and targets/ are already generated.
+# No build step; the artifacts in AGENTS.md and targets/ are already generated.
 #
 # Usage:
 #   ./install.sh claude  [dest]    install Claude Code config into <dest>/.claude   (default dest: current dir)
 #   ./install.sh codex   [dest]    install AGENTS.md into <dest> and Codex config into ~/.codex
-#   ./install.sh agents  [dest]    just drop AGENTS.md into <dest> (for Amp, Cody, Aider, Gemini CLI, …)
+#   ./install.sh agents  [dest]    just drop AGENTS.md into <dest> (for Amp, Aider, Gemini CLI, …)
 #
 # For user-level (not project-level) Claude install:  ./install.sh claude ~
 set -euo pipefail
@@ -33,7 +33,7 @@ case "$AGENT" in
     cp -r "$REPO/targets/codex/agents" "$REPO/targets/codex/prompts" "$HOME/.codex/"
     if [ -e "$HOME/.codex/config.toml" ]; then
       cp "$REPO/targets/codex/config.toml" "$HOME/.codex/config.toml.from-coding-agent-workflows"
-      note "~/.codex/config.toml already exists — wrote ours as config.toml.from-coding-agent-workflows; merge manually."
+      note "~/.codex/config.toml already exists; wrote ours as config.toml.from-coding-agent-workflows, merge manually."
     else
       cp "$REPO/targets/codex/config.toml" "$HOME/.codex/config.toml"
     fi
@@ -43,7 +43,7 @@ case "$AGENT" in
   agents)
     cp "$REPO/AGENTS.md" "$DEST/AGENTS.md"
     echo "Installed AGENTS.md → $DEST"
-    note "Any AGENTS.md-aware agent (Amp, Cody, Aider, Gemini CLI, …) will read it from here."
+    note "Any AGENTS.md-aware agent (Amp, Aider, Gemini CLI, …) will read it from here."
     ;;
   *)
     echo "usage: ./install.sh {claude|codex|agents} [dest_dir]" >&2

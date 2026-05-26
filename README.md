@@ -1,12 +1,12 @@
 # coding-agent-workflows
 
-A curated, **agent-neutral** set of coding practices — rules, agent roles,
-skills, and multi-step workflows — for working with AI coding agents. Use the
-same standards and workflows whether you drive Claude Code, Codex, Amp, Cody, or
-anything that reads `AGENTS.md`, with agent-specific pieces kept where they're
-relevant.
+Coding standards, agent roles, skills, and multi-step workflows that read the
+same whether you drive Claude Code, Codex, Amp, or anything that reads an
+`AGENTS.md`. One neutral source produces a native config for each agent, and the
+agent-specific pieces stay scoped to the agents that need them.
 
-Everything is **pre-rendered and committed** — there's no build step to run.
+Everything here is pre-rendered and committed. There is no build step to run
+before you use it.
 
 ## Install
 
@@ -15,38 +15,47 @@ git clone https://github.com/sjarmak/coding-agent-workflows.git
 cd coding-agent-workflows
 ```
 
-Then install for your agent:
+Install for your agent:
 
 ```bash
 ./install.sh claude          # → ./.claude  (project-level; use `./install.sh claude ~` for user-level)
 ./install.sh codex           # → AGENTS.md in current dir + config into ~/.codex
-./install.sh agents          # → just AGENTS.md (Amp, Cody, Aider, Gemini CLI, …)
+./install.sh agents          # → just AGENTS.md (Amp, Aider, Gemini CLI, …)
 ```
 
-Pass a destination as the second argument to target a specific project, e.g.
-`./install.sh claude ~/work/myrepo`.
+Pass a destination as the second argument to target a specific project, for
+example `./install.sh claude ~/work/myrepo`.
 
-Prefer no script? Just copy what you need:
-
-- **Claude Code** — copy `targets/claude/{rules,agents,skills,commands}` into a `.claude/` directory.
-- **Codex** — put `AGENTS.md` at your repo root; copy `targets/codex/{config.toml,agents,prompts}` into `~/.codex`.
-- **Amp / Cody / Aider / Gemini CLI / other** — put `AGENTS.md` at your repo root. That single file is the whole integration.
+If you would rather not run a script, copy what you need: Claude Code reads a
+`.claude/` directory, so copy `targets/claude/{rules,agents,skills,commands}`
+into one; Codex reads an `AGENTS.md` at the repo root plus `~/.codex`, so put
+`AGENTS.md` at your root and copy `targets/codex/{config.toml,agents,prompts}`
+into `~/.codex`; every other `AGENTS.md`-aware agent needs only that one file at
+your repo root.
 
 ## What's inside
 
-- **`AGENTS.md`** — the universal layer: principles, agent roster, skills, and full workflows, as prose any agent can follow.
-- **`targets/claude/`** — native Claude Code layout: `rules/`, `agents/` (subagents), `skills/`, `commands/`.
-- **`targets/codex/`** — native Codex layout: `AGENTS.md`, `config.toml`, `agents/*.toml`, `prompts/`.
+`AGENTS.md` is the universal layer: principles, the agent roster, the skills,
+and the full workflows, written as prose any agent can follow. `targets/claude/`
+is the native Claude Code layout (`rules/`, `agents/`, `skills/`, `commands/`).
+`targets/codex/` is the native Codex layout (`AGENTS.md`, `config.toml`,
+`agents/*.toml`, `prompts/`).
 
-### The workflows (the part a generic style guide won't give you)
+### The workflows carry the part a style guide can't
 
-Multi-step procedures that compose the skills into a verify-gated pipeline:
+A style guide tells you what good code looks like. The workflows tell you how to
+get an agent there, as multi-step procedures that compose the skills into a
+verify-gated pipeline:
 
-- **implement-review** — plan → execute → simplify → review *as a hard gate* → finalize
-- **research** — diverge → converge → premortem
-- **brainstorm-loop** — divergent volume → premortem → converge
-- **decompose** — split large work into independently-reviewable units
-- **epic-review** — review the assembled whole at the integration boundary
+- **implement-review**: plan, execute, simplify, then review as a hard gate before finalizing.
+- **research**: diverge across angles, converge to a recommendation, pre-mortem it.
+- **brainstorm-loop**: generate shape-distinct ideas, pre-mortem the frontrunners, converge.
+- **decompose**: split large work into independently-reviewable units.
+- **epic-review**: review the assembled whole at the integration boundary.
+
+The review-as-a-gate step in `implement-review` is the load-bearing one: the
+agent that wrote the code checks the diff against the acceptance criteria, with
+authority to reject and retry from a fresh context.
 
 ## Provenance & license
 
@@ -58,20 +67,21 @@ catalog. See [NOTICE](./NOTICE).
 ---
 
 <details>
-<summary><b>Maintainer notes</b> (you don't need these to <i>use</i> the repo)</summary>
+<summary><b>Maintainer notes</b> (you don't need these to use the repo)</summary>
 
-The committed `AGENTS.md` and `targets/` are generated from `source/` — the only
-hand-edited layer. To change the bundle: edit `source/`, then:
+The committed `AGENTS.md` and `targets/` are generated from `source/`, the only
+hand-edited layer. To change the bundle, edit `source/` and run:
 
 ```bash
 npm run build      # regenerate AGENTS.md + targets/ from source/
-npm run sanitize   # release gate: scan rendered output for paths/PII/internal jargon
+npm run sanitize   # release gate: scan rendered output for paths, PII, internal jargon
 npm run release    # build + sanitize
 npm run check      # CI: fail if committed output drifted from source/
 ```
 
-`source/manifest.json` is the scope map (`universal` | `claude` | `codex`) and
-decides where each artifact renders; `rule_overrides` can mark an individual
-rule file (e.g. `hooks.md`) as Claude-only so it stays out of the universal layer.
+`source/manifest.json` is the scope map (`universal`, `claude`, or `codex`) that
+decides where each artifact renders. `rule_overrides` marks an individual rule
+file such as `hooks.md` as Claude-only, so it ships to `targets/claude/` but
+stays out of the universal layer.
 
 </details>

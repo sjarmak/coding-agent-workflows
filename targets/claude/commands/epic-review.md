@@ -1,7 +1,7 @@
 # Workflow: Epic Review
 
 Individual units pass their own `implement-review` gate, but the *assembled*
-whole can still be wrong — interfaces that don't line up, a criterion that fell
+whole can still be wrong: interfaces that don't line up, a criterion that fell
 between two units, an architectural drift only visible across the set. This
 workflow reviews at the epic boundary.
 

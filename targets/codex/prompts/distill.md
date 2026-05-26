@@ -1,8 +1,8 @@
-Essence Extraction via Progressive Compression. Takes a large artifact and runs it through a chain of compression agents where each must compress the previous output by ~50% while preserving the most important information. The key insight: the DROPS at each compression layer — what each agent chose to cut — reveal the priority hierarchy. The waste product IS the signal.
+Essence Extraction via Progressive Compression. Takes a large artifact and runs it through a chain of compression agents where each must compress the previous output by ~50% while preserving the most important information. The key insight: the DROPS at each compression layer, what each agent chose to cut, reveal the priority hierarchy. The waste product IS the signal.
 
 ## Arguments
 
-$ARGUMENTS — format: `[path/to/artifact.md or inline text]`
+$ARGUMENTS, format: `[path/to/artifact.md or inline text]`
 
 ## Parse Arguments
 
@@ -17,7 +17,7 @@ If no argument is provided, ask the user what artifact they want to distill.
 
 1. Read the file or parse inline text
 2. Measure its size (word count, section count)
-3. If it is very short (< 500 words), tell the user it is already concise enough — distill works best on substantial artifacts. Offer to proceed anyway if they insist.
+3. If it is very short (< 500 words), tell the user it is already concise enough, distill works best on substantial artifacts. Offer to proceed anyway if they insist.
 4. Present a summary of what will be compressed:
    - Source (file path or "inline text")
    - Word count
@@ -63,7 +63,7 @@ You are a compression agent. Your job is to compress the following text to rough
 - What I'd restore first if given 25% more space: [...]
 ```
 
-Run agents SEQUENTIALLY — each depends on the previous output:
+Run agents SEQUENTIALLY, each depends on the previous output:
 - Agent 1: Original -> ~50%
 - Agent 2: ~50% -> ~25%
 - Agent 3: ~25% -> ~12%
@@ -76,18 +76,18 @@ Track the full drop log from every agent for use in Phase 3.
 After all 4 compression stages complete, produce a full analysis with these sections:
 
 **1. The Essence**
-The final ~6% compressed version — the irreducible core of the artifact.
+The final ~6% compressed version, the irreducible core of the artifact.
 
 **2. Priority Hierarchy**
 Classify every piece of content by how many compression rounds it survived:
-- **Tier 1 (Core)**: survived all 4 compressions — the absolute essentials
-- **Tier 2 (Important)**: survived 3 compressions — important but not irreducible
-- **Tier 3 (Supporting)**: survived 2 compressions — adds value but not critical
-- **Tier 4 (Context)**: survived 1 compression — background/context
-- **Tier 5 (Noise)**: dropped in round 1 — likely not load-bearing
+- **Tier 1 (Core)**: survived all 4 compressions, the absolute essentials
+- **Tier 2 (Important)**: survived 3 compressions, important but not irreducible
+- **Tier 3 (Supporting)**: survived 2 compressions, adds value but not critical
+- **Tier 4 (Context)**: survived 1 compression, background/context
+- **Tier 5 (Noise)**: dropped in round 1, likely not load-bearing
 
 **3. Compression Difficulty Map**
-What was hardest to cut at each stage. These are the areas where priority is ambiguous or contested — the interesting boundaries.
+What was hardest to cut at each stage. These are the areas where priority is ambiguous or contested, the interesting boundaries.
 
 **4. Restoration Order**
 If you could add things back one at a time from the essence outward, what order would you restore? This is the true priority ranking of the artifact's content.
@@ -116,7 +116,7 @@ Then ask: does this priority ranking match your intuition? Where does it diverge
 
 ## Pipeline Position
 
-Versatile — works after any phase that produces a large artifact:
+Versatile, works after any phase that produces a large artifact:
 ```
 /diverge synthesis -> /distill -> priority hierarchy
 /converge report  -> /distill -> decision essence

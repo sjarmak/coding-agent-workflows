@@ -10,7 +10,7 @@ Run the complete PRD creation pipeline as a single invocation. This chains three
 
 ## Arguments
 
-$ARGUMENTS — format: `[N] "research question or topic"` where N is optional agent count (default: 3)
+$ARGUMENTS, format: `[N] "research question or topic"` where N is optional agent count (default: 3)
 
 ## Execution
 
@@ -42,7 +42,7 @@ Present the final risk-annotated PRD path and a brief summary:
 
 ## Rules
 
-- Do NOT ask questions between steps — flow continuously
-- Do NOT skip steps — all three must run
+- Do NOT ask questions between steps, flow continuously
+- Do NOT skip steps, all three must run
 - If a step fails, report the error and stop (do not proceed with incomplete input)
-- Each step produces files — pass file paths, not inline content
+- Each step produces files, pass file paths, not inline content

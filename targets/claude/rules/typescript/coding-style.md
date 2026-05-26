@@ -203,11 +203,11 @@ const validated: UserInput = userSchema.parse(input);
 
 > See [common/architecture.md §Arrange Project Idiomatically](../common/architecture.md).
 
-- **Scaffold**: use an official template — `pnpm create next-app`, `pnpm create vite`, `npm create tsup`, or `pnpm create t3-app`. Don't assemble `tsconfig.json` by hand for a new project.
+- **Scaffold**: use an official template, `pnpm create next-app`, `pnpm create vite`, `npm create tsup`, or `pnpm create t3-app`. Don't assemble `tsconfig.json` by hand for a new project.
 - **Layout**: `src/` for source, `tests/` or colocated `*.test.ts`, `dist/` or `build/` for output. Monorepos use `apps/` + `packages/` with a workspace tool (`pnpm`, `turborepo`, `nx`).
 - **Required toolchain**:
-  - TypeScript with `"strict": true` — no `noImplicitAny: false`, no `skipLibCheck` as a cover-up
+  - TypeScript with `"strict": true`, no `noImplicitAny: false`, no `skipLibCheck` as a cover-up
   - ESLint with `@typescript-eslint/recommended-type-checked` (not just `recommended`)
-  - Prettier with a shared config — no per-file style overrides
+  - Prettier with a shared config, no per-file style overrides
   - `tsc --noEmit` as a CI gate in addition to the bundler
 - **.gitignore essentials**: `node_modules/`, `dist/`, `build/`, `.next/`, `.turbo/`, `coverage/`, `*.tsbuildinfo`, `.env*.local`, `.DS_Store`

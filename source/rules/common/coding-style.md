@@ -43,7 +43,7 @@ ALWAYS validate at system boundaries:
 
 ## Codebase Ownership
 
-Fix any issues discovered during a session — broken tests, build errors, stale references, security problems — regardless of whether they relate to the current task. Codebase health is a standing responsibility, not scoped to individual tickets.
+Fix any issues discovered during a session, broken tests, build errors, stale references, security problems, regardless of whether they relate to the current task. Codebase health is a standing responsibility, not scoped to individual tickets.
 
 ## Code Quality Checklist
 

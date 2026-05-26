@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Release gate: scan rendered output for content that must never leave the machine.
-// Runs over AGENTS.md + targets/ (the rendered artifacts), NOT source/ — so provenance
+// Runs over AGENTS.md + targets/ (the rendered artifacts), NOT source/: so provenance
 // notes in source frontmatter (stripped at render time) don't trip it.
 // Exit non-zero on any ERROR match. This gate is mandatory before sharing externally.
 
@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-// Hard blockers — absolute paths, PII, internal infra/jargon, private MCP servers.
+// Hard blockers: absolute paths, PII, internal infra/jargon, private MCP servers.
 const ERRORS = [
   { re: /\/home\/[a-z0-9_-]+/i, what: 'absolute home path' },
   { re: /cfa\.harvard\.edu|stephanie\.jarmak/i, what: 'personal/institutional identity' },
@@ -19,7 +19,7 @@ const ERRORS = [
   { re: /mcp__(scix|fal-ai|code-intel|sourcegraph)/i, what: 'private MCP server reference' },
   { re: /\bds-research\b|gas-?city\/|gastownhall|zeldascension/i, what: 'internal workspace/repo path' },
 ];
-// Soft warnings — provenance mentions that are acceptable but worth a human glance.
+// Soft warnings: provenance mentions that are acceptable but worth a human glance.
 const WARNINGS = [
   { re: /\bGas City\b/, what: 'Gas City named as provenance (acceptable, confirm intentional)' },
 ];
@@ -50,9 +50,9 @@ for (const f of files) {
   });
 }
 
-console.log(`\nsanitize: scanned ${files.length} rendered files — ${errors} error(s), ${warns} warning(s)`);
+console.log(`\nsanitize: scanned ${files.length} rendered files: ${errors} error(s), ${warns} warning(s)`);
 if (errors > 0) {
   console.error('\nRELEASE BLOCKED. Fix the source/ content above and re-run `npm run build`.');
   process.exit(1);
 }
-console.log('clean — safe to share.');
+console.log('clean: safe to share.');

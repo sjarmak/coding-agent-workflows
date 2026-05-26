@@ -2,7 +2,7 @@ Multi-perspective divergent research. Spawns N independent agents with uncorrela
 
 ## Arguments
 
-$ARGUMENTS — format: `[N] "research question or topic"` where N is optional (default: 3)
+$ARGUMENTS, format: `[N] "research question or topic"` where N is optional (default: 3)
 
 ## Parse Arguments
 
@@ -27,7 +27,7 @@ Present this to the user and confirm before proceeding. Adjust if the user gives
 
 Launch **all N agents in parallel** using the Agent tool. Each agent MUST:
 
-1. Have a **unique research lens** — assign each a distinct angle, perspective, or methodology. Examples:
+1. Have a **unique research lens**: assign each a distinct angle, perspective, or methodology. Examples:
    - "Prior art and industry patterns" (what exists, what others do)
    - "First-principles technical design" (bottom-up from constraints)
    - "User experience and workflow" (developer ergonomics, day-in-the-life)
@@ -41,7 +41,7 @@ Launch **all N agents in parallel** using the Agent tool. Each agent MUST:
    - Research independently (web search, codebase exploration, reasoning)
    - Produce a structured output with: Key Findings (3-5), Concrete Recommendations (2-3), Open Questions, and a Confidence Assessment
    - NOT be told what other agents are exploring
-   - Think creatively within their lens — surprising or non-obvious insights are more valuable than safe ones
+   - Think creatively within their lens, surprising or non-obvious insights are more valuable than safe ones
 
 4. Use `subagent_type: "general-purpose"` (they need web search, file access, etc.)
 
@@ -138,7 +138,7 @@ Based on the synthesis, draft a mini-PRD markdown file:
 
 ## Requirements
 
-Each requirement MUST include verifiable acceptance criteria — a concrete condition that can be checked by running a command, reading output, or inspecting behavior. "Works correctly" is not verifiable. "Returns 200 with JSON body containing 'id' field" is.
+Each requirement MUST include verifiable acceptance criteria, a concrete condition that can be checked by running a command, reading output, or inspecting behavior. "Works correctly" is not verifiable. "Returns 200 with JSON body containing 'id' field" is.
 
 ### Must-Have
 

@@ -6,7 +6,7 @@ How the agent should collaborate with the user on multi-step work, especially wh
 
 **Internal work is autonomous. External artifacts always need explicit per-action approval.**
 
-Internal — proceed without asking between sub-steps once the phase is started:
+Internal work proceeds without asking between sub-steps once the phase is started:
 
 - Running tests, sweeps, linters, type checkers, builds, local CI
 - Polling state, monitoring background processes
@@ -15,7 +15,7 @@ Internal — proceed without asking between sub-steps once the phase is started:
 - Task claims, worktree creation, branch creation
 - File edits in worktrees you own
 
-External — STOP and confirm per-action, even if a prior similar action was approved in the same session:
+External actions require an explicit per-action stop and confirm, even if a prior similar action was approved in the same session:
 
 - `git push` (any form, any branch)
 - `gh pr create`, `gh pr merge`, `gh pr edit`, `gh pr close`, `gh pr ready`
@@ -25,7 +25,7 @@ External — STOP and confirm per-action, even if a prior similar action was app
 - Posting to any external service (webhook, API, third-party tool)
 - Upstream-affecting branch operations (`git push --force`, `git branch -D` on shared refs)
 
-A pre-approved phase does NOT cover external artifacts inside it. "Continue through all the test fixes" approves the test fixes — it does NOT approve pushing them.
+A pre-approved phase does NOT cover external artifacts inside it. "Continue through all the test fixes" approves the test fixes; it does NOT approve pushing them.
 
 ## Preview Before Execute
 
@@ -34,7 +34,7 @@ When the user asks for an artifact she will act on (PR body, issue text, commit 
 Publishing verbs that authorize the tool call:
 
 - "send it", "open it", "file it", "push it", "post it", "submit it", "ship it"
-- "draft and send" / "open the PR with body X" — explicit publish verbs override the default for that one action only
+- "draft and send" / "open the PR with body X", explicit publish verbs override the default for that one action only
 
 Default interpretations:
 
@@ -46,19 +46,19 @@ Default interpretations:
 
 When dispatching ≥2 independent agents, fan them out in a single message with multiple Agent tool calls. Don't sequence agents that don't depend on each other.
 
-When reviewing non-trivial code: default to 2 independent reviewers + a Codex meta-review unless told otherwise. Reviews are always prescriptive — route to Codex when routing is available.
+When reviewing non-trivial code: default to 2 independent reviewers + a Codex meta-review unless told otherwise. Reviews are always prescriptive; route to Codex when routing is available.
 
 ## Receiving Code Review
 
-When review feedback arrives (human, Codex, copilot thread, or another agent), evaluate it technically — do not perform agreement. The reviewer can be wrong; the codebase is the authority.
+When review feedback arrives (human, Codex, copilot thread, or another agent), evaluate it technically; do not perform agreement. The reviewer can be wrong; the codebase is the authority.
 
 Per item: **read** the full comment without reacting → **restate** the requirement in your own words (or ask if unclear) → **verify** it against codebase reality → **decide** whether it's correct for _this_ codebase → **respond** with a technical acknowledgment or reasoned pushback → **implement** one item at a time, testing each.
 
-Never open a response with "You're absolutely right!", "Great point!", or "Let me implement that now" before verifying. Push back with technical reasoning when the feedback is wrong for this codebase — silent compliance with a bad suggestion is a failure, not politeness. Prefer just starting the work over narrating that you will.
+Never open a response with "You're absolutely right!", "Great point!", or "Let me implement that now" before verifying. Push back with technical reasoning when the feedback is wrong for this codebase; silent compliance with a bad suggestion is a failure, not politeness. Prefer just starting the work over narrating that you will.
 
 ## Output Discipline
 
-- **No effort or time estimates** in orchestrated work — they're meaningless for parallel agent execution and clutter the output.
+- **No effort or time estimates** in orchestrated work; they're meaningless for parallel agent execution and clutter the output.
 - **No decision-framework preambles** when the user's prompt contains a directive ("just do X", "implement Y", "use option N"). Execute, don't re-present alternatives.
 - **No trailing summaries** of what you just did. The diff and the tool calls are the artifact.
 - **No upfront narration** of "I'll do A then B then C" before tool calls. State results and decisions as they happen, in one short sentence.
@@ -71,6 +71,6 @@ For fork / PR work: the test file lives in the same commit as the source change.
 
 When spawning a review or verification agent, open the prompt with a role clamp:
 
-> "You are a verification agent. You did NOT write this code. Your ONLY job is to verify each acceptance criterion is met. You must ACTIVELY TEST — not just read code."
+> "You are a verification agent. You did NOT write this code. Your ONLY job is to verify each acceptance criterion is met. You must ACTIVELY TEST, not just read code."
 
-Then enumerate explicit verification commands per criterion (`grep -n "^__all__" path/to/file.py — assert 'server' is in __all__`), not "review the diff." Reviewers that only read code rubber-stamp; reviewers that run commands catch real bugs.
+Then enumerate explicit verification commands per criterion (`grep -n "^__all__" path/to/file.py, assert 'server' is in __all__`), not "review the diff." Reviewers that only read code rubber-stamp; reviewers that run commands catch real bugs.

@@ -1,8 +1,8 @@
-Binary search for root cause. Defines a search space and pass/fail oracle, then iteratively tests midpoints — halving the space each step until the root cause is isolated. Works across git history, configuration, dependencies, or code modules.
+Binary search for root cause. Defines a search space and pass/fail oracle, then iteratively tests midpoints, halving the space each step until the root cause is isolated. Works across git history, configuration, dependencies, or code modules.
 
 ## Arguments
 
-$ARGUMENTS — format: `"description of the bug or regression"` with optional flags
+$ARGUMENTS, format: `"description of the bug or regression"` with optional flags
 
 ## Parse Arguments
 
@@ -15,20 +15,20 @@ If the bug description is missing or unclear, ask the user to clarify before pro
 
 Work with the user to establish four things before starting the search loop.
 
-**1. The symptom** — what is broken? What does failure look like? Get a concrete, observable description (error message, wrong output, crash, performance degradation).
+**1. The symptom**: what is broken? What does failure look like? Get a concrete, observable description (error message, wrong output, crash, performance degradation).
 
-**2. The search dimension** — where to search. Determine which applies:
+**2. The search dimension**: where to search. Determine which applies:
 - **Git history**: a known-good commit and a known-bad commit (classic git bisect)
 - **Configuration space**: a set of config keys that might cause the issue
 - **Dependency versions**: which dependency upgrade broke things
 - **Code modules**: which module is responsible for the regression
 
-**3. The test oracle** — how to determine pass/fail at each midpoint:
+**3. The test oracle**: how to determine pass/fail at each midpoint:
 - A specific test command (`npm test`, `pytest tests/foo.py`, `go test ./...`, etc.)
 - A behavior check (does endpoint X return 200? does the build succeed?)
 - A manual check (agent reads code or output and assesses)
 
-**4. Known bounds** — the "good" end and "bad" end of the search space.
+**4. Known bounds**: the "good" end and "bad" end of the search space.
 
 For git history bisect, run:
 ```bash
@@ -42,7 +42,7 @@ Present the search space summary to the user and confirm before proceeding. Adju
 
 ## Phase 2: Binary Search Loop
 
-Execute the bisect algorithm. This is strictly sequential — each step depends on the previous result.
+Execute the bisect algorithm. This is strictly sequential, each step depends on the previous result.
 
 ```
 iteration = 0
@@ -55,10 +55,10 @@ while search_space > 1:
     result = agent.run()  # PASS or FAIL
 
     if result == FAIL:
-        # Bug exists at midpoint — narrow to the first half
+        # Bug exists at midpoint: narrow to the first half
         bad_bound = midpoint
     else:
-        # Bug absent at midpoint — narrow to the second half
+        # Bug absent at midpoint: narrow to the second half
         good_bound = midpoint
 
     report_progress(iteration, midpoint, result, remaining_space)
@@ -109,10 +109,10 @@ If a midpoint produces an inconclusive result (flaky test, build failure unrelat
 
 Once the search space narrows to a single item (one commit, one config key, one dependency):
 
-1. **Identify the root cause** — state the specific commit, config change, or dependency that introduced the regression
-2. **Analyze the change** — read the diff or changelog and explain WHY it caused the failure. For git bisect, run `git show <culprit_commit>` and walk through the relevant hunks
-3. **Propose a fix** — suggest a concrete remediation: revert, patch, pin version, or redesign
-4. **Check for related issues** — search the codebase for similar patterns that might harbor the same bug
+1. **Identify the root cause**: state the specific commit, config change, or dependency that introduced the regression
+2. **Analyze the change**: read the diff or changelog and explain WHY it caused the failure. For git bisect, run `git show <culprit_commit>` and walk through the relevant hunks
+3. **Propose a fix**: suggest a concrete remediation: revert, patch, pin version, or redesign
+4. **Check for related issues**: search the codebase for similar patterns that might harbor the same bug
 
 ## Phase 4: Report
 

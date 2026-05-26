@@ -10,13 +10,13 @@ ported-from: mol-focus-review (Gas City formula, runtime mechanics removed)
 
 The default per-task loop. A single agent implements a change via `focus`, then
 runs `simplify` and `code-review` as a **hard verification gate** before
-finalizing. The gate checks that the work actually fulfills what was asked —
-not just that the code is stylistically clean.
+finalizing. The gate checks that the work actually fulfills what was asked, not
+just that the code is stylistically clean.
 
 This is a runtime-neutral spec. It originated as an orchestration *formula* run
 by worker agents; the runtime-specific task-tracker and retry calls have been
-replaced with neutral equivalents so any orchestrator — a Claude Code session, a
-Codex run, an Amp thread, or a shell loop — can drive it.
+replaced with neutral equivalents so any orchestrator (a Claude Code session, a
+Codex run, an Amp thread, or a shell loop) can drive it.
 
 ## Inputs
 
@@ -63,13 +63,13 @@ they're visible in review.
 
 **Exit:** simplifications applied + committed, or explicitly rejected with a reason.
 
-### 5. review — THE GATE  (needs: simplify)
+### 5. review: THE GATE  (needs: simplify)
 
 Review your own work as a hard verification gate, in two parts:
 
 1. **Run `code-review` on the diff** (`git diff {base_ref}...HEAD`).
 2. **Verify the diff against the task.** Re-read the acceptance criteria, then
-   check the actual diff — not what you *remember* implementing. A test that was
+   check the actual diff, not what you *remember* implementing. A test that was
    added but skipped/xfail'd does not count. A function stubbed but not wired
    into the public API does not count. A doc that doesn't match the code does
    not count.
@@ -82,7 +82,7 @@ Review your own work as a hard verification gate, in two parts:
 
 **On reject:** record a specific, actionable rejection reason on the task and
 hand it back to the queue (or to a fresh session). Do **not** patch it in this
-same session — the reject → fresh-retry loop is deliberate: a clean context
+same session; the reject-then-fresh-retry loop is deliberate: a clean context
 re-reads the rejection reason at step 1 and tries again. This is what keeps a
 single agent from rationalizing its own half-done work.
 
@@ -100,8 +100,8 @@ acceptance criteria verified"). Mark the task complete.
 
 ## Why the gate is separate from implementation
 
-The agent that wrote the code is the worst judge of whether it's done — it
+The agent that wrote the code is the worst judge of whether it's done; it
 remembers intent, not the diff. Forcing an explicit diff-vs-criteria check, with
 reject authority, catches the most common agentic failure mode: confidently
 reporting "done" on work that compiles but doesn't satisfy the ask. The
-reject → fresh-context-retry loop is the cheap, reliable fix.
+reject-then-fresh-context-retry loop is the cheap, reliable fix.

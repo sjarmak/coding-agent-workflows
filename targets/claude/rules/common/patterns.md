@@ -47,7 +47,7 @@ ALL reasoning is delegated to AI models.
 - State management and lifecycle tracking
 - Deterministic math (arithmetic aggregation, statistical summation)
 
-**Forbidden in orchestration code (policy — delegate to model):**
+**Forbidden in orchestration code (policy, delegate to model):**
 
 - Semantic classification (difficulty, quality, complexity)
 - Heuristic scoring with hardcoded thresholds for semantic properties
@@ -79,9 +79,9 @@ reasoning to Opus. ZFC makes this routing natural because reasoning is already
 externalized.
 
 **Meta-application:** When building tools that help users build AI systems,
-ZFC applies at BOTH levels — the tool's own orchestration code AND the
+ZFC applies at BOTH levels: the tool's own orchestration code AND the
 patterns/defaults the tool embeds in its outputs. A hardcoded heuristic
-in a tool doesn't just affect the tool — it shapes how users perceive
+in a tool doesn't just affect the tool; it shapes how users perceive
 the domain through that tool's lens.
 
 > **Language note**: ZFC applies specifically to AI-orchestration code, not

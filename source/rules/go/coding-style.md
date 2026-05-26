@@ -11,7 +11,7 @@ paths:
 
 ## Formatting
 
-- **gofmt** and **goimports** are mandatory — no style debates
+- **gofmt** and **goimports** are mandatory, no style debates
 
 ## Design Principles
 

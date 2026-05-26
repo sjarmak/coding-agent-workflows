@@ -16,7 +16,7 @@ contaminate the next.
 ### 1. diverge
 
 Run `diverge`: spawn independent investigation angles with uncorrelated
-context, so findings aren't anchored to a single framing. Breadth first — the
+context, so findings aren't anchored to a single framing. Breadth first; the
 goal is to surface options and evidence, not to decide.
 
 **Exit:** multiple independent findings, each with its own evidence.
@@ -31,8 +31,8 @@ recommendation loses on.
 
 ### 3. premortem  (needs: converge)
 
-Run `premortem` on the recommendation: assume it shipped and failed — enumerate
-the most likely failure modes and what would have to be true for each. Feed the
+Run `premortem` on the recommendation: assume it shipped and failed, then
+enumerate the most likely failure modes and what would have to be true for each. Feed the
 serious ones back as constraints on the direction.
 
 **Exit:** a direction that has survived its own failure analysis, with the known

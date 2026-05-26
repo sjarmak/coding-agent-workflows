@@ -14,7 +14,7 @@ set of units, each small enough to implement and review on its own.
 
 ### 1. map
 
-Read the epic and its acceptance criteria. Identify the natural seams — points
+Read the epic and its acceptance criteria. Identify the natural seams, the points
 where work can be split so each piece is independently testable and reviewable.
 Split on *reasons to change* and on *what can ship alone*, not on line count.
 

@@ -2,7 +2,7 @@ Build-order planning via competing sequencing strategies. Takes a chosen design 
 
 ## Arguments
 
-$ARGUMENTS — format: `[N] [path/to/design.md or inline description]` where N is optional (default: 4)
+$ARGUMENTS, format: `[N] [path/to/design.md or inline description]` where N is optional (default: 4)
 
 ## Parse Arguments
 
@@ -17,11 +17,11 @@ If the design input is missing or unclear, ask the user to clarify before procee
 
 Read the design doc, prototype, or PRD provided. Extract the following:
 
-- **Components to build** — every distinct module, service, or subsystem
-- **Dependencies between them** — what requires what
-- **External integrations** — third-party APIs, databases, services
-- **Testing requirements** — what needs testing and at what level
-- **Deployment needs** — infrastructure, environments, CI/CD
+- **Components to build**: every distinct module, service, or subsystem
+- **Dependencies between them**: what requires what
+- **External integrations**: third-party APIs, databases, services
+- **Testing requirements**: what needs testing and at what level
+- **Deployment needs**: infrastructure, environments, CI/CD
 
 Prepare a **build brief** that summarizes:
 
@@ -35,20 +35,20 @@ Present the build brief to the user and confirm before proceeding. Adjust if the
 
 Launch **all N agents in parallel** using the Agent tool. Each agent receives the build brief plus a unique **sequencing strategy** drawn from this pool (assign strategies 1 through N):
 
-1. **"Riskiest-First"** — Start with the highest-uncertainty components. Front-load risk to learn early whether the approach works. Motto: "fail fast on the hard stuff."
-2. **"Demo-able First"** — Start with the components that produce visible, testable output. Build stakeholder confidence early. Motto: "something to show every sprint."
-3. **"Dependency-Topological"** — Strict dependency order. Build foundations first, layers on top. Nothing starts until its dependencies are complete. Motto: "no stubs, no mocks, each piece works when built."
-4. **"Vertical Slice"** — Build one thin end-to-end path through the entire system first. Proves integration works before widening. Motto: "narrow and deep before wide."
-5. **"Test Infrastructure First"** — Start with test harness, CI/CD, monitoring, observability. Build the ability to verify before building things to verify. Motto: "confidence before velocity."
-6. **"Parallel Tracks"** — Identify independent work streams that can proceed simultaneously. Optimize for team throughput. Motto: "max parallelism, defined interfaces."
+1. **"Riskiest-First"**: Start with the highest-uncertainty components. Front-load risk to learn early whether the approach works. Motto: "fail fast on the hard stuff."
+2. **"Demo-able First"**: Start with the components that produce visible, testable output. Build stakeholder confidence early. Motto: "something to show every sprint."
+3. **"Dependency-Topological"**: Strict dependency order. Build foundations first, layers on top. Nothing starts until its dependencies are complete. Motto: "no stubs, no mocks, each piece works when built."
+4. **"Vertical Slice"**: Build one thin end-to-end path through the entire system first. Proves integration works before widening. Motto: "narrow and deep before wide."
+5. **"Test Infrastructure First"**: Start with test harness, CI/CD, monitoring, observability. Build the ability to verify before building things to verify. Motto: "confidence before velocity."
+6. **"Parallel Tracks"**: Identify independent work streams that can proceed simultaneously. Optimize for team throughput. Motto: "max parallelism, defined interfaces."
 
 Each agent MUST produce:
 
-- **Sequenced phase list** — ordered phases with: what is built, why this order, what is stubbed or mocked, estimated effort (use ranges when uncertain)
-- **Dependency diagram** — what depends on what within their ordering
-- **Risk assessment** — what could go wrong with this ordering, what gets deferred
-- **First milestone** — what does "done with phase 1" look like and how do you verify it
-- **Integration points** — where phases connect and how to test those connections
+- **Sequenced phase list**: ordered phases with: what is built, why this order, what is stubbed or mocked, estimated effort (use ranges when uncertain)
+- **Dependency diagram**: what depends on what within their ordering
+- **Risk assessment**: what could go wrong with this ordering, what gets deferred
+- **First milestone**: what does "done with phase 1" look like and how do you verify it
+- **Integration points**: where phases connect and how to test those connections
 
 Agent prompt template (customize the strategy per agent):
 
@@ -150,12 +150,12 @@ If the user confirms the plan, convert the recommended build plan into a task
 hierarchy in whatever tracker the project uses (issue tracker, project board, or
 a task-tracking tool):
 
-1. **Create the epic** — one parent item summarizing the full build.
+1. **Create the epic**: one parent item summarizing the full build.
 2. **Create one task per phase** as children of the epic, each with a clear
    description and explicit verification criteria.
 3. **Wire up dependencies** between phases where ordering matters, so the
    tracker can surface what's ready to start.
-4. **Show the resulting graph / ordered list** and the first ready item — that's
+4. **Show the resulting graph / ordered list** and the first ready item; that's
    where the `implement-review` workflow (via `focus`) picks up.
 
 Keep the seeding tracker-agnostic: the structure (epic → ordered phases with

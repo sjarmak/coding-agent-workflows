@@ -1,6 +1,6 @@
 ---
 name: epic-review
-summary: Review a large, multi-unit change at the boundary where the whole thing comes together — not just the individual diffs.
+summary: Review a large, multi-unit change at the boundary where the whole thing comes together, not just the individual diffs.
 scope: universal
 invokes: [review, code-review, security-review]
 ported-from: mol-epic-review (Gas City formula)
@@ -9,7 +9,7 @@ ported-from: mol-epic-review (Gas City formula)
 # Workflow: Epic Review
 
 Individual units pass their own `implement-review` gate, but the *assembled*
-whole can still be wrong — interfaces that don't line up, a criterion that fell
+whole can still be wrong: interfaces that don't line up, a criterion that fell
 between two units, an architectural drift only visible across the set. This
 workflow reviews at the epic boundary.
 

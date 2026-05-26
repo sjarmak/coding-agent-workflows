@@ -2,12 +2,12 @@ Structured debate and refinement using Agent Teams. Takes divergent findings (fr
 
 ## Arguments
 
-$ARGUMENTS — format: `[N] [path/to/diverge_output.md or inline topic]` where N is optional number of debaters (default: 3, min 2, max 5)
+$ARGUMENTS, format: `[N] [path/to/diverge_output.md or inline topic]` where N is optional number of debaters (default: 3, min 2, max 5)
 
 ## Prerequisites
 
 - Agent Teams must be enabled (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`)
-- Input should be divergent findings — either a file path to prior /diverge output, a PRD with open tensions, or a description of competing approaches
+- Input should be divergent findings, either a file path to prior /diverge output, a PRD with open tensions, or a description of competing approaches
 
 ## Parse Arguments
 
@@ -69,7 +69,7 @@ You are the advocate for this position. Your job is to:
 - When you receive a message from another teammate, respond substantively
 - Challenge weak arguments but acknowledge strong ones
 - If you genuinely think another position is better on a specific dimension, say so
-- Focus on trade-offs, not absolutism — most positions have merit in some context
+- Focus on trade-offs, not absolutism, most positions have merit in some context
 
 ## Output Format for Each Round
 - **Claim**: Your key argument this round (1-2 sentences)
@@ -87,13 +87,13 @@ Each teammate presents their strongest case. As lead, broadcast all opening posi
 ### Round 2: Challenges and Responses
 Each teammate responds to the positions they find most compelling or most flawed. Direct them to engage with specific claims from Round 1.
 
-### Round 3: Synthesis Proposals (optional — run if still divergent)
+### Round 3: Synthesis Proposals (optional: run if still divergent)
 Each teammate proposes their best "combined" approach that incorporates insights from the debate. This is where compromise positions emerge.
 
 **Moderation rules:**
 - If a round produces consensus on a point, mark it as resolved and move on
 - If a round surfaces a new tension, flag it for the next round
-- Keep rounds focused — redirect tangents back to the evaluation criteria
+- Keep rounds focused, redirect tangents back to the evaluation criteria
 - After Round 2, assess whether Round 3 is needed (skip if positions have already converged)
 
 ## Phase 4: Synthesize
@@ -112,7 +112,7 @@ Tensions that weren't resolved but are now better understood. For each:
 - What information would be needed to resolve it
 
 **3. Emerged Positions**
-New approaches that didn't exist before the debate — combinations or compromises that teammates proposed during synthesis rounds.
+New approaches that didn't exist before the debate, combinations or compromises that teammates proposed during synthesis rounds.
 
 **4. Strongest Arguments**
 The single most compelling argument from each position, preserved even if the overall position wasn't adopted.
