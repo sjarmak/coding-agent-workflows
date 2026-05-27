@@ -84,11 +84,10 @@ refreshes a map when an area changes. The boundary rules live in the
 `context-layering` practice. The codebase-compass idea follows Meta's work on
 [mapping tribal knowledge in large-scale pipelines](https://engineering.fb.com/2026/04/06/developer-tools/how-meta-used-ai-to-map-tribal-knowledge-in-large-scale-data-pipelines/).
 
-### The workflows carry the part a style guide can't
+### The workflows encode the process
 
-A style guide tells you what good code looks like. The workflows tell you how to
-get an agent there, as multi-step procedures that compose the skills into a
-verify-gated pipeline:
+Each workflow is a multi-step procedure that composes the skills into a repeatable
+sequence an agent runs the same way every time:
 
 - **implement-review**: plan, execute, simplify, then review as a hard gate before finalizing.
 - **research**: diverge across angles, converge to a recommendation, pre-mortem it.
