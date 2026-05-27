@@ -53,7 +53,8 @@
     "caveman": "claude",
     "project-compass": "universal",
     "failure-mode-capture": "universal",
-    "writing-voice": "universal"
+    "writing-voice": "universal",
+    "coding-practices": "claude"
   },
   "workflows": {
     "$comment": "Ported formula step-DAGs, runtime-neutral. The headline artifact. All universal: they render as AGENTS.md workflow sections, .claude/commands, and .codex/prompts.",

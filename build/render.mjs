@@ -75,6 +75,29 @@ for (const [name, scope] of Object.entries(manifest.skills)) {
     copyDir(path.join(SRC, 'skills', name), path.join(C, 'skills', name));
   }
 }
+// coding-practices skill: inject a generated catalog of the rule files. The Claude
+// target is the one place rules are NOT auto-loaded, so this index makes them
+// discoverable on demand. Generated from the rule set so it can't drift. (Mechanism
+// only: file listing + frontmatter/heading extraction, no content decisions.)
+const ruleEntry = file => {
+  const { data, body } = parse(fs.readFileSync(file, 'utf8'));
+  if (data.summary) return data.summary;
+  const h1 = body.match(/^#\s+(.+)$/m);
+  return h1 ? h1[1].trim() : path.basename(file, '.md');
+};
+const cpPath = path.join(C, 'skills', 'coding-practices', 'SKILL.md');
+if (fs.existsSync(cpPath)) {
+  const catalog = [];
+  for (const lang of Object.keys(manifest.rules)) {
+    if (lang.startsWith('$')) continue;
+    const dir = path.join(SRC, 'rules', lang);
+    catalog.push('', `### ${lang === 'common' ? 'Common (all languages)' : lang}`, '');
+    for (const f of fs.readdirSync(dir).filter(x => x.endsWith('.md')).sort()) {
+      catalog.push(`- \`.claude/rules/${lang}/${f}\` — ${ruleEntry(path.join(dir, f))}`);
+    }
+  }
+  write(cpPath, fs.readFileSync(cpPath, 'utf8').replace('<!-- RULES_CATALOG -->', catalog.join('\n').trim()));
+}
 // workflows -> Claude commands
 for (const [name, scope] of Object.entries(manifest.workflows)) {
   if (name.startsWith('$')) continue;

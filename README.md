@@ -48,6 +48,12 @@ is the native Claude Code layout (`rules/`, `agents/`, `skills/`, `commands/`).
 `targets/codex/` is the native Codex layout (`AGENTS.md`, `config.toml`,
 `agents/*.toml`, `prompts/`).
 
+Claude Code auto-discovers skills, agents, and commands, but does **not** auto-load
+`rules/`. So nothing is forced into your context on install — the `coding-practices`
+skill is a generated index that lets an agent discover the rules and read only the
+one it needs, on demand. (AGENTS.md-based agents get the rules inlined in `AGENTS.md`
+already.) Install is a plain file copy: no hooks, no daemons, nothing running.
+
 ### Project context layers
 
 The committed `AGENTS.md` in this repo is a *reference manual*: the full bundle,
