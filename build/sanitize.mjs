@@ -20,7 +20,10 @@ const ERRORS = [
   { re: /\bpolecat\b|\bsling\b|\bmayor\b|\bdrain-ack\b/i, what: 'Gas City runtime jargon' },
   { re: /\bgc (sling|doctor|prime|order|rig|runtime|session|mail)\b/i, what: 'gc CLI command' },
   { re: /mcp__(scix|fal-ai|code-intel|sourcegraph)/i, what: 'private MCP server reference' },
-  { re: /\bds-research\b|gas-?city\/|gastownhall|zeldascension/i, what: 'internal workspace/repo path' },
+  // `gastownhall/beads` is carved out below: beads is a public tool the bundle
+  // recommends, even though it lives under the same org as internal repos. Every
+  // other gastownhall path (and the bare org name) stays blocked.
+  { re: /\bds-research\b|gas-?city\/|gastownhall\b(?!\/beads)|zeldascension/i, what: 'internal workspace/repo path' },
 ];
 // Soft warnings: provenance mentions that are acceptable but worth a human glance.
 const WARNINGS = [

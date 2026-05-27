@@ -26,7 +26,7 @@ its difficulty — is a judgment to delegate to a model, not hardcode.
 
 ## beads
 
-**beads** (the `bd` CLI) is a dependency-aware
+[beads](https://github.com/gastownhall/beads) (the `bd` CLI) is a dependency-aware
 issue tracker built for AI coding agents. Tasks are stored as **JSONL** — the
 git-friendly, mergeable source of truth — with a database alongside it for querying
 the dependency graph and computing the ready queue. It is the fullest option: rich
@@ -42,8 +42,8 @@ when you don't.
 ## beads_rust — the non-invasive default
 
 For most projects, reach for the lighter, more self-contained option first.
-**beads_rust** is a Rust reimplementation that deliberately **freezes the architecture
-at SQLite + JSONL**: no Dolt dependency, no automatic git-hook installation, no
+[beads_rust](https://github.com/Dicklesworthstone/beads_rust) is a Rust
+reimplementation that deliberately **freezes the architecture at SQLite + JSONL**: no Dolt dependency, no automatic git-hook installation, no
 background daemon. It keeps the parts that earn their weight — the JSONL source of
 truth and the dependency-aware ready queue — and drops the parts that reach into your
 environment.
