@@ -14,8 +14,11 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ERRORS = [
   { re: /\/home\/[a-z0-9_-]+/i, what: 'absolute home path' },
   { re: /cfa\.harvard\.edu|stephanie\.jarmak/i, what: 'personal/institutional identity' },
-  { re: /\bdolt\b|\bpolecat\b|\bsling\b|\bmayor\b|\bbeads?\b|\bdrain-ack\b/i, what: 'Gas City runtime jargon' },
-  { re: /\bgc (sling|doctor|prime|order|rig|runtime|session|mail)\b|\bbd (show|ready|close|update|prime)\b/i, what: 'gc/bd CLI command' },
+  // Note: `beads`, `bd`, and `dolt` are intentionally NOT blocked — beads (the `bd`
+  // CLI) and its optional Dolt backend are public tools the bundle now recommends in
+  // task-management.md. The genuinely-internal Gas City jargon below stays blocked.
+  { re: /\bpolecat\b|\bsling\b|\bmayor\b|\bdrain-ack\b/i, what: 'Gas City runtime jargon' },
+  { re: /\bgc (sling|doctor|prime|order|rig|runtime|session|mail)\b/i, what: 'gc CLI command' },
   { re: /mcp__(scix|fal-ai|code-intel|sourcegraph)/i, what: 'private MCP server reference' },
   { re: /\bds-research\b|gas-?city\/|gastownhall|zeldascension/i, what: 'internal workspace/repo path' },
 ];
