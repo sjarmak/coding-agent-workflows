@@ -187,6 +187,20 @@ Check against `~/.claude/rules/common/architecture.md`:
 - **Speculative abstractions (YAGNI)**: Interfaces, generics, and config hooks introduced for a single caller
 - **Hidden duplication or false DRY**: Three-strikes rule: flag real duplication (≥3 instances), but also flag extractions that force unrelated callers through a shared path
 
+### AI Slop & Erosion (HIGH)
+
+Check against `~/.claude/rules/common/anti-slop.md`. These are the patterns AI-generated and iteratively-extended code accumulates — weight your attention toward code that **extends** an existing function/module rather than greenfield additions:
+
+- **Documentation noise**: narration comments ("Step 1:"), docstrings that restate the function name, entry/exit logging in short functions
+- **Overengineering**: single-implementer interfaces, single-entry registries, factories that return a constant, strategies set once and never varied, primitive/monadic wrappers with no behavior
+- **Premature optimization**: caching arithmetic/constants, parallelism for tiny collections, lazy-init for always-accessed values
+- **Over-handling**: defending against inputs the spec excludes, defaults on guaranteed-non-null values, repeated null checks
+- **Hidden behavior**: silent resource creation, silent fallbacks, auto-correcting bad input without warning
+- **Error obscuring**: success booleans / sentinel values instead of raised errors, generic messages destroying root cause, retries swallowing failures, ignored return values
+- **Spec deviation**: unrequested features/flags, validation that never changes an outcome, normalization that corrupts domain meaning
+
+Apply the erosion test: _"If this were written from scratch with today's requirements, would it look like this?"_ Flag the delta. Favor consolidation over accumulation — a net-negative diff that meets the spec is the goal.
+
 ### Best Practices (LOW)
 
 - **TODO/FIXME without tickets**: TODOs should reference issue numbers
@@ -253,6 +267,7 @@ When reviewing AI-generated changes, prioritize:
 2. Security assumptions and trust boundaries
 3. Hidden coupling or accidental architecture drift
 4. Unnecessary model-cost-inducing complexity
+5. Slop and erosion signatures — run the **AI Slop & Erosion** checklist above (`~/.claude/rules/common/anti-slop.md`). AI-extended code is the highest-yield surface for the overengineering, documentation-noise, and error-obscuring patterns.
 
 Cost-awareness check:
 

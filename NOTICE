@@ -16,3 +16,6 @@ Dartantic Architecture Best Practices
 
 External patterns referenced/incorporated:
   Augmented Coding Patterns: https://lexler.github.io/augmented-coding-patterns/
+  SlopCodeBench code-erosion rubric (source/rules/common/anti-slop.md,
+    source/skills/slop-check/): https://www.scbench.ai
+    https://github.com/SprocketLab/slop-code-bench

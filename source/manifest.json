@@ -49,6 +49,7 @@
     "architecture-decision-records": "universal",
     "security-review": "universal",
     "tdd-workflow": "universal",
+    "slop-check": "universal",
     "caveman": "claude"
   },
   "workflows": {

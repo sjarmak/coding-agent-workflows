@@ -57,12 +57,32 @@ The review-as-a-gate step in `implement-review` is the load-bearing one: the
 agent that wrote the code checks the diff against the acceptance criteria, with
 authority to reject and retry from a fresh context.
 
+### Code-erosion and token-discipline guards
+
+Two guards keep agent output lean. The
+[`slop-check`](./source/skills/slop-check/SKILL.md) skill scores a diff for
+**erosion** (dead branches and redundant structure that accrue as code is
+extended) and **verbosity**, mirroring the [SlopCodeBench](https://www.scbench.ai)
+judge rubric — the same rubric backs the `anti-slop` rule
+([`source/rules/common/anti-slop.md`](./source/rules/common/anti-slop.md)) and the
+slop pass added to the `code-reviewer` agent and `review` skill. The
+[`caveman`](./source/skills/caveman/SKILL.md) skill cuts conversational token use
+~75% while preserving technical accuracy.
+
+These pair well with [CodeGraph](https://github.com/colbymchenry/codegraph), a
+local pre-indexed code knowledge graph (CLI + MCP) that cuts exploration tokens
+and tool calls — orthogonal to the guards above, but the same goal: less slop,
+fewer tokens.
+
 ## Provenance & license
 
 MIT. Derived from [Everything Claude Code](https://github.com/affaan-m/everything-claude-code)
 (MIT, Affaan Mustafa); the augmented-coding-patterns rule synthesizes the
 [Augmented Coding Patterns](https://lexler.github.io/augmented-coding-patterns/)
-catalog. See [NOTICE](./NOTICE).
+catalog; the anti-slop rule and slop-check skill adapt the code-erosion rubric
+from [SlopCodeBench](https://www.scbench.ai)
+([SprocketLab/slop-code-bench](https://github.com/SprocketLab/slop-code-bench)).
+See [NOTICE](./NOTICE).
 
 ---
 
