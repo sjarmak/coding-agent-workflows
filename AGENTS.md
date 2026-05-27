@@ -482,6 +482,75 @@ Before marking work complete:
 - [ ] No hardcoded values (use constants or config)
 - [ ] No mutation (immutable patterns used)
 
+# Context Layering
+
+An agent working in a project reads from four distinct layers. Each owns a
+different kind of knowledge. The single rule that keeps them useful is: **a given
+fact lives in exactly one layer.** Duplication across layers is how these files
+rot — they drift out of sync, contradict each other, and bloat the context window.
+
+## The four layers
+
+| Layer | Owns | Scope | Refreshed by | Volatility |
+|-------|------|-------|--------------|------------|
+| **Bundle** (`rules/`, `skills/`, `workflows/`, `agents/`) | Universal practices and procedures | every project | pulling the bundle repo | stable |
+| **`AGENTS.md`** | Project *intention* + *failure-mode preventions* + *pointers* | whole repo, thin | curated by hand; appended by `failure-mode-capture` | slow |
+| **Compass files** (`COMPASS.md` per area) | Tribal knowledge: the *why*, the gotchas, how an area connects | one code area | `project-compass`, when the area changes | tracks the code |
+| **Memory** (`CLAUDE.md`, instincts) | Host- and session-specific commands, preferences, learned habits | this machine / this agent | onboarding and learning systems | volatile |
+
+## What AGENTS.md is for
+
+AGENTS.md is the **intention and failure-mode-prevention layer**. It carries only
+what exists nowhere else:
+
+- **Project intention** — what this codebase is for, the invariants that must
+  hold, the non-obvious constraints. Not a README restatement; the things a
+  competent agent would otherwise get wrong.
+- **Failure-mode preventions** — short "don't do X here, it breaks Y" entries,
+  accumulated from real incidents.
+- **Pointers** — where to find everything else: the installed bundle, the
+  compass index, project docs.
+
+It does **not** inline coding standards, architecture descriptions, or area-level
+detail. Those live in the bundle and in compass files, and AGENTS.md links to
+them. Target ceiling: ~120 lines, hard ceiling ~200. If it grows past that, the
+excess belongs in a compass file or was never project-specific to begin with.
+
+## What compass files are for
+
+A `COMPASS.md` maps the tribal knowledge of one code area — the *why* and the
+*gotchas*, not the *what* (the code is the source of truth for *what*). They live
+next to the code they describe, one per major area, and carry a content-hash of
+their mapped sources so staleness is detectable. AGENTS.md indexes them; it does
+not duplicate their content.
+
+## The one-fact-one-layer rule
+
+- A lesson that is **specific to this project and generalizes across the repo**
+  belongs in AGENTS.md. When such a lesson appears in memory, **promote it** into
+  AGENTS.md and **remove it from memory** — never store it in both.
+- A lesson **specific to one code area** belongs in that area's compass file.
+- A **universal** practice belongs in the bundle, not in any one project's files.
+- **Host- or session-specific** state (local commands, personal preferences)
+  stays in memory and never migrates to AGENTS.md.
+
+When two layers describe the same fact, that is a defect to resolve, not a
+redundancy to tolerate. The `failure-mode-capture` command runs a dedup guard
+against memory before appending, precisely to enforce this.
+
+## Single-source projects
+
+Some projects deliberately collapse the intention and memory layers into one
+physical file — most commonly by making `CLAUDE.md` a **symlink** to `AGENTS.md`,
+so every agent reads the same content under whichever name it expects. There, the
+one-fact-one-layer rule is satisfied by construction: there is only one file.
+
+Before proposing to split or dedup these layers, **check whether the memory file
+is a symlink to `AGENTS.md`** (or vice versa). If it is, do not break it — keep
+the single file complete and well-organized (intention, then failure-modes, then
+operational notes), and treat the absence of a separate memory file as the
+project's choice, not a defect.
+
 # Development Workflow
 
 > This file extends [common/git-workflow.md](./git-workflow.md) with the full feature development process that happens before git operations.
@@ -789,6 +858,9 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 - **security-review**: Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist and patterns.
 - **tdd-workflow**: Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ coverage including unit, integration, and E2E tests.
 - **slop-check**: LLM-judge slop & erosion scan of a diff, mirroring SlopCodeBench. Scores code on Erosion (verbosity, dead branches, redundant structure accumulated under iterative change) and Verbosity (unnecessary complexity), then reports per-category findings weighted toward code that EXTENDS existing modules. Use after iteratively extending existing code, before opening a PR on a non-greenfield change, when a module has grown across several requirement changes, or when the user says "slop check", "check for erosion", "is this over-engineered". Complements the review skill (correctness + reuse) — this lens is specifically the accumulated-cruft axis.
+- **project-compass**: Map the tribal knowledge of a codebase into per-area COMPASS.md files — the why, the gotchas, and how each area connects — for existing repos and as they grow. Use when the user says "map this codebase", "generate compass files", "refresh the compass", or after a significant area changes.
+- **failure-mode-capture**: Record a "don't do X here, it breaks Y" lesson into AGENTS.md so an agent doesn't repeat a mistake. Dedupes against CLAUDE.md/instincts before writing, promotes generalizing lessons out of memory, and keeps AGENTS.md under budget. Use after a bug, regression, or near-miss, or when the user says "capture this" / "make sure we don't do that again".
+- **writing-voice**: Voice, structural, and anti-pattern rules for drafting and editing prose: articles, docs, blog posts, READMEs, and longer-form technical writing. Combines a slop guard against telltale AI writing patterns with positive craft defaults (sentence rhythm, declarative heads, concrete openings, pivoting closes). Activate whenever generating or revising prose of more than a few paragraphs.
 
 Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.
 
@@ -1076,5 +1148,81 @@ If blocking findings exist, route fixes back as new units through
 epic-level verification and close.
 
 **Exit:** epic accepted, or fix-units dispatched.
+
+---
+
+# Workflow: Project Init
+
+Stand up the **context layers** for a project so an agent has the right knowledge
+in the right place from day one. The output is a thin, pointer-style `AGENTS.md`
+(intention + an empty failure-mode log + references) and seed `COMPASS.md` maps
+for the largest areas. It deliberately does **not** write the memory layer
+(`CLAUDE.md` / instincts) — see `context-layering` for why each fact gets one home.
+
+This is a runtime-neutral spec. Any orchestrator can drive it; the steps that
+require judgment are delegated to the model (ZFC).
+
+## When to run
+
+- Setting up a new or existing repo for agent-assisted work
+- The user says "set up AGENTS.md" / "initialize agent context" / "set up compass"
+- Adopting this bundle in a project that has no intention layer yet
+
+## Steps
+
+### 1. Reconnaissance
+
+Run `codebase-onboarding` Phases 1-3 to detect stack, structure, entry points,
+and conventions. This is shared signal for both outputs below. Do not yet write
+any file.
+
+### 2. Scaffold the thin AGENTS.md
+
+From the recon, instantiate the `AGENTS.project.md` template at the repo root:
+
+- **What this project is** — fill *intention*: the invariants and non-obvious
+  constraints a capable agent would otherwise get wrong. Not a README restatement.
+- **Failure-mode preventions** — leave empty with its format note; entries arrive
+  later via `failure-mode-capture`.
+- **References** — point `{{BUNDLE_REF}}` at where the bundle was installed
+  (`./.claude` for Claude Code, the bundle's `AGENTS.md`/`rules` otherwise),
+  `{{PROJECT_DOCS}}` at the repo's own docs.
+
+If an `AGENTS.md` already exists, **enhance, don't overwrite**: preserve its
+content, slot existing project rules into the right sections, and call out what
+was added. Honor the boundary — move anything that is really area-detail into a
+compass file (step 3) and anything host-specific toward memory.
+
+Keep it under the ~120-line target. If recon produced more than fits, that is
+signal the excess belongs in compass files, not AGENTS.md.
+
+### 3. Seed compass maps
+
+Run `project-compass` for the few largest, most cohesive areas (confirm the list
+with the user first — not every directory). Write one `COMPASS.md` per area and
+populate the **Compass index** in AGENTS.md with one line each.
+
+For a small repo, a single root compass may suffice; skip this step if the code
+is small enough that AGENTS.md references plus the code itself are sufficient.
+
+### 4. Memory-boundary pass
+
+First, **check whether `CLAUDE.md` is a symlink to `AGENTS.md`** (or vice versa).
+If it is, this is a deliberate single-source project per `context-layering`: there
+is no separate memory layer to reconcile. Keep the one file complete and
+organized; do not propose a split, and skip the rest of this step.
+
+Otherwise, read any existing `CLAUDE.md` / instincts. For each fact, confirm it
+sits in the right layer per `context-layering`: project-wide preventions promoted
+into AGENTS.md (and removed from memory), area detail into compass, host/session
+state left in memory. Report any overlap you resolved; do not silently rewrite
+memory — propose the promotions and let the user confirm.
+
+### 5. Report
+
+Summarize what was created, the area list mapped, and any boundary decisions
+made. List the maintenance commands the project now has: `failure-mode-capture`
+(append a prevention), `project-compass` (refresh a map). No automation is
+installed — maintenance is explicit and user-driven.
 
 ---

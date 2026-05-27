@@ -83,6 +83,13 @@ for (const [name, scope] of Object.entries(manifest.workflows)) {
     write(path.join(C, 'commands', `${name}.md`), body + '\n');
   }
 }
+// templates: verbatim project-scaffolding files (not principle prose)
+for (const [name, scope] of Object.entries(manifest.templates || {})) {
+  if (name.startsWith('$')) continue;
+  if (scope === 'universal' || scope === 'claude') {
+    fs.cpSync(path.join(SRC, 'templates', name), path.join(C, 'templates', name));
+  }
+}
 
 // =========================================================================
 // targets/codex: native Codex layout
@@ -114,6 +121,11 @@ for (const [name, scope] of Object.entries(manifest.workflows)) {
   if (name.startsWith('$') || scope !== 'universal') continue;
   const { body } = readWorkflow(name);
   write(path.join(X, 'prompts', `${name}.md`), body + '\n');
+}
+// universal templates -> codex templates dir
+for (const [name, scope] of Object.entries(manifest.templates || {})) {
+  if (name.startsWith('$') || scope !== 'universal') continue;
+  fs.cpSync(path.join(SRC, 'templates', name), path.join(X, 'templates', name));
 }
 
 // =========================================================================

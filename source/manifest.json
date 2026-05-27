@@ -50,7 +50,10 @@
     "security-review": "universal",
     "tdd-workflow": "universal",
     "slop-check": "universal",
-    "caveman": "claude"
+    "caveman": "claude",
+    "project-compass": "universal",
+    "failure-mode-capture": "universal",
+    "writing-voice": "universal"
   },
   "workflows": {
     "$comment": "Ported formula step-DAGs, runtime-neutral. The headline artifact. All universal: they render as AGENTS.md workflow sections, .claude/commands, and .codex/prompts.",
@@ -58,6 +61,12 @@
     "research": "universal",
     "brainstorm-loop": "universal",
     "decompose": "universal",
-    "epic-review": "universal"
+    "epic-review": "universal",
+    "project-init": "universal"
+  },
+  "templates": {
+    "$comment": "Project-scaffolding templates, NOT principle prose: they ship verbatim into every target's templates/ dir (and are excluded from the AGENTS.md universal layer). The init flow / install.sh instantiates them into a consuming project. AGENTS.project.md is the thin pointer-style project AGENTS.md; COMPASS.md is the per-area tribal-knowledge map.",
+    "AGENTS.project.md": "universal",
+    "COMPASS.md": "universal"
   }
 }
