@@ -48,6 +48,12 @@ is the native Claude Code layout (`rules/`, `agents/`, `skills/`, `commands/`).
 `targets/codex/` is the native Codex layout (`AGENTS.md`, `config.toml`,
 `agents/*.toml`, `prompts/`).
 
+The rules are the best-practice layer: architecture, coding style, testing, security,
+git and development workflow, performance, context layering, task management, skill
+management, anti-slop, and the augmented-coding-patterns catalog — plus language
+specifics for Go, Python, TypeScript, and Rust. The agents, skills, and workflows
+operationalize them; the `coding-practices` skill indexes the rules in full.
+
 Claude Code auto-discovers skills, agents, and commands, but does **not** auto-load
 `rules/`. So nothing is forced into your context on install — the `coding-practices`
 skill is a generated index that lets an agent discover the rules and read only the
@@ -119,6 +125,26 @@ These pair well with [CodeGraph](https://github.com/colbymchenry/codegraph), a
 local pre-indexed code knowledge graph (CLI + MCP) that cuts exploration tokens
 and tool calls — orthogonal to the guards above, but the same goal: less slop,
 fewer tokens.
+
+### Recommended companion tools (non-invasive)
+
+Two rules point at external tools chosen for the reason the bundle is: they add
+capability without installing themselves into everything.
+
+- **[skillager](https://pypi.org/project/skillager/)** (the `skill-management` rule)
+  is a local CLI that discovers, vets, and exposes agent skills on demand. You search
+  skills by metadata and load only the few a task needs, rather than every skill in
+  every chat. Installed once as a user tool (`uv tool install skillager`), nothing
+  runs in the background, and it discovers the skills this bundle ships. Source:
+  [github.com/jarmak-personal/skillager](https://github.com/jarmak-personal/skillager).
+- **[beads_rust](https://github.com/Dicklesworthstone/beads_rust)** (the
+  `task-management` rule) is a dependency-aware task store frozen at a SQLite + JSONL
+  architecture: no Dolt dependency, no auto-installed git hooks. The fuller
+  [beads](https://github.com/gastownhall/beads) adds a Dolt backend for versioned,
+  multiplayer sync when a project actually needs it.
+
+Both follow the rule the bundle preaches: take the lightest thing that solves the
+problem, and add weight only when a concrete need appears.
 
 ## Provenance & license
 
