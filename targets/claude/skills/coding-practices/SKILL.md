@@ -39,6 +39,7 @@ what's available and where to find it.
 - `.claude/rules/common/patterns.md` — Common Patterns
 - `.claude/rules/common/performance.md` — Performance Optimization
 - `.claude/rules/common/security.md` — Security Guidelines
+- `.claude/rules/common/skill-management.md` — Discover, vet, and expose agent skills on demand with skillager, so the right skills are available per task without loading every skill into every chat.
 - `.claude/rules/common/task-management.md` — Track multi-step agent work in a durable, dependency-aware task store; prefer the lightest non-invasive backend (SQLite + JSONL) and only add heavier sync when you actually need it.
 - `.claude/rules/common/testing.md` — Testing Requirements
 
