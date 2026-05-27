@@ -88,17 +88,26 @@ The review-as-a-gate step in `implement-review` is the load-bearing one: the
 agent that wrote the code checks the diff against the acceptance criteria, with
 authority to reject and retry from a fresh context.
 
-### Code-erosion and token-discipline guards
+### Two kinds of slop, two separate guards
 
-Two guards keep agent output lean. The
-[`slop-check`](./source/skills/slop-check/SKILL.md) skill scores a diff for
-**erosion** (dead branches and redundant structure that accrue as code is
-extended) and **verbosity**, mirroring the [SlopCodeBench](https://www.scbench.ai)
-judge rubric — the same rubric backs the `anti-slop` rule
-([`source/rules/common/anti-slop.md`](./source/rules/common/anti-slop.md)) and the
-slop pass added to the `code-reviewer` agent and `review` skill. The
-[`caveman`](./source/skills/caveman/SKILL.md) skill cuts conversational token use
-~75% while preserving technical accuracy.
+"Slop" means two different things here, and they never share a tool. **Code slop**
+is erosion and bloat in a diff; **writing slop** is AI tells in prose. Reach for the
+guard that matches what you're checking:
+
+- **Code slop →** the [`slop-check`](./source/skills/slop-check/SKILL.md) skill scores
+  a diff for **erosion** (dead branches and redundant structure that accrue as code
+  is extended) and **verbosity**, mirroring the
+  [SlopCodeBench](https://www.scbench.ai) judge rubric — the same rubric backs the
+  `anti-slop` rule
+  ([`source/rules/common/anti-slop.md`](./source/rules/common/anti-slop.md)) and the
+  slop pass in the `code-reviewer` agent and `review` skill.
+- **Writing slop →** the [`writing-voice`](./source/skills/writing-voice/SKILL.md)
+  skill guards prose and docs (articles, blog posts, **READMEs**) against telltale AI
+  writing patterns and adds positive craft defaults. A README is prose, not code, so
+  it routes here — not to `slop-check`.
+
+Separately, the [`caveman`](./source/skills/caveman/SKILL.md) skill cuts
+conversational token use ~75% while preserving technical accuracy.
 
 These pair well with [CodeGraph](https://github.com/colbymchenry/codegraph), a
 local pre-indexed code knowledge graph (CLI + MCP) that cuts exploration tokens

@@ -1,7 +1,7 @@
 ---
 name: writing-voice
 summary: Voice, structural, and anti-pattern rules for drafting and editing prose so it reads as written by a thoughtful human practitioner.
-description: Voice, structural, and anti-pattern rules for drafting and editing prose: articles, docs, blog posts, READMEs, and longer-form technical writing. Combines a slop guard against telltale AI writing patterns with positive craft defaults (sentence rhythm, declarative heads, concrete openings, pivoting closes). Activate whenever generating or revising prose of more than a few paragraphs.
+description: Voice, structural, and anti-pattern rules for drafting and editing prose: articles, docs, blog posts, READMEs, and longer-form technical writing. Combines a slop guard against telltale AI writing patterns with positive craft defaults (sentence rhythm, declarative heads, concrete openings, pivoting closes). Activate whenever generating or revising prose of more than a few paragraphs. This is the prose/writing slop guard, not the code one; for code-erosion slop in a diff use slop-check.
 origin: agentic-coding-practices
 scope: universal
 ---
