@@ -11,6 +11,10 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 // Hard blockers: absolute paths, PII, internal infra/jargon, private MCP servers.
+// NOTE for forks: most of this list is specific to the original maintainer's
+// environment (identity, internal repo names, private MCP servers). If you fork
+// this repo, replace those patterns with your own — an unchanged list passes
+// silently on leaks it was never written to catch.
 const ERRORS = [
   { re: /\/home\/[a-z0-9_-]+/i, what: 'absolute home path' },
   { re: /cfa\.harvard\.edu|stephanie\.jarmak/i, what: 'personal/institutional identity' },
@@ -30,7 +34,7 @@ const WARNINGS = [
   { re: /\bGas City\b/, what: 'Gas City named as provenance (acceptable, confirm intentional)' },
 ];
 
-const SCAN_ROOTS = ['AGENTS.md', 'targets'];
+const SCAN_ROOTS = ['AGENTS.md', 'AGENTS.lite.md', 'targets'];
 const files = [];
 const walk = p => {
   const st = fs.statSync(p);

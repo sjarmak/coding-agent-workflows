@@ -21,6 +21,7 @@ Install for your agent:
 ./install.sh claude          # → ./.claude  (project-level; use `./install.sh claude ~` for user-level)
 ./install.sh codex           # → AGENTS.md in current dir + config into ~/.codex
 ./install.sh agents          # → full practices bundle as AGENTS.md (Amp, Aider, Gemini CLI, …)
+./install.sh agents . --lite # → thin AGENTS.md index + AGENTS.full.md read on demand
 ./install.sh init            # → a thin, project-specific AGENTS.md (intention + pointers)
 ```
 
@@ -28,10 +29,13 @@ Pass a destination as the second argument to target a specific project, for
 example `./install.sh claude ~/work/myrepo`.
 
 `agents` and `init` produce two different files for two different jobs. `agents`
-drops the whole bundle as `AGENTS.md`, a portable reference manual. `init`
-scaffolds a thin, per-project `AGENTS.md` that holds only this repo's intention
-and failure-mode preventions and points to the bundle for everything else. See
-[Project context layers](#project-context-layers) below.
+drops the whole bundle as `AGENTS.md`, a portable reference manual; with `--lite`
+it instead drops a ~80-line index as `AGENTS.md` plus the full bundle as
+`AGENTS.full.md`, for agents that auto-load `AGENTS.md` but can read other files
+on demand — the always-loaded context stays small and the agent pulls in only the
+section a task needs. `init` scaffolds a thin, per-project `AGENTS.md` that holds
+only this repo's intention and failure-mode preventions and points to the bundle
+for everything else. See [Project context layers](#project-context-layers) below.
 
 If you would rather not run a script, copy what you need: Claude Code reads a
 `.claude/` directory, so copy `targets/claude/{rules,agents,skills,commands}`
@@ -46,7 +50,9 @@ your repo root.
 and the full workflows, written as prose any agent can follow. `targets/claude/`
 is the native Claude Code layout (`rules/`, `agents/`, `skills/`, `commands/`).
 `targets/codex/` is the native Codex layout (`AGENTS.md`, `config.toml`,
-`agents/*.toml`, `prompts/`).
+`agents/` with a toml plus full role instructions per agent, `prompts/`).
+`AGENTS.lite.md` is the thin index variant of the universal layer (see
+`--lite` above).
 
 The rules are the best-practice layer: architecture, coding style, testing, security,
 git and development workflow, performance, context layering, task management, skill

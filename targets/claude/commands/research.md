@@ -1,3 +1,7 @@
+---
+description: "Diverge across independent angles, converge to a synthesis, then pre-mortem the chosen direction before committing."
+---
+
 # Workflow: Research
 
 For open questions and design decisions where the obvious answer may be wrong.

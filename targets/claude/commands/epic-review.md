@@ -1,3 +1,7 @@
+---
+description: "Review a large, multi-unit change at the boundary where the whole thing comes together, not just the individual diffs."
+---
+
 # Workflow: Epic Review
 
 Individual units pass their own `implement-review` gate, but the *assembled*

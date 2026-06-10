@@ -1,3 +1,7 @@
+---
+description: "Generate many shape-distinct ideas, pre-mortem the frontrunners, then converge on one."
+---
+
 # Workflow: Brainstorm Loop
 
 For feature design and "how should we approach X" questions. Forces divergent

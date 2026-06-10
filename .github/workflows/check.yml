@@ -1,0 +1,19 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # staleness gate: committed AGENTS.md/AGENTS.lite.md/targets must match a fresh render of source/
+      - run: npm run check
+      # release gate: rendered output must be free of paths, PII, internal jargon
+      - run: npm run sanitize

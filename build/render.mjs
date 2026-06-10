@@ -98,12 +98,15 @@ if (fs.existsSync(cpPath)) {
   }
   write(cpPath, fs.readFileSync(cpPath, 'utf8').replace('<!-- RULES_CATALOG -->', catalog.join('\n').trim()));
 }
-// workflows -> Claude commands
+// workflows -> Claude commands. Claude Code reads a `description` frontmatter
+// key for slash-command discovery, so the workflow summary is emitted there.
 for (const [name, scope] of Object.entries(manifest.workflows)) {
   if (name.startsWith('$')) continue;
   if (scope === 'universal' || scope === 'claude') {
-    const { body } = readWorkflow(name);
-    write(path.join(C, 'commands', `${name}.md`), body + '\n');
+    const { data, body } = readWorkflow(name);
+    const desc = (data.summary || '').toString().replace(/"/g, "'");
+    write(path.join(C, 'commands', `${name}.md`),
+      `---\ndescription: "${desc}"\n---\n\n` + body + '\n');
   }
 }
 // templates: verbatim project-scaffolding files (not principle prose)
@@ -124,15 +127,18 @@ write(path.join(X, 'config.toml'),
   `# Universal practices live in the AGENTS.md at repo root (Codex reads it automatically).\n` +
   `# Subagents below mirror the universal Claude reviewers.\n\n` +
   `[agents]\n# see agents/*.toml\n`);
-// universal agents -> codex agent toml stubs
+// universal agents -> codex agent toml + full instructions alongside. The
+// instructions file ships next to the toml so the reference still resolves
+// after install.sh copies the agents/ dir into ~/.codex.
 for (const [name, scope] of Object.entries(manifest.agents)) {
   if (name.startsWith('$') || scope !== 'universal') continue;
-  const { data } = parse(fs.readFileSync(path.join(SRC, 'agents', `${name}.md`), 'utf8'));
+  const { data, body } = parse(fs.readFileSync(path.join(SRC, 'agents', `${name}.md`), 'utf8'));
   const desc = (data.description || data.name || name).toString().replace(/"/g, "'");
+  write(path.join(X, 'agents', `${name}.md`), body + '\n');
   write(path.join(X, 'agents', `${name}.toml`),
     `name = "${name}"\n` +
     `description = "${desc}"\n` +
-    `# Full instructions: see targets/claude/agents/${name}.md (source: source/agents/${name}.md)\n`);
+    `instructions_file = "${name}.md"  # full role instructions, installed alongside this file\n`);
 }
 // universal skills + workflows -> codex prompts
 for (const [name, scope] of Object.entries(manifest.skills)) {
@@ -153,7 +159,30 @@ for (const [name, scope] of Object.entries(manifest.templates || {})) {
 
 // =========================================================================
 // AGENTS.md: universal entry point
+// (AGENTS.lite.md, below, is the thin variant sharing these pieces)
 // =========================================================================
+const rosterLines = ['| Role | Scope | Purpose |', '|------|-------|---------|'];
+for (const [name, scope] of Object.entries(manifest.agents)) {
+  if (name.startsWith('$')) continue;
+  const { data } = parse(fs.readFileSync(path.join(SRC, 'agents', `${name}.md`), 'utf8'));
+  const desc = (data.description || '').toString().split('. ')[0].slice(0, 90);
+  rosterLines.push(`| ${name} | ${scope} | ${desc} |`);
+}
+
+const skillLines = [];
+for (const [name, scope] of Object.entries(manifest.skills)) {
+  if (name.startsWith('$') || scope !== 'universal') continue;
+  const { data } = readSkill(name);
+  skillLines.push(`- **${name}**: ${data.description || ''}`);
+}
+const skillsNote =
+  'Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.';
+
+const h1of = body => {
+  const m = body.match(/^#\s+(.+)$/m);
+  return m ? m[1].trim() : '';
+};
+
 const parts = [];
 parts.push('# Agentic Coding Practices');
 parts.push('');
@@ -183,26 +212,15 @@ parts.push('');
 // agent roster
 parts.push('## Agent Roles');
 parts.push('');
-parts.push('| Role | Scope | Purpose |');
-parts.push('|------|-------|---------|');
-for (const [name, scope] of Object.entries(manifest.agents)) {
-  if (name.startsWith('$')) continue;
-  const { data } = parse(fs.readFileSync(path.join(SRC, 'agents', `${name}.md`), 'utf8'));
-  const desc = (data.description || '').toString().split('. ')[0].slice(0, 90);
-  parts.push(`| ${name} | ${scope} | ${desc} |`);
-}
+parts.push(...rosterLines);
 parts.push('');
 
 // universal skills as prose
 parts.push('## Skills');
 parts.push('');
-for (const [name, scope] of Object.entries(manifest.skills)) {
-  if (name.startsWith('$') || scope !== 'universal') continue;
-  const { data } = readSkill(name);
-  parts.push(`- **${name}**: ${data.description || ''}`);
-}
+parts.push(...skillLines);
 parts.push('');
-parts.push('Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.');
+parts.push(skillsNote);
 parts.push('');
 
 // workflows in full (the headline)
@@ -224,7 +242,60 @@ write(path.join(ROOT, 'AGENTS.md'), agentsMd);
 // Codex convention: AGENTS.md at the codex target root too
 write(path.join(X, 'AGENTS.md'), agentsMd);
 
+// =========================================================================
+// AGENTS.lite.md: thin index variant of the universal layer
+// For agents that auto-load AGENTS.md but CAN read other files on demand:
+// rules and workflows appear as one-line pointers into the full bundle
+// instead of inlined in full, so the always-loaded context stays small.
+// =========================================================================
+const lite = [];
+lite.push('# Agentic Coding Practices (lite index)');
+lite.push('');
+lite.push('> Generated by `build/render.mjs` from `source/`. Do not edit this file; edit `source/` and re-run `npm run build`.');
+lite.push('');
+lite.push('The thin variant of the practices bundle. Each entry below is a pointer, not the');
+lite.push('content: read the named section of the full bundle when a task needs it. The full');
+lite.push('bundle is `AGENTS.full.md` next to this file when installed with');
+lite.push('`./install.sh agents <dest> --lite`, or `AGENTS.md` at the bundle repo root.');
+lite.push('');
+lite.push('## Principles');
+lite.push('');
+lite.push('Each is a section (matched by heading) in the full bundle:');
+lite.push('');
+for (const f of fs.readdirSync(commonDir).sort()) {
+  if (!f.endsWith('.md')) continue;
+  if ((ruleOverrides[`common/${f}`] || 'universal') !== 'universal') continue;
+  const { data, body } = parse(fs.readFileSync(path.join(commonDir, f), 'utf8'));
+  const head = h1of(body) || f;
+  lite.push(`- **${head}** (\`common/${f}\`)${data.summary ? ` — ${data.summary}` : ''}`);
+}
+lite.push('');
+lite.push('Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/` in each target.');
+lite.push('');
+lite.push('## Agent Roles');
+lite.push('');
+lite.push(...rosterLines);
+lite.push('');
+lite.push('## Skills');
+lite.push('');
+lite.push(...skillLines);
+lite.push('');
+lite.push(skillsNote);
+lite.push('');
+lite.push('## Workflows');
+lite.push('');
+lite.push('Multi-step procedures, each a full section in the full bundle:');
+lite.push('');
+for (const [name, scope] of Object.entries(manifest.workflows)) {
+  if (name.startsWith('$') || scope !== 'universal') continue;
+  const { data, body } = readWorkflow(name);
+  lite.push(`- **${name}** — ${data.summary || ''} (§ "${h1of(body)}")`);
+}
+lite.push('');
+write(path.join(ROOT, 'AGENTS.lite.md'), lite.join('\n'));
+
 console.log('rendered:');
 console.log('  AGENTS.md');
+console.log('  AGENTS.lite.md');
 console.log('  targets/claude/  (rules, agents, skills, commands)');
 console.log('  targets/codex/   (AGENTS.md, config.toml, agents, prompts)');

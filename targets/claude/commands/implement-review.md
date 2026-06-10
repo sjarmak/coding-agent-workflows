@@ -1,3 +1,7 @@
+---
+description: "One agent implements a task, then reviews its own work behind a hard verification gate before finalizing."
+---
+
 # Workflow: Implement + Self-Review
 
 The default per-task loop. A single agent implements a change via `focus`, then

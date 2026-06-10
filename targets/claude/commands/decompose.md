@@ -1,3 +1,7 @@
+---
+description: "Break a large piece of work into independently-shippable, reviewable units with explicit dependencies."
+---
+
 # Workflow: Decompose
 
 For work too large for one implement-review pass. Produces a dependency-ordered

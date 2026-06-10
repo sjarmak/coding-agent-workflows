@@ -1,3 +1,3 @@
 name = "code-simplifier"
 description = "Simplify and clean up code after generation. Use proactively after writing or modifying code."
-# Full instructions: see targets/claude/agents/code-simplifier.md (source: source/agents/code-simplifier.md)
+instructions_file = "code-simplifier.md"  # full role instructions, installed alongside this file

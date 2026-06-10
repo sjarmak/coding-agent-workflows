@@ -1,3 +1,7 @@
+---
+description: "Stand up the context layers for a project — a thin pointer-style AGENTS.md plus seed compass maps — without touching the memory layer."
+---
+
 # Workflow: Project Init
 
 Stand up the **context layers** for a project so an agent has the right knowledge
