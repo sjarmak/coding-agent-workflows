@@ -19,40 +19,42 @@ Install for your agent:
 
 ```bash
 ./install.sh claude          # → ./.claude  (project-level; use `./install.sh claude ~` for user-level)
-./install.sh codex           # → AGENTS.md in current dir + config into ~/.codex
-./install.sh agents          # → full practices bundle as AGENTS.md (Amp, Aider, Gemini CLI, …)
-./install.sh agents . --lite # → thin AGENTS.md index + AGENTS.full.md read on demand
+./install.sh codex           # → AGENTS.md + AGENTS.full.md in current dir + config into ~/.codex
+./install.sh agents          # → AGENTS.md (thin index) + AGENTS.full.md (Amp, Aider, Gemini CLI, …)
 ./install.sh init            # → a thin, project-specific AGENTS.md (intention + pointers)
 ```
 
 Pass a destination as the second argument to target a specific project, for
 example `./install.sh claude ~/work/myrepo`.
 
-`agents` and `init` produce two different files for two different jobs. `agents`
-drops the whole bundle as `AGENTS.md`, a portable reference manual; with `--lite`
-it instead drops a ~80-line index as `AGENTS.md` plus the full bundle as
-`AGENTS.full.md`, for agents that auto-load `AGENTS.md` but can read other files
-on demand — the always-loaded context stays small and the agent pulls in only the
-section a task needs. `init` scaffolds a thin, per-project `AGENTS.md` that holds
-only this repo's intention and failure-mode preventions and points to the bundle
-for everything else. See [Project context layers](#project-context-layers) below.
+`AGENTS.md` is deliberately thin: a ~80-line index that agents auto-load, pointing
+by section into `AGENTS.full.md`, the full bundle read on demand. The agent pulls
+in only the section a task needs, and the always-loaded context stays small. For
+an agent that can only ever read one file, copy `AGENTS.full.md` as its
+`AGENTS.md` instead.
+
+`agents` and `init` produce files for two different jobs. `agents` drops the
+practices bundle (index + full text). `init` scaffolds a thin, per-project
+`AGENTS.md` that holds only this repo's intention and failure-mode preventions
+and points to the bundle for everything else. See
+[Project context layers](#project-context-layers) below.
 
 If you would rather not run a script, copy what you need: Claude Code reads a
 `.claude/` directory, so copy `targets/claude/{rules,agents,skills,commands}`
 into one; Codex reads an `AGENTS.md` at the repo root plus `~/.codex`, so put
-`AGENTS.md` at your root and copy `targets/codex/{config.toml,agents,prompts}`
-into `~/.codex`; every other `AGENTS.md`-aware agent needs only that one file at
-your repo root.
+`AGENTS.md` + `AGENTS.full.md` at your root and copy
+`targets/codex/{config.toml,agents,prompts}` into `~/.codex`; every other
+`AGENTS.md`-aware agent needs just those two files at your repo root.
 
 ## What's inside
 
-`AGENTS.md` is the universal layer: principles, the agent roster, the skills,
-and the full workflows, written as prose any agent can follow. `targets/claude/`
-is the native Claude Code layout (`rules/`, `agents/`, `skills/`, `commands/`).
-`targets/codex/` is the native Codex layout (`AGENTS.md`, `config.toml`,
-`agents/` with a toml plus full role instructions per agent, `prompts/`).
-`AGENTS.lite.md` is the thin index variant of the universal layer (see
-`--lite` above).
+The universal layer is two files: `AGENTS.md`, the thin always-loaded index, and
+`AGENTS.full.md`, the full text it points into — principles, the agent roster,
+the skills, and the workflows, written as prose any agent can follow.
+`targets/claude/` is the native Claude Code layout (`rules/`, `agents/`,
+`skills/`, `commands/`). `targets/codex/` is the native Codex layout (the same
+two AGENTS files, `config.toml`, `agents/` with a toml plus full role
+instructions per agent, `prompts/`).
 
 The rules are the best-practice layer: architecture, coding style, testing, security,
 git and development workflow, performance, context layering, task management, skill
@@ -63,14 +65,15 @@ operationalize them; the `coding-practices` skill indexes the rules in full.
 Claude Code auto-discovers skills, agents, and commands, but does not auto-load
 `rules/`. Nothing is forced into your context on install: the `coding-practices`
 skill is a generated index that lets an agent discover the rules and read only the
-one it needs, on demand. (AGENTS.md-based agents get the rules inlined in `AGENTS.md`
-already.) Install is a plain file copy: no hooks, no daemons, nothing running.
+one it needs, on demand. (AGENTS.md-based agents get the same on-demand shape via
+the `AGENTS.md` index over `AGENTS.full.md`.) Install is a plain file copy: no
+hooks, no daemons, nothing running.
 
 ### Project context layers
 
-The committed `AGENTS.md` in this repo is a reference manual: the full bundle,
-flattened into one file for agents that can only read one file. A consuming
-project's `AGENTS.md` should be the opposite, kept thin. `install.sh init` plus the
+The bundle's `AGENTS.md` is a thin index over `AGENTS.full.md`, the reference
+manual. A consuming project's own `AGENTS.md` is kept thin for the same reason:
+nothing bulky lives in an always-loaded file. `install.sh init` plus the
 `project-init` workflow set up four layers, each owning one kind of knowledge so
 no fact is stored twice:
 
@@ -166,11 +169,11 @@ See [NOTICE](./NOTICE).
 <details>
 <summary><b>Maintainer notes</b> (you don't need these to use the repo)</summary>
 
-The committed `AGENTS.md` and `targets/` are generated from `source/`, the only
+The committed `AGENTS.md`, `AGENTS.full.md`, and `targets/` are generated from `source/`, the only
 hand-edited layer. To change the bundle, edit `source/` and run:
 
 ```bash
-npm run build      # regenerate AGENTS.md + targets/ from source/
+npm run build      # regenerate AGENTS.md + AGENTS.full.md + targets/ from source/
 npm run sanitize   # release gate: scan rendered output for paths, PII, internal jargon
 npm run release    # build + sanitize
 npm run check      # CI: fail if committed output drifted from source/

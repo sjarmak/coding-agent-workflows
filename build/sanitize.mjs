@@ -34,7 +34,7 @@ const WARNINGS = [
   { re: /\bGas City\b/, what: 'Gas City named as provenance (acceptable, confirm intentional)' },
 ];
 
-const SCAN_ROOTS = ['AGENTS.md', 'AGENTS.lite.md', 'targets'];
+const SCAN_ROOTS = ['AGENTS.md', 'AGENTS.full.md', 'targets'];
 const files = [];
 const walk = p => {
   const st = fs.statSync(p);

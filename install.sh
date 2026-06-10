@@ -3,26 +3,16 @@
 # No build step; the artifacts in AGENTS.md and targets/ are already generated.
 #
 # Usage:
-#   ./install.sh claude  [dest]            install Claude Code config into <dest>/.claude   (default dest: current dir)
-#   ./install.sh codex   [dest]            install AGENTS.md into <dest> and Codex config into ~/.codex
-#   ./install.sh agents  [dest]            just drop AGENTS.md into <dest> (for Amp, Aider, Gemini CLI, …)
-#   ./install.sh agents  [dest] --lite     thin AGENTS.md index + AGENTS.full.md read on demand
+#   ./install.sh claude  [dest]    install Claude Code config into <dest>/.claude   (default dest: current dir)
+#   ./install.sh codex   [dest]    install AGENTS.md + AGENTS.full.md into <dest> and Codex config into ~/.codex
+#   ./install.sh agents  [dest]    drop AGENTS.md (thin index) + AGENTS.full.md into <dest> (Amp, Aider, Gemini CLI, …)
 #
 # For user-level (not project-level) Claude install:  ./install.sh claude ~
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AGENT="${1:-}"
-LITE=0
-DEST=""
-shift || true
-for arg in "$@"; do
-  case "$arg" in
-    --lite) LITE=1 ;;
-    *) DEST="$arg" ;;
-  esac
-done
-DEST="${DEST:-$PWD}"
+DEST="${2:-$PWD}"
 [ -n "$AGENT" ] && [ "$AGENT" != "-h" ] && mkdir -p "$DEST"
 
 note() { printf '  %s\n' "$1"; }
@@ -43,6 +33,7 @@ case "$AGENT" in
     ;;
   codex)
     cp "$REPO/AGENTS.md" "$DEST/AGENTS.md"
+    cp "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
     mkdir -p "$HOME/.codex"
     cp -r "$REPO/targets/codex/agents" "$REPO/targets/codex/prompts" "$HOME/.codex/"
     if [ -e "$HOME/.codex/config.toml" ]; then
@@ -51,25 +42,17 @@ case "$AGENT" in
     else
       cp "$REPO/targets/codex/config.toml" "$HOME/.codex/config.toml"
     fi
-    echo "Installed AGENTS.md → $DEST   and Codex agents/prompts → ~/.codex"
+    echo "Installed AGENTS.md + AGENTS.full.md → $DEST   and Codex agents/prompts → ~/.codex"
     note "Codex reads AGENTS.md automatically from your project root."
     ;;
   agents)
-    if [ "$LITE" = 1 ]; then
-      cp "$REPO/AGENTS.lite.md" "$DEST/AGENTS.md"
-      cp "$REPO/AGENTS.md" "$DEST/AGENTS.full.md"
-      echo "Installed lite AGENTS.md + AGENTS.full.md → $DEST"
-      note "AGENTS.md is a thin index; the agent reads sections of AGENTS.full.md on demand."
-      note "Use this for agents that can read files; one-file-only agents need the full install."
-    else
-      cp "$REPO/AGENTS.md" "$DEST/AGENTS.md"
-      echo "Installed AGENTS.md → $DEST"
-      note "Any AGENTS.md-aware agent (Amp, Aider, Gemini CLI, …) will read it from here."
-      note "That AGENTS.md is the full practices bundle, inlined (~1400 lines of context)."
-      note "Agents that can read files on demand can take the thin variant instead:"
-      note "  ./install.sh agents $DEST --lite"
-      note "For a thin, project-specific intention layer, scaffold one with: ./install.sh init $DEST"
-    fi
+    cp "$REPO/AGENTS.md" "$DEST/AGENTS.md"
+    cp "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
+    echo "Installed AGENTS.md (thin index) + AGENTS.full.md → $DEST"
+    note "Any AGENTS.md-aware agent (Amp, Aider, Gemini CLI, …) auto-loads the index;"
+    note "it reads sections of AGENTS.full.md on demand, keeping loaded context small."
+    note "For an agent that can only ever read one file, copy AGENTS.full.md as its AGENTS.md."
+    note "For a thin, project-specific intention layer, scaffold one with: ./install.sh init $DEST"
     ;;
   init)
     # Scaffold a consuming project's context layer: drop the thin, pointer-style
@@ -91,11 +74,10 @@ case "$AGENT" in
     note "Maintenance: 'failure-mode-capture' appends a prevention; 'project-compass' refreshes a map."
     ;;
   *)
-    echo "usage: ./install.sh {claude|codex|agents|init} [dest_dir] [--lite]" >&2
+    echo "usage: ./install.sh {claude|codex|agents|init} [dest_dir]" >&2
     echo "  claude  → <dest>/.claude   (default dest: current dir; use ~ for user-level)" >&2
-    echo "  codex   → AGENTS.md in <dest> + config into ~/.codex" >&2
-    echo "  agents  → full practices bundle as AGENTS.md in <dest>" >&2
-    echo "            --lite → thin AGENTS.md index + AGENTS.full.md read on demand" >&2
+    echo "  codex   → AGENTS.md + AGENTS.full.md in <dest> + config into ~/.codex" >&2
+    echo "  agents  → AGENTS.md (thin index) + AGENTS.full.md in <dest>" >&2
     echo "  init    → thin, project-specific AGENTS.md template in <dest> (filled by project-init)" >&2
     exit 1
     ;;

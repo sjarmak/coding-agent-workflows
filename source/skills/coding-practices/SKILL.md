@@ -30,6 +30,6 @@ what's available and where to find it.
 
 - Paths are relative to the installed `.claude/` directory (`~/.claude/` for a
   user-level install).
-- AGENTS.md-based agents (Codex, Amp, Aider, …) already have these rules inlined in
-  `AGENTS.md`; this index is for hosts that load rules on demand rather than reading
-  one big file.
+- AGENTS.md-based agents (Codex, Amp, Aider, …) get the same on-demand shape from
+  the thin `AGENTS.md` index over `AGENTS.full.md`; this skill is the Claude Code
+  equivalent for the rules shipped under `.claude/rules/`.

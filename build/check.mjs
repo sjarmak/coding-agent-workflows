@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Staleness gate for CI: snapshot the committed AGENTS.md + AGENTS.lite.md +
+// Staleness gate for CI: snapshot the committed AGENTS.md + AGENTS.full.md +
 // targets/, re-render in place, and diff the snapshots. Fails if they differ:
 // i.e. someone edited generated output directly, or forgot to run `npm run build`
 // after editing source/. On failure the committed snapshot is restored, so a
@@ -21,7 +21,7 @@ function snapshot() {
     else out[path.relative(ROOT, p)] = fs.readFileSync(p, 'utf8');
   };
   add(path.join(ROOT, 'AGENTS.md'));
-  add(path.join(ROOT, 'AGENTS.lite.md'));
+  add(path.join(ROOT, 'AGENTS.full.md'));
   add(path.join(ROOT, 'targets'));
   return out;
 }
