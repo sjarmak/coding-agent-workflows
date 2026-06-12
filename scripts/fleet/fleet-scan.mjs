@@ -194,10 +194,13 @@ function detectBundle(repo, bundlePath) {
 
 function detectPreCommit(repo) {
   if (exists(path.join(repo, '.pre-commit-config.yaml'))) return true;
-  if (isDir(path.join(repo, '.githooks'))) return true;
-  if (git(repo, ['config', 'core.hooksPath'])) return true;
-  const hook = path.join(repo, '.git', 'hooks', 'pre-commit');
-  return exists(hook);
+  // A configured hooks dir only counts if it actually contains a pre-commit
+  // hook. What that hook enforces is a semantic question for the audit pass.
+  const hooksPath = git(repo, ['config', 'core.hooksPath']);
+  const dir = hooksPath
+    ? (path.isAbsolute(hooksPath) ? hooksPath : path.join(repo, hooksPath))
+    : path.join(repo, '.git', 'hooks');
+  return exists(path.join(dir, 'pre-commit'));
 }
 
 function scanRepo(repo, config) {
