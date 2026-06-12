@@ -119,6 +119,36 @@ function anyWorkflowMatches(repo, re) {
   return { count: files.length, match: files.some(f => fileGrep(path.join(wfDir, f), re)) };
 }
 
+// npm-workspace member dirs, resolved from the root package.json "workspaces"
+// field (array or { packages } form; trailing /* globs expanded one level).
+function workspaceDirs(repo) {
+  let pkg;
+  try { pkg = JSON.parse(readIf(path.join(repo, 'package.json')) ?? 'null'); } catch { return []; }
+  let globs = pkg?.workspaces ?? [];
+  if (!Array.isArray(globs)) globs = globs.packages ?? [];
+  const dirs = [];
+  for (const g of globs) {
+    if (g.endsWith('/*')) {
+      const base = path.join(repo, g.slice(0, -2));
+      if (!isDir(base)) continue;
+      for (const e of fs.readdirSync(base)) {
+        const d = path.join(base, e);
+        if (exists(path.join(d, 'package.json'))) dirs.push(d);
+      }
+    } else if (exists(path.join(repo, g, 'package.json'))) {
+      dirs.push(path.join(repo, g));
+    }
+  }
+  return dirs;
+}
+
+const VITEST_CONFIGS = ['vitest.config.ts', 'vitest.config.js', 'vitest.config.mts', 'vite.config.ts'];
+
+function dirHasCoverageConfig(dir) {
+  if (fileGrep(path.join(dir, 'package.json'), /coverage/)) return true;
+  return VITEST_CONFIGS.some(c => fileGrep(path.join(dir, c), /coverage/));
+}
+
 function detectTesting(repo) {
   const pkg = readIf(path.join(repo, 'package.json'));
   const pyproject = readIf(path.join(repo, 'pyproject.toml')) || '';
@@ -135,10 +165,9 @@ function detectTesting(repo) {
   const coverageConfig =
     fileGrep(path.join(repo, 'pyproject.toml'), /\[tool\.coverage|--cov/) ||
     exists(path.join(repo, '.coveragerc')) || exists(path.join(repo, 'codecov.yml')) ||
-    (pkg !== null && /coverage/.test(pkg)) ||
     fileGrep(path.join(repo, 'Makefile'), /coverage|-cover\b/) ||
-    fileGrep(path.join(repo, 'vitest.config.ts'), /coverage/) ||
-    fileGrep(path.join(repo, 'vitest.config.js'), /coverage/);
+    dirHasCoverageConfig(repo) ||
+    workspaceDirs(repo).some(dirHasCoverageConfig);
 
   const mutationConfig =
     exists(path.join(repo, 'stryker.conf.json')) || exists(path.join(repo, 'stryker.config.mjs')) ||
