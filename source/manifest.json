@@ -63,7 +63,8 @@
     "brainstorm-loop": "universal",
     "decompose": "universal",
     "epic-review": "universal",
-    "project-init": "universal"
+    "project-init": "universal",
+    "fleet-conformance": "universal"
   },
   "templates": {
     "$comment": "Project-scaffolding templates, NOT principle prose: they ship verbatim into every target's templates/ dir (and are excluded from the AGENTS.md universal layer). The init flow / install.sh instantiates them into a consuming project. AGENTS.project.md is the thin pointer-style project AGENTS.md; COMPASS.md is the per-area tribal-knowledge map.",

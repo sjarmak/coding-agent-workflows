@@ -73,12 +73,49 @@ case "$AGENT" in
     note "Next: run the 'project-init' workflow in your agent to fill {{...}} and seed compass maps."
     note "Maintenance: 'failure-mode-capture' appends a prevention; 'project-compass' refreshes a map."
     ;;
+  fleet)
+    # Machine-level conformance tooling: the mechanical fleet scanner plus the
+    # two bootstrap hooks that make every repo on the machine register itself
+    # (git template) and scaffold itself (SessionStart nudge). DEST is ignored;
+    # everything installs to ~/.claude/fleet and ~/.git-template.
+    bin="$HOME/.claude/fleet/bin"
+    mkdir -p "$bin"
+    cp "$REPO/scripts/fleet/fleet-scan.mjs" \
+       "$REPO/scripts/fleet/session-bootstrap-check.sh" \
+       "$REPO/scripts/fleet/git-template-setup.sh" "$bin/"
+    chmod +x "$bin"/*
+    bash "$bin/git-template-setup.sh"
+    settings="$HOME/.claude/settings.json"
+    hookcmd="$HOME/.claude/fleet/bin/session-bootstrap-check.sh"
+    if command -v jq >/dev/null 2>&1 && [ -f "$settings" ]; then
+      if grep -qF "session-bootstrap-check.sh" "$settings"; then
+        note "SessionStart hook already wired into ~/.claude/settings.json."
+      else
+        cp "$settings" "$settings.bak.fleet"
+        if jq --arg cmd "$hookcmd" \
+          '.hooks.SessionStart = ((.hooks.SessionStart // []) + [{"hooks":[{"type":"command","command":$cmd}]}])' \
+          "$settings" > "$settings.tmp"; then
+          mv "$settings.tmp" "$settings"
+          note "SessionStart hook wired into ~/.claude/settings.json (backup: settings.json.bak.fleet)."
+        else
+          rm -f "$settings.tmp"
+          note "jq failed (settings.json malformed?) — settings unchanged; add to hooks.SessionStart yourself: $hookcmd"
+        fi
+      fi
+    else
+      note "jq or settings.json missing — add this to hooks.SessionStart yourself: $hookcmd"
+    fi
+    echo "Installed fleet conformance tooling → $HOME/.claude/fleet"
+    note "Scan now:  node $bin/fleet-scan.mjs   (writes fleet.json + fleet-status.md)"
+    note "Schedule the 'fleet-conformance' workflow weekly for the semantic audit + report."
+    ;;
   *)
-    echo "usage: ./install.sh {claude|codex|agents|init} [dest_dir]" >&2
+    echo "usage: ./install.sh {claude|codex|agents|init|fleet} [dest_dir]" >&2
     echo "  claude  → <dest>/.claude   (default dest: current dir; use ~ for user-level)" >&2
     echo "  codex   → AGENTS.md + AGENTS.full.md in <dest> + config into ~/.codex" >&2
     echo "  agents  → AGENTS.md (thin index) + AGENTS.full.md in <dest>" >&2
     echo "  init    → thin, project-specific AGENTS.md template in <dest> (filled by project-init)" >&2
+    echo "  fleet   → machine-level conformance scanner + bootstrap hooks (~/.claude/fleet)" >&2
     exit 1
     ;;
 esac
