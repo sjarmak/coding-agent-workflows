@@ -1,0 +1,46 @@
+name: Architecture (LikeC4) → Pages
+on:
+  push:
+    branches: [main]
+    paths: ['architecture/**', '.github/workflows/likec4-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Check model source links resolve (drift guard)
+        run: node architecture/site/check-links.mjs
+      - uses: likec4/actions@v1
+        with: { export: png, path: architecture, output: _site/figures }
+      - uses: likec4/actions@v1
+        with: { action: build, path: architecture, output: _site/explore, base: /coding-agent-workflows/explore/, use-hash-history: 'true' }
+      - name: Assemble website-matched landing page
+        run: |
+          sudo chown -R "$USER":"$USER" _site
+          npx -y likec4@latest export json architecture -o model.json
+          node architecture/site/build-page.mjs --model model.json --figures _site/figures --out _site/index.html --repo coding-agent-workflows --explore ./explore/
+          cp architecture/site/styles.css architecture/site/favicon.svg _site/
+          cp -r architecture/site/fonts _site/fonts
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

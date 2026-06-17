@@ -1,0 +1,158 @@
+// Views over the coding-agent-workflows model. Planned (#planned) and research
+// (#research) elements/relationships are dimmed + dashed so the "what exists vs
+// what is proposed" split is readable at a glance.
+
+views {
+
+  // Landscape — the whole system in context.
+  view index {
+    title 'coding-agent-workflows — system landscape'
+    include *
+
+    style * {
+      opacity 25%
+    }
+    style element.tag == #built, element.tag == #evolving {
+      opacity 100%
+    }
+    style element.tag == #planned {
+      color muted
+      border dashed
+    }
+    style element.tag == #research {
+      color indigo
+      border dashed
+    }
+  }
+
+  // The system, decomposed into its containers.
+  view cawSystem of caw {
+    title 'coding-agent-workflows — containers (source → build → targets → install)'
+    include *
+
+    style element.tag == #planned {
+      color muted
+      border dashed
+    }
+    style element.tag == #research {
+      color indigo
+      border dashed
+    }
+  }
+
+  // The authored source layer — the only hand-edited input.
+  view sourceContainer of caw.source {
+    title 'source/ — authored bundle (the only hand-edited layer)'
+    include *
+  }
+
+  // The render + gate pipeline.
+  view buildContainer of caw.build {
+    title 'build/ — renderer + staleness & release gates'
+    include *
+  }
+
+  // The rendered, committed output that install.sh ships.
+  view targetsContainer of caw.targets {
+    title 'targets/ + AGENTS — rendered per-agent output'
+    include *
+  }
+
+  // The machine-level fleet-conformance track.
+  view fleetContainer of caw.fleet {
+    title 'scripts/fleet/ — machine-level conformance track'
+    include *
+  }
+
+  // Risks & open questions — the elements that carry a #risk flag, with the
+  // open question stated in each box's description. The things a reviewer
+  // should probe, surfaced rather than discovered mid-meeting.
+  view risks {
+    title 'Risks & open questions'
+    include
+      caw,
+      element.tag == #risk,
+      caw.build,
+      caw.fleet
+
+    style * {
+      opacity 30%
+    }
+    style element.tag == #risk {
+      opacity 100%
+      color red
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // Walkthrough flows (dynamic views) — the narrative spine of the review.
+  // ───────────────────────────────────────────────────────────────────────
+
+  // Flow 1 — render source/ into all targets.
+  dynamic view buildFlow {
+    title 'Walkthrough — render source/ into every target'
+    description 'Mechanism only: render reads the scope manifest, resets targets/, and emits the thin AGENTS.md index, the full AGENTS.full.md bundle, and the native Claude + Codex layouts — injecting the generated rule catalog into the Claude coding-practices skill so it can never drift.'
+
+    maintainer -> caw.build.render 'npm run build'
+    caw.build.render -> caw.source.manifest 'read scope rules'
+    caw.build.render -> caw.source.workflows 'read rules / agents / skills / workflows'
+    caw.build.render -> caw.targets.agentsIndex 'emit thin index + full bundle'
+    caw.build.render -> caw.targets.claudeTarget 'emit native Claude layout'
+    caw.build.render -> caw.targets.codexTarget 'emit native Codex layout'
+    caw.build.catalogGen -> caw.targets.claudeTarget 'inject generated rule catalog'
+  }
+
+  // Flow 2 — the release gates that protect the committed output.
+  dynamic view releaseFlow {
+    title 'Walkthrough — staleness + release gates'
+    description 'The repo`s one mechanical invariant: committed output must match a fresh render of source/, and must carry no absolute paths, PII, or internal jargon. CI and the pre-commit hook both run these; a failed staleness check restores the committed snapshot so it never leaves rendered changes behind.'
+
+    ciHost -> caw.build.check 'npm run check'
+    caw.build.check -> caw.build.render 're-render in place'
+    caw.build.check -> caw.targets 'diff committed vs fresh'
+    ciHost -> caw.build.sanitize 'npm run sanitize'
+    caw.build.sanitize -> caw.targets 'scan for paths / PII / jargon'
+  }
+
+  // Flow 3 — install into a consuming project and consume it.
+  dynamic view installFlow {
+    title 'Walkthrough — install into a project and consume it'
+    description 'A plain file copy — no hooks, no daemons. The consumer picks its agent`s layout; the agent then auto-loads the thin index and reads only the section a task needs, keeping always-loaded context small.'
+
+    consumer -> caw.install './install.sh claude|codex|agents [dest]'
+    caw.install -> caw.targets.claudeTarget 'copy targets/claude → .claude/'
+    caw.install -> caw.targets.agentsIndex 'copy AGENTS.md + AGENTS.full.md'
+    claudeCode -> caw.targets.claudeTarget 'auto-discover skills / agents / commands'
+    agentsAware -> caw.targets.agentsIndex 'load index, read full bundle on demand'
+  }
+
+  // Planned-only lens: the consuming-project context layers in context.
+  view planned {
+    title 'Planned & in-flight work'
+    include
+      caw,
+      caw.projectInit,
+      caw.install,
+      caw.targets.agentsIndex,
+      caw.fleet,
+      caw.fleet.*
+
+    style * {
+      opacity 30%
+    }
+    style element.tag == #planned {
+      opacity 100%
+      color muted
+      border dashed
+    }
+    style element.tag == #evolving {
+      opacity 100%
+      color amber
+    }
+    style element.tag == #research {
+      opacity 100%
+      color indigo
+      border dashed
+    }
+  }
+}

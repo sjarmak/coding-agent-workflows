@@ -1,0 +1,73 @@
+// Deployment model — where each piece runs / lands at review time.
+//
+// Nothing here is a long-running service: the bundle is rendered on a dev/CI
+// host, the output is committed, and install.sh copies it into a consumer where
+// the agent reads it as plain files. The only persistent machine-level state is
+// the fleet registry the conformance track writes under ~/.claude/fleet. This is
+// the "what runs where / what's the process & data boundary" view a design
+// review always asks for.
+
+deployment {
+
+  devHost = host 'Maintainer / CI host' {
+    description 'Where source/ is edited and rendered; runs the build + gate pipeline'
+
+    renderProc = proc 'Node — render.mjs (npm run build)' {
+      instanceOf caw.build
+    }
+    sourceTree = proc 'source/ — hand-edited bundle' {
+      instanceOf caw.source
+    }
+    renderedTree = proc 'AGENTS.md + targets/ — committed output' {
+      instanceOf caw.targets
+    }
+  }
+
+  ciRunner = host 'CI runner (GitHub Actions)' {
+    description 'Runs npm run check (staleness) + npm run sanitize (release) on push / PR'
+    instanceOf ciHost
+  }
+
+  consumerHost = host 'Consuming project / developer machine' {
+    description 'Receives the bundle via install.sh; the agent reads it as plain files'
+
+    installProc = proc 'install.sh — file copy' {
+      instanceOf caw.install
+    }
+    installedConfig = proc '.claude/ or AGENTS.md(+~/.codex)' {
+      description 'Installed config in the agent`s native layout; a copy of the chosen target, no daemon'
+    }
+    agentRuntime = proc 'Coding agent runtime' {
+      instanceOf claudeCode
+    }
+  }
+
+  fleetHost = host 'Machine-level fleet track' {
+    description 'install.sh fleet → ~/.claude/fleet: scanner + bootstrap hooks over every repo on the machine'
+
+    fleetProc = proc 'fleet scanner + bootstrap hooks' {
+      instanceOf caw.fleet
+    }
+    fleetRegistry = proc 'fleet.json + known-repos.list' {
+      description 'The only persistent fleet state: repo registry + mechanical conformance table under ~/.claude/fleet'
+    }
+  }
+
+  // Runtime data & control flow between processes/hosts.
+  renderProc -> sourceTree 'reads the authored layer'
+  renderProc -> renderedTree 'writes AGENTS + targets'
+  ciRunner -> renderedTree 'gates committed output (staleness + sanitize)'
+  installProc -> renderedTree 'copies the chosen target'
+  installProc -> installedConfig 'writes the native layout'
+  agentRuntime -> installedConfig 'reads practices on demand'
+  fleetProc -> fleetRegistry 'writes registry + status table'
+  fleetProc -> installProc 'scans + nudges every repo'
+}
+
+views {
+
+  deployment view deployment {
+    title 'Deployment — where each piece runs'
+    include *
+  }
+}

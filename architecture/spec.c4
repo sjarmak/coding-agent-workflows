@@ -1,0 +1,73 @@
+// Element kinds, tags, and custom colors for the `coding-agent-workflows` model.
+//
+// Tags encode delivery state so planned / research work is visually distinct
+// from what is already built:
+//   #built     — code path exists and is exercised (rendered output is committed)
+//   #evolving  — built but the content/scope is still moving
+//   #planned   — designed, not yet implemented
+//   #research  — speculative track
+//
+// This repo is a *build pipeline*: one neutral source/ layer renders into
+// per-agent targets/. Most of the machinery is built; the moving parts are the
+// content (rules/agents/skills/workflows) and the machine-level fleet tooling.
+
+specification {
+
+  element actor {
+    style {
+      shape person
+      color secondary
+    }
+  }
+
+  element externalSystem {
+    style {
+      shape rectangle
+      color slate
+    }
+  }
+
+  element system
+
+  element container {
+    style {
+      shape rectangle
+    }
+  }
+
+  element component
+
+  element datastore {
+    style {
+      shape cylinder
+    }
+  }
+
+  // Deployment model — where each piece runs / lands at review time.
+  deploymentNode host {
+    style {
+      shape rectangle
+      color slate
+    }
+  }
+  deploymentNode proc
+
+  tag built {
+    color #16a34a
+  }
+  tag evolving {
+    color #d97706
+  }
+  tag planned {
+    color #64748b
+  }
+  tag research {
+    color #6366f1
+  }
+
+  // Cross-cutting: carried by any element that is a known risk / open question
+  // for the design review (in addition to its delivery-state tag).
+  tag risk {
+    color #dc2626
+  }
+}

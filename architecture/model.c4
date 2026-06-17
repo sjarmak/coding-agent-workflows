@@ -1,0 +1,241 @@
+// `coding-agent-workflows` — an agent-neutral coding-practices bundle and its
+// build pipeline.
+//
+// One hand-edited source/ layer (rules, agent roles, skills, workflows,
+// templates) renders through build/render.mjs into per-agent targets/: a thin
+// always-loaded AGENTS.md index over a read-on-demand AGENTS.full.md, a native
+// Claude Code layout, and a native Codex layout. install.sh copies the chosen
+// target into a consuming project; a separate machine-level fleet track scans
+// every repo for conformance.
+//
+// Delivery state is tagged so what is built renders distinctly from what is
+// planned (see spec.c4 for the legend). Every element links to its real source
+// path so a reviewer can jump from any box straight to the code.
+
+model {
+
+  maintainer = actor 'Bundle maintainer' {
+    description 'Edits source/ — the only hand-edited layer — and runs the build/release gates'
+  }
+
+  consumer = actor 'Consuming project' {
+    description 'A repo that runs install.sh to receive the practices in its agent`s native layout'
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // External systems — the coding agents that read the rendered output, the
+  // CI/git substrate that enforces the build invariant, and the optional
+  // companion tools the bundle recommends (never bundled, only pointed at).
+  // ─────────────────────────────────────────────────────────────────────────
+
+  claudeCode = externalSystem 'Claude Code' {
+    description 'Auto-discovers .claude/{skills,agents,commands}; rules/ are loaded on demand via the coding-practices index'
+  }
+
+  codex = externalSystem 'Codex' {
+    description 'Reads AGENTS.md from the repo root plus ~/.codex/{config.toml,agents,prompts}'
+  }
+
+  agentsAware = externalSystem 'AGENTS.md-aware agents' {
+    description 'Amp, Aider, Gemini CLI, … — auto-load the thin AGENTS.md index and read AGENTS.full.md sections on demand'
+  }
+
+  ciHost = externalSystem 'CI / git host' {
+    description 'GitHub Actions + local git hook: run the staleness + sanitize gates so committed output can never drift from source/'
+  }
+
+  companions = externalSystem 'Recommended companion tools' {
+    description 'External, non-bundled tools the rules point at: skillager (skill discovery), beads_rust (task store), CodeGraph (code knowledge graph)'
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // The coding-agent-workflows system.
+  // ─────────────────────────────────────────────────────────────────────────
+
+  caw = system 'coding-agent-workflows' {
+    description 'Renders one neutral source layer into a native practices bundle per coding agent, and installs it into consuming projects'
+    link ../README.md 'README'
+    link ../AGENTS.md 'rendered thin index'
+
+    // ── source/ — the only hand-edited layer ───────────────────────────────
+    source = container 'source/ — authored bundle' {
+      description 'The single source of truth: rules, agent roles, skills, workflows, templates, and the scope manifest. Everything else is generated from here'
+      technology 'Markdown + JSON'
+      link ../source 'source/'
+
+      manifest = component 'manifest.json — scope map' {
+        #built
+        description 'Single source of truth for what ships and to which agent (universal / claude / codex); the render step emits nothing not listed here'
+        link ../source/manifest.json 'manifest.json'
+      }
+      rules = component 'rules/ — best-practice principles' {
+        #evolving
+        description 'common/ + per-language (go, python, typescript, rust) principle files; the portable layer that renders into AGENTS.full.md prose and every target'
+        link ../source/rules 'source/rules/'
+      }
+      agents = component 'agents/ — reviewer & resolver roles' {
+        #evolving
+        description '14 role definitions (reviewers, resolvers, architect, planner, tdd-guide); universal ones translate to Codex, build-resolvers stay Claude-only'
+        link ../source/agents 'source/agents/'
+      }
+      skills = component 'skills/ — task playbooks' {
+        #evolving
+        description 'Per-task reference material (focus, simplify, slop-check, writing-voice, …); universal skills degrade to AGENTS.md prose so non-Claude agents still get them'
+        link ../source/skills 'source/skills/'
+      }
+      workflows = component 'workflows/ — multi-step procedures' {
+        #evolving
+        description 'The headline artifact: runtime-neutral step DAGs (implement-review, research, decompose, …) rendered as AGENTS sections, Claude commands, and Codex prompts'
+        link ../source/workflows 'source/workflows/'
+      }
+      templates = component 'templates/ — project scaffolding' {
+        #built
+        description 'Verbatim project-context files (AGENTS.project.md, COMPASS.md) shipped into each target`s templates/ dir; excluded from the universal AGENTS.md prose'
+        link ../source/templates 'source/templates/'
+      }
+    }
+
+    // ── build/ — the render + gate pipeline ─────────────────────────────────
+    build = container 'build/ — render & release gates' {
+      description 'Mechanism only (IO + template substitution, no content decisions): turns source/ into targets/ and AGENTS files, then gates the rendered output'
+      technology 'Node (ESM)'
+      link ../build 'build/'
+
+      render = component 'render.mjs — the renderer' {
+        #built
+        description 'Reads manifest.json scope rules and emits AGENTS.md, AGENTS.full.md, targets/claude/, targets/codex/. Resets targets/ each run; pure mechanism'
+        link ../build/render.mjs 'render.mjs'
+      }
+      catalogGen = component 'coding-practices catalog injection' {
+        #built
+        description 'Inside render: generates the rule catalog from the rule set and substitutes it into the coding-practices skill, so the Claude on-demand index can`t drift'
+        link ../build/render.mjs 'render.mjs (RULES_CATALOG)'
+      }
+      check = component 'check.mjs — staleness gate' {
+        #built
+        description 'CI/pre-commit invariant: snapshot committed output, re-render, diff; fail (and restore) if anyone edited generated output or forgot to rebuild'
+        link ../build/check.mjs 'check.mjs'
+      }
+      sanitize = component 'sanitize.mjs — release gate' {
+        #built
+        #risk
+        description 'Scans rendered output for absolute paths / PII / internal jargon before sharing. RISK: the blocklist is hard-coded to the original maintainer`s environment — a fork that doesn`t replace the patterns passes silently on leaks it was never written to catch'
+        link ../build/sanitize.mjs 'sanitize.mjs'
+      }
+    }
+
+    // ── targets/ + AGENTS — the rendered, committed output ──────────────────
+    targets = container 'targets/ + AGENTS — rendered output' {
+      description 'Pre-rendered and committed; no build step before use. The artifacts install.sh copies into a consuming project'
+      technology 'Generated Markdown / TOML'
+      link ../targets 'targets/'
+
+      agentsIndex = component 'AGENTS.md + AGENTS.full.md' {
+        #built
+        description 'Thin always-loaded index (~80-line pointer list) over the full read-on-demand bundle; the universal layer every AGENTS.md-aware agent consumes'
+        link ../AGENTS.md 'AGENTS.md'
+        link ../AGENTS.full.md 'AGENTS.full.md'
+      }
+      claudeTarget = component 'targets/claude/ — native Claude layout' {
+        #built
+        description 'rules/, agents/, skills/, commands/, templates/ in the layout Claude Code auto-discovers; includes Claude-only artifacts and the generated coding-practices rule index'
+        link ../targets/claude 'targets/claude/'
+      }
+      codexTarget = component 'targets/codex/ — native Codex layout' {
+        #built
+        description 'AGENTS.md + AGENTS.full.md, config.toml, agents/ (toml + instructions per universal role), prompts/ (universal skills + workflows), templates/'
+        link ../targets/codex 'targets/codex/'
+      }
+    }
+
+    // ── install.sh — delivery into a consuming project ──────────────────────
+    install = container 'install.sh — installer' {
+      #built
+      description 'Plain file copy (no hooks, no daemons): claude → .claude/, codex → AGENTS files + ~/.codex, agents → AGENTS files, init → thin project AGENTS.md, fleet → machine tooling'
+      technology 'Bash'
+      link ../install.sh 'install.sh'
+    }
+
+    // ── scripts/fleet/ — machine-level conformance track ────────────────────
+    fleet = container 'scripts/fleet/ — fleet conformance' {
+      description 'A separate machine-level track (install.sh fleet): passively register every repo and scan it for guardrails/testing/observability conformance'
+      technology 'Node + Bash'
+      link ../scripts/fleet 'scripts/fleet/'
+
+      scanner = component 'fleet-scan.mjs — mechanical scanner' {
+        #evolving
+        description 'Reports STRUCTURAL facts only (file existence, config parsing, git plumbing) and classifies repos A/B/C by deterministic arithmetic — semantic judgment is left to the fleet-conformance workflow'
+        link ../scripts/fleet/fleet-scan.mjs 'fleet-scan.mjs'
+      }
+      gitTemplate = component 'git-template-setup.sh — auto-register hook' {
+        #evolving
+        #risk
+        description 'Installs a global git init.templateDir post-commit hook so new repos self-register. RISK: sets a global git config; if init.templateDir is already set it declines and asks for a manual merge'
+        link ../scripts/fleet/git-template-setup.sh 'git-template-setup.sh'
+      }
+      sessionHook = component 'session-bootstrap-check.sh — SessionStart nudge' {
+        #evolving
+        description 'Registers the repo and, if it has no AGENTS.md/CLAUDE.md and isn`t scratch, injects a one-line nudge to run project-init; never writes into the repo (ZFC)'
+        link ../scripts/fleet/session-bootstrap-check.sh 'session-bootstrap-check.sh'
+      }
+    }
+
+    // ── project-init — the consuming-project context layer (designed) ───────
+    projectInit = container 'project context layers' {
+      #planned
+      description 'The four-layer scheme install.sh init + the project-init workflow stand up in a consumer: a thin per-project AGENTS.md, per-area COMPASS.md maps, and the agent`s own memory — filled by running the workflow, not by the installer'
+      link ../source/workflows/project-init.md 'project-init workflow'
+      link ../source/templates/AGENTS.project.md 'AGENTS.project.md template'
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Relationships.
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // Authoring
+  maintainer -> caw.source 'edits the only hand-edited layer'
+  maintainer -> caw.build 'runs build / sanitize / release'
+
+  // Render pipeline (source → output)
+  caw.build.render -> caw.source.manifest 'reads scope rules (universal / claude / codex)'
+  caw.build.render -> caw.source 'reads rules, agents, skills, workflows, templates'
+  caw.build.render -> caw.targets 'emits AGENTS + native target layouts'
+  caw.build.catalogGen -> caw.source.rules 'lists rule files'
+  caw.build.catalogGen -> caw.targets.claudeTarget 'injects coding-practices rule index'
+
+  // Gates
+  caw.build.check -> caw.build.render 're-renders to detect drift'
+  caw.build.check -> caw.targets 'diffs committed vs fresh render'
+  caw.build.sanitize -> caw.targets 'scans for paths / PII / jargon'
+  ciHost -> caw.build.check 'staleness gate on push / PR'
+  ciHost -> caw.build.sanitize 'release gate on push / PR'
+
+  // Installation
+  consumer -> caw.install 'runs install.sh <agent> [dest]'
+  caw.install -> caw.targets 'copies the chosen target layout'
+  caw.install -> caw.fleet 'install.sh fleet wires machine tooling'
+  caw.install -> caw.projectInit 'install.sh init scaffolds the thin project AGENTS.md' {
+    #planned
+  }
+
+  // Consumption — agents read the installed output
+  claudeCode -> caw.targets.claudeTarget 'auto-discovers skills/agents/commands; rules on demand'
+  codex -> caw.targets.codexTarget 'reads AGENTS.md + ~/.codex config/agents/prompts'
+  codex -> caw.targets.agentsIndex 'reads AGENTS.md at repo root'
+  agentsAware -> caw.targets.agentsIndex 'auto-loads thin index, reads full bundle on demand'
+
+  // Recommended companions (pointed at by the rules, never bundled)
+  caw.source.rules -> companions 'recommends skillager / beads_rust / CodeGraph'
+
+  // Fleet track
+  caw.fleet.scanner -> consumer 'scans repos for guardrails / testing / observability'
+  caw.fleet.gitTemplate -> consumer 'auto-registers new repos via post-commit hook'
+  caw.fleet.sessionHook -> consumer 'nudges to run project-init when no context layer'
+  caw.fleet.scanner -> caw.targets.claudeTarget 'detects bundle install + drift'
+
+  // Planned project context layers
+  caw.projectInit -> caw.targets.agentsIndex 'points back into the bundle for everything else' {
+    #planned
+  }
+}

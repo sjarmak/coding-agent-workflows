@@ -1,0 +1,3 @@
+# Rendered diagrams are regenerable from the .c4 model:
+#   npx likec4 export png architecture -o architecture/exports
+exports/
