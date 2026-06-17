@@ -37,9 +37,13 @@ for (const f of files) {
 }
 
 if (missing.length) {
-  console.error("✗ Architecture model has dead source links (model is out of sync with the code):");
-  for (const x of missing) console.error("  " + x);
-  console.error("\nUpdate the model in architecture/*.c4 (or fix the path) and push again.");
-  process.exit(1);
+  // Report drift as GitHub Actions warnings (visible on the run) without
+  // blocking the deploy — models are authored from working trees that can
+  // legitimately differ from the published branch.
+  console.log(`::warning::Architecture model has ${missing.length} dead source link(s) — the model may be drifting from the code (these links 404 for viewers; fix in architecture/*.c4):`);
+  for (const x of missing) console.log(`::warning::  ${x}`);
+  console.log(`⚠ ${missing.length} dead source link(s) found (non-blocking — see warnings above).`);
+} else {
+  console.log(`✓ All architecture model source links resolve (${files.length} .c4 file(s) scanned).`);
 }
-console.log(`✓ All architecture model source links resolve (${files.length} .c4 file(s) scanned).`);
+process.exit(0);
