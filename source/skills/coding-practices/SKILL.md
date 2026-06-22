@@ -1,18 +1,20 @@
 ---
 name: coding-practices
 summary: Discovery index for this project's coding-practice rules; load it to find the right rule, then read that rule file on demand.
-description: Index of this project's coding-practice rules — architecture, coding style, testing, security, git workflow, task management, context layering, anti-slop, performance, and language-specific rules. The rules ship as files under .claude/rules/ and are NOT auto-loaded into context; invoke this skill when you need the project's standards for a task, then open the specific rule file it points to. Keeps the standards discoverable without loading all of them by default.
+description: Index of this project's coding-practice rules — architecture, coding style, testing, security, git workflow, task management, context layering, anti-slop, performance, and language-specific rules. The thin always-on essentials live in .claude/rules/common/house-rules.md; the full per-topic detail ships under .claude/rules/reference/ and .claude/rules/<lang>/ and is read on demand. Invoke this skill when you need the project's standards for a task, then open the specific rule file it points to.
 origin: agentic-coding-practices
 scope: claude
 ---
 
 # Coding Practices Index
 
-This project's coding standards live as individual rule files under
-`.claude/rules/`. They are **not** loaded into context automatically — that keeps
-the context window lean and nothing active that you didn't ask for. Read the one
-rule relevant to your current task, when you need it. This skill is the catalog of
-what's available and where to find it.
+The always-on essentials load every session from
+`.claude/rules/common/house-rules.md` (autonomy boundary, output discipline,
+coding/architecture/security standards, ZFC, the anti-slop trigger). The **full
+per-topic detail** is **not** auto-loaded — it ships under `.claude/rules/reference/`
+(common topics) and `.claude/rules/<lang>/` (language rules) to keep the context
+window lean. Read the one rule relevant to your current task, when you need it.
+This skill is the catalog of that on-demand detail.
 
 ## How to use
 

@@ -173,7 +173,7 @@ const usersWithPosts = await db.query(`
 
 ### Architecture Principles (HIGH)
 
-Check against `~/.claude/rules/common/architecture.md`:
+Check against `~/.claude/rules/reference/architecture.md`:
 
 - **SRP violations**: Modules with multiple reasons to change; classes named "Manager"/"Helper"/"Util" that accumulate unrelated methods
 - **Layering violations**: Upward dependencies (lower layer importing from a higher one), presentation logic in data layer, business rules leaking into controllers
@@ -189,7 +189,7 @@ Check against `~/.claude/rules/common/architecture.md`:
 
 ### AI Slop & Erosion (HIGH)
 
-Check against `~/.claude/rules/common/anti-slop.md`. These are the patterns AI-generated and iteratively-extended code accumulates — weight your attention toward code that **extends** an existing function/module rather than greenfield additions:
+Check against `~/.claude/rules/reference/anti-slop.md`. These are the patterns AI-generated and iteratively-extended code accumulates — weight your attention toward code that **extends** an existing function/module rather than greenfield additions:
 
 - **Documentation noise**: narration comments ("Step 1:"), docstrings that restate the function name, entry/exit logging in short functions
 - **Overengineering**: single-implementer interfaces, single-entry registries, factories that return a constant, strategies set once and never varied, primitive/monadic wrappers with no behavior
@@ -267,7 +267,7 @@ When reviewing AI-generated changes, prioritize:
 2. Security assumptions and trust boundaries
 3. Hidden coupling or accidental architecture drift
 4. Unnecessary model-cost-inducing complexity
-5. Slop and erosion signatures — run the **AI Slop & Erosion** checklist above (`~/.claude/rules/common/anti-slop.md`). AI-extended code is the highest-yield surface for the overengineering, documentation-noise, and error-obscuring patterns.
+5. Slop and erosion signatures — run the **AI Slop & Erosion** checklist above (`~/.claude/rules/reference/anti-slop.md`). AI-extended code is the highest-yield surface for the overengineering, documentation-noise, and error-obscuring patterns.
 
 Cost-awareness check:
 
