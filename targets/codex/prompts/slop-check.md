@@ -24,7 +24,7 @@ For the extended surface, **read the whole enclosing function/module**, not just
 
 ## Phase 2: Judge against the rubric (the model judges, not regex)
 
-The rubric is the catalog in the `anti-slop` rule (`rules/common/anti-slop.md`, the SlopCodeBench 45-criterion judge, grouped). These are **semantic** judgments — do not grep for them; read and reason. For a large or cross-file diff, dispatch a general-purpose reviewer with a role clamp ("You are a verification agent; you did NOT write this code; actively read the enclosing modules") and the anti-slop catalog; otherwise judge directly.
+The rubric is the catalog in the `anti-slop` rule (`rules/reference/anti-slop.md`, the SlopCodeBench 45-criterion judge, grouped). These are **semantic** judgments — do not grep for them; read and reason. For a large or cross-file diff, dispatch a general-purpose reviewer with a role clamp ("You are a verification agent; you did NOT write this code; actively read the enclosing modules") and the anti-slop catalog; otherwise judge directly.
 
 For each touched region, walk the catalog groups and record concrete hits with `file:line`:
 

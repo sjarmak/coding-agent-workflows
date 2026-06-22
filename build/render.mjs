@@ -57,10 +57,24 @@ mkdirp(TARGETS);
 // targets/claude: native Claude Code layout
 // =========================================================================
 const C = path.join(TARGETS, 'claude');
-// rules: all languages in manifest
+// rules: detailed rule files are meant to be read on demand, not auto-loaded.
+// Claude Code DOES auto-load rules/common/*.md, so the full common set ships to
+// rules/reference/ (a sibling dir, not auto-loaded like rules/<lang>/), and only
+// files marked `autoload: claude` (the thin house-rules.md) stay in rules/common/
+// to load every session. Language rules stay under rules/<lang>/ (on-demand).
 for (const lang of Object.keys(manifest.rules)) {
   if (lang.startsWith('$')) continue;
-  copyDir(path.join(SRC, 'rules', lang), path.join(C, 'rules', lang));
+  if (lang !== 'common') {
+    copyDir(path.join(SRC, 'rules', lang), path.join(C, 'rules', lang));
+    continue;
+  }
+  const commonSrc = path.join(SRC, 'rules', 'common');
+  for (const f of fs.readdirSync(commonSrc).filter(x => x.endsWith('.md'))) {
+    const raw = fs.readFileSync(path.join(commonSrc, f), 'utf8');
+    const { data } = parse(raw);
+    const sub = data.autoload === 'claude' ? 'common' : 'reference';
+    write(path.join(C, 'rules', sub, f), raw);
+  }
 }
 // agents: universal + claude
 for (const [name, scope] of Object.entries(manifest.agents)) {
@@ -94,7 +108,14 @@ if (fs.existsSync(cpPath)) {
     const dir = path.join(SRC, 'rules', lang);
     catalog.push('', `### ${lang === 'common' ? 'Common (all languages)' : lang}`, '');
     for (const f of fs.readdirSync(dir).filter(x => x.endsWith('.md')).sort()) {
-      catalog.push(`- \`.claude/rules/${lang}/${f}\` — ${ruleEntry(path.join(dir, f))}`);
+      // common detail ships to rules/reference/; autoload files load every
+      // session and are not on-demand catalog entries.
+      if (lang === 'common') {
+        if (parse(fs.readFileSync(path.join(dir, f), 'utf8')).data.autoload === 'claude') continue;
+        catalog.push(`- \`.claude/rules/reference/${f}\` — ${ruleEntry(path.join(dir, f))}`);
+      } else {
+        catalog.push(`- \`.claude/rules/${lang}/${f}\` — ${ruleEntry(path.join(dir, f))}`);
+      }
     }
   }
   write(cpPath, fs.readFileSync(cpPath, 'utf8').replace('<!-- RULES_CATALOG -->', catalog.join('\n').trim()));
@@ -201,9 +222,12 @@ const ruleOverrides = manifest.rule_overrides || {};
 const commonDir = path.join(SRC, 'rules', 'common');
 for (const f of fs.readdirSync(commonDir).sort()) {
   if (!f.endsWith('.md')) continue;
+  const { data, body } = parse(fs.readFileSync(path.join(commonDir, f), 'utf8'));
+  // autoload files are a target-specific consolidation of the others — skip them
+  // here so their content isn't duplicated alongside the full per-topic text.
+  if (data.autoload) continue;
   // claude/codex-scoped rule files ship to their target but stay out of universal AGENTS.md
   if ((ruleOverrides[`common/${f}`] || 'universal') !== 'universal') continue;
-  const { body } = parse(fs.readFileSync(path.join(commonDir, f), 'utf8'));
   parts.push(body.trim());
   parts.push('');
 }

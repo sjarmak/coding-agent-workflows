@@ -20,6 +20,7 @@ Each is a section (matched by heading) in `AGENTS.full.md`:
 - **Context Layering** (`common/context-layering.md`) — The four context layers an agent reads, and the one-fact-one-layer rule that keeps AGENTS.md thin and free of conflict with memory.
 - **Development Workflow** (`common/development-workflow.md`)
 - **Git Workflow** (`common/git-workflow.md`)
+- **House Rules (always-on)** (`common/house-rules.md`) — Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in rules/reference/ (on-demand).
 - **Common Patterns** (`common/patterns.md`)
 - **Performance Optimization** (`common/performance.md`)
 - **Security Guidelines** (`common/security.md`)
