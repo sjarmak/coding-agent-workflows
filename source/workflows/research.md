@@ -25,7 +25,10 @@ contaminate the next.
 
 Run `diverge`: spawn independent investigation angles with uncorrelated
 context, so findings aren't anchored to a single framing. Breadth first; the
-goal is to surface options and evidence, not to decide.
+goal is to surface options and evidence, not to decide. Where the runtime has
+subagents, fan the angles out as independent agents; otherwise work them one at
+a time in separate passes, resetting framing between each so they stay
+uncorrelated.
 
 **Exit:** multiple independent findings, each with its own evidence.
 
@@ -33,7 +36,8 @@ goal is to surface options and evidence, not to decide.
 
 Run `converge`: reconcile the divergent findings into a single synthesis with a
 recommended direction. Name the trade-offs explicitly; don't hide the ones the
-recommendation loses on.
+recommendation loses on. Where subagents are available this runs as a structured
+multi-agent debate; otherwise reconcile the findings directly in one pass.
 
 **Exit:** one recommended direction + its trade-offs, traceable to the findings.
 

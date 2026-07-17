@@ -34,6 +34,8 @@ Drop candidates whose failure modes are fatal or unmitigable.
 ### 3. converge  (needs: premortem)
 
 Run `converge` on the shortlist: pick one direction, state the trade-offs it
-accepts, and record the runners-up so the decision is auditable later.
+accepts, and record the runners-up so the decision is auditable later. Where
+subagents are available, run it as a multi-agent debate; otherwise weigh the
+shortlist directly in one pass.
 
 **Exit:** one chosen direction + rejected alternatives with reasons.

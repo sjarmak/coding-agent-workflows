@@ -57,14 +57,14 @@
     "coding-practices": "claude"
   },
   "workflows": {
-    "$comment": "Ported formula step-DAGs, runtime-neutral. The headline artifact. All universal: they render as AGENTS.md workflow sections, .claude/commands, and .codex/prompts.",
+    "$comment": "Ported formula step-DAGs. Universal ones render as AGENTS.md workflow sections, .claude/commands, and .codex/prompts. fleet-conformance is claude-only: it drives a specific installed scanner binary with no portable equivalent, so it ships to .claude/commands only.",
     "implement-review": "universal",
     "research": "universal",
     "brainstorm-loop": "universal",
     "decompose": "universal",
     "epic-review": "universal",
     "project-init": "universal",
-    "fleet-conformance": "universal"
+    "fleet-conformance": "claude"
   },
   "templates": {
     "$comment": "Project-scaffolding templates, NOT principle prose: they ship verbatim into every target's templates/ dir (and are excluded from the AGENTS.md universal layer). The init flow / install.sh instantiates them into a consuming project. AGENTS.project.md is the thin pointer-style project AGENTS.md; COMPASS.md is the per-area tribal-knowledge map.",

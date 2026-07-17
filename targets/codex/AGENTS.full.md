@@ -615,7 +615,7 @@ The Feature Implementation Workflow describes the development pipeline: research
 
 Types: feat, fix, refactor, docs, test, chore, perf, ci
 
-Note: Attribution disabled globally via ~/.claude/settings.json.
+Note: Attribution is disabled by convention; configure it in your agent's own settings.
 
 ## Pull Request Workflow
 
@@ -762,21 +762,18 @@ Lower context sensitivity tasks:
 - Documentation updates
 - Simple bug fixes
 
-## Extended Thinking + Plan Mode
+## Deep Reasoning and Plan Mode
 
-Extended thinking is enabled by default, reserving up to 31,999 tokens for internal reasoning.
-
-Control extended thinking via:
-- **Toggle**: Option+T (macOS) / Alt+T (Windows/Linux)
-- **Config**: Set `alwaysThinkingEnabled` in `~/.claude/settings.json`
-- **Budget cap**: `export MAX_THINKING_TOKENS=10000`
-- **Verbose mode**: Ctrl+O to see thinking output
+Reserve extended-reasoning budget for the tasks that need it: architectural
+decisions, multi-file features, and debugging complex interactions. Most agents
+expose an extended-thinking or reasoning-effort control and a plan mode; consult
+your agent's settings for how to enable them and how much budget to allow.
 
 For complex tasks requiring deep reasoning:
-1. Ensure extended thinking is enabled (on by default)
-2. Enable **Plan Mode** for structured approach
-3. Use multiple critique rounds for thorough analysis
-4. Use split role sub-agents for diverse perspectives
+1. Turn on the deepest reasoning mode your agent offers.
+2. Use a plan mode to structure the approach before editing.
+3. Run multiple critique rounds for thorough analysis.
+4. Use split-role sub-agents for diverse perspectives where the runtime supports them.
 
 ## Build Troubleshooting
 
@@ -1205,7 +1202,10 @@ contaminate the next.
 
 Run `diverge`: spawn independent investigation angles with uncorrelated
 context, so findings aren't anchored to a single framing. Breadth first; the
-goal is to surface options and evidence, not to decide.
+goal is to surface options and evidence, not to decide. Where the runtime has
+subagents, fan the angles out as independent agents; otherwise work them one at
+a time in separate passes, resetting framing between each so they stay
+uncorrelated.
 
 **Exit:** multiple independent findings, each with its own evidence.
 
@@ -1213,7 +1213,8 @@ goal is to surface options and evidence, not to decide.
 
 Run `converge`: reconcile the divergent findings into a single synthesis with a
 recommended direction. Name the trade-offs explicitly; don't hide the ones the
-recommendation loses on.
+recommendation loses on. Where subagents are available this runs as a structured
+multi-agent debate; otherwise reconcile the findings directly in one pass.
 
 **Exit:** one recommended direction + its trade-offs, traceable to the findings.
 
@@ -1266,7 +1267,9 @@ Drop candidates whose failure modes are fatal or unmitigable.
 ### 3. converge  (needs: premortem)
 
 Run `converge` on the shortlist: pick one direction, state the trade-offs it
-accepts, and record the runners-up so the decision is auditable later.
+accepts, and record the runners-up so the decision is auditable later. Where
+subagents are available, run it as a multi-agent debate; otherwise weigh the
+shortlist directly in one pass.
 
 **Exit:** one chosen direction + rejected alternatives with reasons.
 
@@ -1304,10 +1307,12 @@ derived from the epic's.
 
 ### 3. review-decomposition  (needs: order)
 
-Run `review` over the breakdown itself as a gate: does the union of the units
-actually cover the epic's acceptance criteria? Are any units still too large to
+Review the breakdown itself as a gate: does the union of the units actually
+cover the epic's acceptance criteria? Are any units still too large to
 implement-review in one pass? Is any "unit" actually two reasons-to-change
-glued together? Reject and re-split if so.
+glued together? Reject and re-split if so. Where a multi-model runtime is
+available, dispatch `review` for an independent check; otherwise apply the
+coverage-and-sizing gate directly.
 
 **Exit:** a breakdown whose units each fit one `implement-review` pass and whose
 union covers the epic.
@@ -1345,8 +1350,10 @@ unit's diff.
 
 ### 2. cross-cutting review  (needs: assemble)
 
-Run `review` (multi-angle) plus `code-review` over the *combined* diff, looking
-specifically for problems that only appear at the seams:
+Run `code-review` over the *combined* diff, and where a multi-model runtime is
+available add `review` (multi-angle) for independent perspectives. `code-review`
+is the portable gate that always runs. Look specifically for problems that only
+appear at the seams:
 - interfaces between units that don't actually fit
 - an epic-level acceptance criterion no single unit owned
 - duplicated logic that emerged because units were built in isolation
@@ -1440,130 +1447,5 @@ Summarize what was created, the area list mapped, and any boundary decisions
 made. List the maintenance commands the project now has: `failure-mode-capture`
 (append a prevention), `project-compass` (refresh a map). No automation is
 installed — maintenance is explicit and user-driven.
-
----
-
-# Workflow: Fleet Conformance
-
-Keep best practices applied across **all** projects without per-repo manual
-intervention, and produce one report that answers: what guardrails, testing
-setup, and observability does each repo have, and is anything drifting?
-
-The split is strict (ZFC): a mechanical scanner gathers structural facts;
-this workflow supplies every judgment. Never re-derive by hand a fact the
-scanner already reports, and never push a semantic judgment down into the
-scanner.
-
-Rationale (Amdahl's-law framing): human review is the serial bottleneck of
-shipping. Every check moved out of episodic human attention into the scanner
-and this scheduled audit shrinks that serial fraction — the point is not more
-process, it is fewer things only a human ever notices.
-
-## When to run
-
-- On its weekly schedule (the default cadence)
-- The user asks "are my projects on track?" / "fleet status" / "audit my repos"
-- After a bundle release, before rolling it out to consuming repos
-
-## Steps
-
-### 1. Mechanical scan
-
-Run the scanner (installed at `~/.claude/fleet/bin/fleet-scan.mjs`):
-
-```
-node ~/.claude/fleet/bin/fleet-scan.mjs
-```
-
-It writes `~/.claude/fleet/fleet.json` (registry), rotates the previous run
-to `fleet-prev.json`, and emits `fleet-status.md` (at-a-glance table). Per
-repo it records: context layer (AGENTS.md/CLAUDE.md), `.claude/` + bundle
-manifest + bundle drift, pre-commit, CI test gate, coverage / mutation /
-fuzz configs, strict typing, structured-logging and error-tracking deps,
-tier marker, and 30-day activity. Class A/B/C/scratch is deterministic
-layer-counting, not judgment.
-
-### 2. Delta triage
-
-Diff `fleet.json` against `fleet-prev.json`. Triage only what changed or is
-flagged — do not re-audit the whole fleet every run:
-
-- New repos (auto-registered by the git-template or SessionStart hooks)
-- Class transitions, lost guardrails (a gate that was ✓ and is now ✗)
-- Bundle drift = true (installed bundle differs from source)
-- **Promotion candidates**: class B/C repos with sustained 30-day activity —
-  active work without instrumentation is the highest-risk state
-
-### 3. Semantic audit (flagged repos only)
-
-For each triaged repo, judge what the scanner cannot. Audit lenses:
-
-- **Doc–reality drift** — does AGENTS.md/CLAUDE.md describe gates, commands,
-  or invariants that no longer exist in the repo (or vice versa)?
-- **Validation theater** — do the detected gates actually bind? A CI workflow
-  that runs tests but ignores the exit code, a coverage config with no
-  threshold, a pre-commit that auto-fixes and never fails.
-- **Default-value tests** — tests that would still pass if the implementation
-  ignored its inputs (asserting `0`/`""`/`false`/first-enum, the type's
-  default; same literal passed for two different parameters). Mutation
-  testing is the mechanical backstop; where the scanner shows no mutation
-  config on a class-A repo, weigh proposing one.
-- **Surrender types** — exported types where every field is optional;
-  invalid states representable.
-- **Mixed diffs** — recent PRs/commits that combine refactor with behavior
-  change (judged from history, not assumed).
-- **Observability blind spots** — for repos that are services: errors that
-  vanish (no error tracking), logs that can't be correlated, no health
-  surface. For libraries/CLIs, absence is fine — say so rather than nag.
-
-Spawn one reviewer per flagged repo in parallel where the runtime supports
-subagents; otherwise audit sequentially. Verify before reporting: a finding
-must cite the file or commit it rests on.
-
-### 4. Fleet report
-
-Write one report to `~/.claude/fleet/reports/<date>.md`, ledger-style:
-
-1. **Fleet table** — embed or link `fleet-status.md`
-2. **What changed** — the triaged deltas, one line each, in plain language
-3. **Findings** — semantic-audit results with file references
-4. **Decisions needed** — the short list the user must rule on: promotions,
-   gate additions, scratch-marking, bundle rollout. Each item is a yes/no
-   with a recommendation; no item without a recommendation.
-
-The report is the user-facing artifact. Optimize it for a two-minute read.
-
-### 5. Remediation — canary first, approval always
-
-Proposals, never unilateral changes:
-
-- **Bundle rollout (proving grounds)**: when bundle drift is fleet-wide
-  (i.e. the bundle moved, not one repo's copy), upgrade ONE canary repo
-  first — a class-A repo with strong gates. Run `install.sh claude` there,
-  then the repo's own full gate (`make check` or equivalent). Only after
-  the canary passes, propose rollout to the rest as individual diffs.
-  A failed canary is a bundle bug: fix the bundle, don't ship the break.
-- **Instrumentation PRs**: for approved promotion candidates, run
-  `project-init` to scaffold the context layer and propose the minimal gate
-  set (CI test job, pre-commit) matching the repo's stack. Tests and gates
-  ship in the same change.
-- **Scratch-marking**: for repos the user confirms are throwaway, write
-  `.repo-tier` = `scratch` so they leave the attention list permanently.
-
-All git pushes, PR creation, and anything outward-facing gets explicit
-per-action approval. Edits inside a repo follow that repo's own AGENTS.md.
-
-### 6. Postmortem loop (only when a repo went off-track)
-
-If the audit finds a repo where agent work ran in the wrong direction —
-gates removed to make something pass, drift between plan and result,
-repeated corrections that didn't stick — write a postmortem before any fix:
-timeline of events, every correction issued, every decision made, and what
-guardrail would have caught it earliest. Then route the prevention to its
-one correct home: project-specific lessons via `failure-mode-capture` into
-that repo's AGENTS.md; fleet-wide lessons as a proposed bundle rule/workflow
-change (which then rides the canary path of step 5). The postmortem is the
-mechanism that makes the fleet better every time it fails — skipping it
-converts the same failure into a recurring one.
 
 ---

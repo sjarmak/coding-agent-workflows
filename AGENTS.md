@@ -81,4 +81,3 @@ Multi-step procedures, each a full section in `AGENTS.full.md`:
 - **decompose** — Break a large piece of work into independently-shippable, reviewable units with explicit dependencies. (§ "Workflow: Decompose")
 - **epic-review** — Review a large, multi-unit change at the boundary where the whole thing comes together, not just the individual diffs. (§ "Workflow: Epic Review")
 - **project-init** — Stand up the context layers for a project — a thin pointer-style AGENTS.md plus seed compass maps — without touching the memory layer. (§ "Workflow: Project Init")
-- **fleet-conformance** — Scan every repo on the machine for guardrails, testing, and observability conformance; audit the deltas semantically; produce a fleet report; and propose canary-first remediation. (§ "Workflow: Fleet Conformance")

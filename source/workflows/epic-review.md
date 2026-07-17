@@ -32,8 +32,10 @@ unit's diff.
 
 ### 2. cross-cutting review  (needs: assemble)
 
-Run `review` (multi-angle) plus `code-review` over the *combined* diff, looking
-specifically for problems that only appear at the seams:
+Run `code-review` over the *combined* diff, and where a multi-model runtime is
+available add `review` (multi-angle) for independent perspectives. `code-review`
+is the portable gate that always runs. Look specifically for problems that only
+appear at the seams:
 - interfaces between units that don't actually fit
 - an epic-level acceptance criterion no single unit owned
 - duplicated logic that emerged because units were built in isolation

@@ -41,21 +41,18 @@ Lower context sensitivity tasks:
 - Documentation updates
 - Simple bug fixes
 
-## Extended Thinking + Plan Mode
+## Deep Reasoning and Plan Mode
 
-Extended thinking is enabled by default, reserving up to 31,999 tokens for internal reasoning.
-
-Control extended thinking via:
-- **Toggle**: Option+T (macOS) / Alt+T (Windows/Linux)
-- **Config**: Set `alwaysThinkingEnabled` in `~/.claude/settings.json`
-- **Budget cap**: `export MAX_THINKING_TOKENS=10000`
-- **Verbose mode**: Ctrl+O to see thinking output
+Reserve extended-reasoning budget for the tasks that need it: architectural
+decisions, multi-file features, and debugging complex interactions. Most agents
+expose an extended-thinking or reasoning-effort control and a plan mode; consult
+your agent's settings for how to enable them and how much budget to allow.
 
 For complex tasks requiring deep reasoning:
-1. Ensure extended thinking is enabled (on by default)
-2. Enable **Plan Mode** for structured approach
-3. Use multiple critique rounds for thorough analysis
-4. Use split role sub-agents for diverse perspectives
+1. Turn on the deepest reasoning mode your agent offers.
+2. Use a plan mode to structure the approach before editing.
+3. Run multiple critique rounds for thorough analysis.
+4. Use split-role sub-agents for diverse perspectives where the runtime supports them.
 
 ## Build Troubleshooting
 

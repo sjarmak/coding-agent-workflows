@@ -2,7 +2,7 @@
 name: decompose
 summary: Break a large piece of work into independently-shippable, reviewable units with explicit dependencies.
 scope: universal
-invokes: [brainstorm, review]
+invokes: [review]
 ported-from: mol-decompose (Gas City formula)
 ---
 
@@ -38,10 +38,12 @@ derived from the epic's.
 
 ### 3. review-decomposition  (needs: order)
 
-Run `review` over the breakdown itself as a gate: does the union of the units
-actually cover the epic's acceptance criteria? Are any units still too large to
+Review the breakdown itself as a gate: does the union of the units actually
+cover the epic's acceptance criteria? Are any units still too large to
 implement-review in one pass? Is any "unit" actually two reasons-to-change
-glued together? Reject and re-split if so.
+glued together? Reject and re-split if so. Where a multi-model runtime is
+available, dispatch `review` for an independent check; otherwise apply the
+coverage-and-sizing gate directly.
 
 **Exit:** a breakdown whose units each fit one `implement-review` pass and whose
 union covers the epic.
