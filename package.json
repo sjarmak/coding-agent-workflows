@@ -10,6 +10,6 @@
     "check": "node build/check.mjs",
     "sanitize": "node build/sanitize.mjs",
     "validate": "node build/validate.mjs",
-    "release": "npm run build && npm run sanitize"
+    "release": "npm run build && npm run sanitize && npm run validate"
   }
 }

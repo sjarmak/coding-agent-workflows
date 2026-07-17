@@ -1,188 +1,141 @@
 ---
 name: brainstorm
-description: "Structured brainstorming with research-driven exclusion zones and shape uniqueness enforcement. Forces divergent thinking through volume and a hard constraint: no idea can take the same shape as any prior art or any previous idea. Use when exploring solutions to a problem, designing features, or when the obvious approach might not be the best one."
-argument-hint: [count] <problem statement>
-allowed-tools: Read, Write, Edit, Bash, WebSearch, WebFetch
+description: "Structured brainstorming with research-driven exclusion zones and shape-uniqueness enforcement. Forces divergent thinking through volume and a hard constraint: no idea may take the same shape as any prior art or any earlier idea. Use when exploring solutions to a problem, designing features, or when the obvious approach might not be the best one."
+scope: universal
+ported-from: brainstorm command (Python/SQLite session backend replaced by model-tracked state)
 ---
 
 # Brainstorm: Constrained Divergence
 
 You are facilitating a structured brainstorming session.
 
-**Core principle:** Creativity is non-standard problem solving. The first idea is almost never
-the best idea. To find the best idea, you have to push far past the obvious, and the only
-way to do that is volume with a hard no-repetition constraint.
+**Core principle:** creativity is non-standard problem solving. The first idea is
+almost never the best. To find the best idea you have to push far past the
+obvious, and the only way to do that is volume under a hard no-repetition
+constraint.
 
-## Parsing Arguments
+## Arguments
 
-`$ARGUMENTS` may start with a number (the idea target). Parse it:
-- `/brainstorm 10 How to optimize our API` → target=10, problem="How to optimize our API"
-- `/brainstorm How to optimize our API` → target=30 (default), problem="How to optimize our API"
+`[count] "problem statement"`
 
-Pass to init: `${CLAUDE_SKILL_DIR}/scripts/.venv/bin/${CLAUDE_SKILL_DIR}/scripts/.venv/bin/python3 ${CLAUDE_SKILL_DIR}/scripts/brainstorm.py init "<problem>" --count <N>`
+- A leading integer sets the idea target (default 30).
+- The rest is the problem to explore.
+- No problem given: ask the user what to brainstorm.
 
-## The One Rule
+## The one rule: shape uniqueness
 
 Every new idea must differ **in shape** from:
-1. Every piece of **prior art** cataloged during research (existing known approaches)
-2. Every **previous idea** in this session
 
-"Shape" means the structural approach, not surface details. Renaming, re-skinning, or
-tweaking parameters does not make a new idea. If you could describe two ideas with the
-same diagram, they are the same shape.
+1. Every piece of **prior art** cataloged during research (known approaches).
+2. Every **earlier idea** in this session.
 
-The `add` command enforces this mechanically. When rejected, just go somewhere
-genuinely different.
+"Shape" is the structural approach, not surface details. Renaming, re-skinning,
+or tweaking parameters does not make a new idea: if you could describe two ideas
+with the same diagram, they are the same shape.
 
-## Rules of Engagement
+Enforcing this is a judgment, not a string match, so it is your job, not a
+script's: before recording an idea, compare its structure against the prior-art
+list and every earlier idea. If it collapses onto one of them, reject it and go
+somewhere genuinely different. This is the ZFC split the bundle applies
+everywhere: shape-uniqueness is semantic classification, which the model does and
+a regex cannot.
 
-1. **No premature judgment.** During divergence, NEVER dismiss, critique, or filter ideas. Every idea gets recorded. "That won't work" is banned until convergence.
-2. **Volume before quality.** Most ideas will be bad. That's the point.
-3. **Trust the gate.** The `add` command enforces shape uniqueness. Just propose and submit, the system handles detection. When rejected, go further.
-4. **Separate diverge from converge.** Only evaluate after all ideas are captured.
-5. **Collaborative, not passive.** You are a brainstorming partner. Offer ideas, riff, keep the energy up.
+## Tracking state (no backend required)
 
-## Tools
+Keep the session in one markdown file, `.brainstorm/<slug>.md` in the working
+directory, so it survives across turns and can be resumed:
 
-All session management goes through the brainstorm CLI:
-```
-${CLAUDE_SKILL_DIR}/scripts/.venv/bin/${CLAUDE_SKILL_DIR}/scripts/.venv/bin/python3 ${CLAUDE_SKILL_DIR}/scripts/brainstorm.py <command> [args]
-```
+- **Prior art** — the structurally distinct known approaches (title, one-line
+  why-it-works, source).
+- **Ideas** — numbered, each with a title, a one-line shape description, and
+  (after the prototype gate) a note or link to its MVP.
+- **Ratings** — once converging, Feasibility / Novelty / Impact per idea.
 
-Commands:
-- `init "<problem>" [--count N]`, Start a new session (default: 30 ideas)
-- `prior-art <session> "<title>" ["<desc>"] [--source S]`, Record a known approach (banned)
-- `prior-art-list <session>`, List all cataloged prior art
-- `begin <session>`, Transition from research to divergence
-- `add <session> "<title>" ["<description>"]`, Record an idea
-- `update <session> <num> [--title T] [--desc D] [--status S] [--notes N]`, Update an idea
-- `rate <session> <num> <feasibility> <novelty> <impact>`, Rate (1-5 each)
-- `check-code <session> <idea-number>`, Check prototype code uniqueness
-- `status <session>`, Progress dashboard
-- `list <session>`, List all ideas
-- `phase <session>`, Progress check + exclusion zone summary
-- `report <session>`, Generate convergence report
-- `sessions`, List all sessions
+That file is the whole store. No database, no external CLI.
 
-Sandboxes for prototyping:
-```
-bash ${CLAUDE_SKILL_DIR}/scripts/sandbox.sh create <session> <idea-number>
-```
+## Rules of engagement
 
-## Session Flow
+1. **No premature judgment.** During divergence, never dismiss, critique, or
+   filter. Every idea gets recorded. "That won't work" is banned until converge.
+2. **Volume before quality.** Most ideas will be bad. That is the point.
+3. **Enforce the shape gate honestly.** You are both proposer and gate; do not
+   wave through a reskin because it is yours. When an idea repeats a shape, push
+   further.
+4. **Separate diverge from converge.** Evaluate only after all ideas are captured.
+5. **Be a partner, not a scribe.** Offer ideas, riff, keep the energy up.
 
-### Phase 1: Setup
-1. Parse the user's arguments for target count and problem statement
-2. Run `init` with the problem (and `--count` if not 30)
-3. Confirm the problem framing with the user
+## Session flow
 
-### Phase 2: Research
+### Phase 1 — Setup
 
-**Purpose:** Build deep understanding of the problem space and map existing approaches.
-This serves two functions: it builds the domain knowledge needed to reason from first
-principles, and it creates a landscape of known approaches to push beyond.
+State the problem back to the user and confirm the framing and the idea target.
+Create the tracking file.
 
-1. Research the problem space thoroughly:
-   - Search for existing approaches, algorithms, implementations
-   - Look for papers, blog posts, known solutions
-   - Check what libraries/tools already exist
-   - Understand WHY each approach works, what properties of the problem does it exploit?
-   - Identify the assumptions each approach makes
-2. Record the **structurally distinct** approaches as prior art (keep it to the major
-   families of approaches, not every variation, aim for 5-10, not 50):
-   ```
-   ${CLAUDE_SKILL_DIR}/scripts/.venv/bin/python3 ${CLAUDE_SKILL_DIR}/scripts/brainstorm.py prior-art <session> "<approach>" "<description>" --source "<where you found it>"
-   ```
-3. When the landscape is sufficiently mapped, transition to brainstorming:
-   ```
-   ${CLAUDE_SKILL_DIR}/scripts/.venv/bin/python3 ${CLAUDE_SKILL_DIR}/scripts/brainstorm.py begin <session>
-   ```
+### Phase 2 — Research (build the exclusion zones)
 
-**Framing:** Prior art is cataloged as a reference landscape. Near-duplicate ideas
-(ones that are essentially a known approach) will be blocked. But having domain overlap
-with prior art is expected and fine, every idea in the problem space will share some
-vocabulary with known work. The goal is structural novelty, not vocabulary novelty.
+Map the problem space and the existing approaches. This does double duty: it
+builds the domain understanding to reason from first principles, and it defines
+the landscape of shapes to push beyond.
 
-The research phase should leave you understanding: what does this problem *actually*
-require? What assumptions do existing approaches make? Which of those assumptions
-are load-bearing and which are convention?
+- Search for existing approaches, algorithms, implementations, papers, libraries.
+- For each, understand *why* it works: which property of the problem it exploits,
+  and which of its assumptions are load-bearing versus convention.
+- Record the **structurally distinct** families as prior art (aim for 5-10 major
+  families, not every variation).
 
-### Phase 3: Diverge
+Domain overlap with prior art is expected and fine; every idea shares vocabulary
+with known work. The bar is structural novelty, not vocabulary novelty. The
+research phase should leave you understanding what the problem *actually*
+requires, and which of the existing assumptions are convention you can discard.
 
-Brainstorm from first principles. The question is not "how have people solved this?"
-but: **what is the actual structure of this problem, and what approaches follow from
-that structure?**
+### Phase 3 — Diverge
 
-Think about:
-- What are the mathematical/computational invariants?
-- What does the problem actually require vs. what do existing solutions assume?
-- What constraints does the domain impose? What's truly load-bearing vs. convention?
+Brainstorm from first principles. The question is not "how have people solved
+this?" but **what is the actual structure of this problem, and what approaches
+follow from it?** Think about the invariants, what the problem actually requires
+versus what existing solutions assume, and which domain constraints are truly
+load-bearing.
 
-**Tactical pushes when momentum slows** (Jeffrey Emanuel's idea-wizard techniques):
-- **Analogies:** What would this look like in a different domain? (How would a database engineer solve this? A game designer? A biologist?)
-- **Inversions:** What if we did the opposite of the current approach?
-- **Cross-domain combinations:** Combine concepts from unrelated fields.
-- **Constraint relaxation:** What if X limitation didn't exist?
-- **User perspective:** What would make a new user's life dramatically easier?
+**Tactical pushes when momentum slows** (idea-wizard techniques):
 
-These are diversification levers, use them when the next idea feels like a rehash of the last one. They tend to break out of structural ruts faster than "try harder."
+- **Analogies** — how would a database engineer solve this? A game designer? A biologist?
+- **Inversions** — what if we did the opposite of the current approach?
+- **Cross-domain combinations** — combine concepts from unrelated fields.
+- **Constraint relaxation** — what if some limitation didn't exist?
+- **User perspective** — what would make a new user's life dramatically easier?
 
-**Each idea goes through two gates:**
+Use these when the next idea feels like a rehash; they break structural ruts
+faster than "try harder."
 
-1. **Text gate**: submit via `add`. If rejected (too similar), go somewhere different.
-2. **Prototype gate**: after `add` succeeds, immediately build a true MVP prototype
-   in a sandbox and run `check-code`. If the code is too similar to another idea's
-   prototype, the implementation isn't actually different, rethink or rework it.
+**Two gates per idea:**
 
-The full cycle for each idea:
-```
-# 1. Propose: must pass text uniqueness
-${CLAUDE_SKILL_DIR}/scripts/.venv/bin/python3 ${CLAUDE_SKILL_DIR}/scripts/brainstorm.py add <session> "<title>" "<description>"
+1. **Shape gate** — before recording, check the idea's structure against prior
+   art and every earlier idea (the one rule). If it repeats a shape, go elsewhere.
+2. **Prototype gate** — after it passes, build a true MVP: 20-50 lines in a
+   scratch file that show the *computational shape* (the core loop, the key data
+   structure, the central operation), not a working system. If two ideas produce
+   the same loop over the same structure with the same branching, they are the
+   same idea whatever the variables are called. If the MVP collapses onto an
+   earlier one, the idea was not actually different; rework it.
 
-# 2. Prototype: build the minimal core (not a full implementation)
-bash ${CLAUDE_SKILL_DIR}/scripts/sandbox.sh create <session> <idea-number>
-# ... write the MVP: the core loop, the key data structure, the algorithm skeleton
-# ... 20-50 lines that prove this is a genuinely different computational shape
+During divergence, offer ideas freely (you are a partner, not a scribe), build on
+the user's ideas with "yes, and" as long as the build changes the shape, note
+which structural territory is still uncovered when momentum slows, and show
+progress periodically.
 
-# 3. Verify: must pass code uniqueness
-${CLAUDE_SKILL_DIR}/scripts/.venv/bin/python3 ${CLAUDE_SKILL_DIR}/scripts/brainstorm.py check-code <session> <idea-number>
-```
+### Phase 4 — Converge
 
-**What counts as an MVP prototype:** Not a working system. The minimum code that
-demonstrates the computational shape of the idea, the core algorithm, the key data
-structure, the central operation. If two ideas produce the same `for` loop over the
-same data structure with the same branching pattern, they're the same idea regardless
-of what you called the variables. The prototype makes that visible.
+Once all ideas are captured, switch modes and evaluate.
 
-**Your job during divergence:**
-- Offer ideas freely. You are a partner, not a scribe.
-- When momentum slows, note what structural territory hasn't been covered.
-- Build on the user's ideas ("yes, and...") but make sure the build changes the shape.
-- Show progress periodically.
+1. **Review** every idea and its MVP with the user.
+2. **Rate** each on three axes (1-5): **Feasibility** (how practical to build),
+   **Novelty** (how non-obvious), **Impact** (how big the payoff if it works).
+3. **Cluster** related ideas.
+4. **Select** the top 3-5 for deeper exploration.
+5. **Report** — write a convergence summary: the shortlist with scores and
+   rationale, the clusters, and the rejected alternatives with reasons.
 
-### Phase 4: Converge
+## Resuming
 
-Once all ideas are captured, shift gears. Now we evaluate.
-
-1. **Review**: Read through all ideas and their prototypes with the user.
-2. **Rate** each on three axes (1-5 scale):
-   - **Feasibility (F)**: How practical to implement?
-   - **Novelty (N)**: How non-obvious? Would people be surprised?
-   - **Impact (I)**: If it works, how big is the payoff?
-3. **Cluster**: Group related ideas.
-4. **Select** top candidates (usually 3-5) for deeper exploration.
-5. **Generate report** with `report` command.
-
-## Resuming Sessions
-
-1. Run `sessions` to list existing sessions
-2. Run `status <session>` to see where things stand
-3. Pick up from the current phase
-
-## Data Location
-
-Sessions live in `.brainstorm/<session-id>/` (in the current working directory):
-- `brainstorm.db`, SQLite database (structured tracking + prior art)
-- `ideas/NNN.md`, Individual idea files (unstructured content, notes)
-- `sandboxes/`, Prototype workspaces
-- `report.md`, Generated convergence report
+Open `.brainstorm/<slug>.md`, read where things stand (prior art, ideas, current
+phase), and pick up from there.

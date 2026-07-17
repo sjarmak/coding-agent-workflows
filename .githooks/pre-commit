@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Block commits when rendered targets drift from source/ (the repo's one
-# mechanical invariant). Regenerate with: npm run build
+# Block commits when rendered targets drift from source/ (regenerate with
+# npm run build) or when the source/ layer fails its integrity gate (skills that
+# won't load, host paths in the universal layer, unresolved workflow invokes).
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 npm run check
+npm run validate
