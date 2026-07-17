@@ -710,10 +710,10 @@ ALL reasoning is delegated to AI models.
 edge cases that models handle naturally. ZFC applications are resilient because
 model capabilities improve over time; hardcoded logic doesn't.
 
-**Cost optimization:** Decompose work into cognitive tiers. Route routine
-decisions to cheaper models (Haiku), moderate complexity to Sonnet, and deep
-reasoning to Opus. ZFC makes this routing natural because reasoning is already
-externalized.
+**Cost optimization:** ZFC makes cognitive-tier routing natural, because the
+reasoning is already externalized into model calls that can each be routed to
+the right tier. Route by cognitive load per the tier table in `performance.md`
+(the single source of truth for routing); do not restate the tiers here.
 
 **Meta-application:** When building tools that help users build AI systems,
 ZFC applies at BOTH levels: the tool's own orchestration code AND the
