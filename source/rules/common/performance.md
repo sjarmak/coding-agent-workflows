@@ -2,20 +2,31 @@
 
 ## Model Selection Strategy
 
-**Haiku 4.5** (90% of Sonnet capability, 3x cost savings):
-- Lightweight agents with frequent invocation
-- Pair programming and code generation
-- Worker agents in multi-agent systems
+This is the routing table of record; other rules reference it rather than
+restating the tiers. Route by cognitive load, not by task size. The tiers are
+roles. Model families name them here because the routing outlives any one
+generation's version numbers; map them onto your provider's equivalents.
 
-**Sonnet 4.6** (Best coding model):
+**Opus class** (deepest reasoning):
+- Planning, orchestration, and decomposition
+- Architectural decisions and first-principles checks
+- Adoption review and judge panels
+- Research and analysis
+
+**Sonnet class** (main execution):
 - Main development work
-- Orchestrating multi-agent workflows
-- Complex coding tasks
+- Executing a plan produced by a higher tier
+- Complex coding tasks carrying explicit process (schemas, checklists, gates)
 
-**Opus 4.5** (Deepest reasoning):
-- Complex architectural decisions
-- Maximum reasoning requirements
-- Research and analysis tasks
+**Haiku class** (mechanical, high-frequency):
+- Lightweight agents invoked often
+- Worker agents running well-bounded mechanical steps
+
+Planning and orchestration sit in the top tier: a bad plan costs more downstream
+than the tokens saved producing it, and a cheap orchestrator fans its mistakes
+out across every worker it dispatches. Push execution down instead. Lower tiers
+compensate with explicit process — prefer adding a verification gate over
+up-tiering.
 
 ## Context Window Management
 

@@ -42,6 +42,20 @@ Default interpretations:
 - "Draft an issue" → output issue body as text. Do NOT run `gh issue create`.
 - "Write the commit message" → output the message. Do NOT run `git commit`.
 
+## Public-Facing Prose
+
+Every external or public-facing artifact — PR body, issue title/body/comment, public reply, release notes, upstream maintainer communication — gets a de-slop pass before it is sent. Run the `writing-voice` skill and read the draft against it line by line. Do not approximate the rules from memory; that is how the tells slip through.
+
+Hard bans, no exceptions:
+
+- No em dashes in the sent artifact. Use commas, semicolons, parentheses, or recast the sentence.
+- No agreement-performance openers ("you're right", "great point", "good catch", "great question").
+- No "I hope this helps" or equivalent sign-offs.
+- No flow-narration, no list-itis, no hedging stacks.
+- No honesty-signaling ("to be honest", "honestly", "the honest answer is").
+
+Write declarative, concrete sentences with varied rhythm. This applies to every repo and every channel.
+
 ## Parallel by Default
 
 When dispatching ≥2 independent agents, fan them out in a single message with multiple Agent tool calls. Don't sequence agents that don't depend on each other.

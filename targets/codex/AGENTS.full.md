@@ -52,6 +52,20 @@ Default interpretations:
 - "Draft an issue" → output issue body as text. Do NOT run `gh issue create`.
 - "Write the commit message" → output the message. Do NOT run `git commit`.
 
+## Public-Facing Prose
+
+Every external or public-facing artifact — PR body, issue title/body/comment, public reply, release notes, upstream maintainer communication — gets a de-slop pass before it is sent. Run the `writing-voice` skill and read the draft against it line by line. Do not approximate the rules from memory; that is how the tells slip through.
+
+Hard bans, no exceptions:
+
+- No em dashes in the sent artifact. Use commas, semicolons, parentheses, or recast the sentence.
+- No agreement-performance openers ("you're right", "great point", "good catch", "great question").
+- No "I hope this helps" or equivalent sign-offs.
+- No flow-narration, no list-itis, no hedging stacks.
+- No honesty-signaling ("to be honest", "honestly", "the honest answer is").
+
+Write declarative, concrete sentences with varied rhythm. This applies to every repo and every channel.
+
 ## Parallel by Default
 
 When dispatching ≥2 independent agents, fan them out in a single message with multiple Agent tool calls. Don't sequence agents that don't depend on each other.
@@ -709,20 +723,31 @@ the domain through that tool's lens.
 
 ## Model Selection Strategy
 
-**Haiku 4.5** (90% of Sonnet capability, 3x cost savings):
-- Lightweight agents with frequent invocation
-- Pair programming and code generation
-- Worker agents in multi-agent systems
+This is the routing table of record; other rules reference it rather than
+restating the tiers. Route by cognitive load, not by task size. The tiers are
+roles. Model families name them here because the routing outlives any one
+generation's version numbers; map them onto your provider's equivalents.
 
-**Sonnet 4.6** (Best coding model):
+**Opus class** (deepest reasoning):
+- Planning, orchestration, and decomposition
+- Architectural decisions and first-principles checks
+- Adoption review and judge panels
+- Research and analysis
+
+**Sonnet class** (main execution):
 - Main development work
-- Orchestrating multi-agent workflows
-- Complex coding tasks
+- Executing a plan produced by a higher tier
+- Complex coding tasks carrying explicit process (schemas, checklists, gates)
 
-**Opus 4.5** (Deepest reasoning):
-- Complex architectural decisions
-- Maximum reasoning requirements
-- Research and analysis tasks
+**Haiku class** (mechanical, high-frequency):
+- Lightweight agents invoked often
+- Worker agents running well-bounded mechanical steps
+
+Planning and orchestration sit in the top tier: a bad plan costs more downstream
+than the tokens saved producing it, and a cheap orchestrator fans its mistakes
+out across every worker it dispatches. Push execution down instead. Lower tiers
+compensate with explicit process — prefer adding a verification gate over
+up-tiering.
 
 ## Context Window Management
 

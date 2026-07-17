@@ -31,6 +31,16 @@ call the publishing tool on an explicit publish verb ("send it", "open it",
 "file it", "push it", "post it", "ship it"). "What's the PR body?" → output
 text, do NOT run `gh pr create`.
 
+**Public-facing prose** — every external artifact (PR body, issue title/body/
+comment, public reply, release notes, upstream maintainer comms) gets the de-slop
+pass before it is sent. ACTUALLY RUN the `writing-voice` skill and read the draft
+against it line by line; do NOT approximate the rules from memory (that is how the
+tells slip through). Hard bans in the sent artifact: no em dashes (use commas,
+semicolons, parentheses, or recast); no agreement-performance openers ("you're
+right", "great point", "good catch"); no "I hope this helps"; no flow-narration or
+list-itis; no hedging stacks; no honesty-signaling. Declarative, concrete, varied
+rhythm. Full catalog → `/writing-voice`.
+
 **Parallel by default** — dispatch ≥2 independent agents in one message. Non-
 trivial code review = 2 independent reviewers + a Codex meta-review unless told
 otherwise; route to Codex when available.
@@ -117,6 +127,10 @@ continuing, rotate exposed secrets, sweep for similar.
 
 ## Performance & Model Tiering
 
-Tier work by cognitive load: routine/high-frequency → Haiku, main development &
-orchestration → Sonnet, deepest reasoning/architecture → Opus. Avoid the last
-20% of the context window for large refactors and multi-file features.
+Route by cognitive load: planning, orchestration, architecture, and judge panels
+→ Opus class; main development and well-scoped execution → Sonnet class;
+mechanical/high-frequency → Haiku class. A bad plan costs more than the tokens
+saved producing it. Lower tiers compensate with explicit process (plan schemas,
+decision tables, verification gates) — prefer adding a gate over up-tiering.
+Full table → `rules/reference/performance.md`. Avoid the last 20% of the context
+window for large refactors and multi-file features.
