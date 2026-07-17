@@ -41,6 +41,12 @@ right", "great point", "good catch"); no "I hope this helps"; no flow-narration 
 list-itis; no hedging stacks; no honesty-signaling. Declarative, concrete, varied
 rhythm. Full catalog → `/writing-voice`.
 
+**Evidence gate for cross-repo claims** — never assert a bug (especially a crash
+or DoS) in another project's tracker from inferred symptoms. A severe claim needs
+a panic/stack trace or a clean repro, not routine log noise (a broken pipe on
+flush is usually a disconnect; "context canceled" is usually a shutdown).
+Cross-repo credibility is a standing asset; protect it. Full rule → `/coding-practices`.
+
 **Parallel by default** — dispatch ≥2 independent agents in one message. Non-
 trivial code review = 2 independent reviewers + a Codex meta-review unless told
 otherwise; route to Codex when available.

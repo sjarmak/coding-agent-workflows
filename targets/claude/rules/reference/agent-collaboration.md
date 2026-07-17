@@ -56,6 +56,12 @@ Hard bans, no exceptions:
 
 Write declarative, concrete sentences with varied rhythm. This applies to every repo and every channel.
 
+## Evidence Gate for Cross-Repo Claims
+
+Never assert a bug in another project's tracker from inferred symptoms, especially a crash or denial-of-service claim. The evidence bar scales with the severity of the claim: a crash claim needs an actual panic or stack trace, or a clean reproduction; a data-loss claim needs the corrupted artifact or the losing sequence. Routine operational log noise is not evidence: a broken pipe on flush is usually a client disconnect, a "context canceled" is usually a normal shutdown, and neither proves a defect.
+
+Credibility across repos is a standing asset. One confidently-filed issue that turns out to be log noise costs more trust than the bug would have earned, and that trust does not reset per repo. When the evidence does not clear the bar, investigate further or report the observation as a question, not as a bug.
+
 ## Parallel by Default
 
 When dispatching ≥2 independent agents, fan them out in a single message with multiple Agent tool calls. Don't sequence agents that don't depend on each other.
