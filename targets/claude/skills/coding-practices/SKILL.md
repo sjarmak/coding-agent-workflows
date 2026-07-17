@@ -37,7 +37,7 @@ This skill is the catalog of that on-demand detail.
 - `.claude/rules/reference/context-layering.md` — The four context layers an agent reads, and the one-fact-one-layer rule that keeps AGENTS.md thin and free of conflict with memory.
 - `.claude/rules/reference/development-workflow.md` — Development Workflow
 - `.claude/rules/reference/git-workflow.md` — Git Workflow
-- `.claude/rules/reference/hooks.md` — Hooks System
+- `.claude/rules/reference/hooks.md` — Hooks
 - `.claude/rules/reference/patterns.md` — Common Patterns
 - `.claude/rules/reference/performance.md` — Performance Optimization
 - `.claude/rules/reference/security.md` — Security Guidelines
