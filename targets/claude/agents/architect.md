@@ -51,7 +51,7 @@ For each design decision, document:
 
 ## Architectural Principles
 
-> Global standards live in `~/.claude/rules/reference/architecture.md`. Every design proposal must pass those rules: SRP, clear contracts, layering (no upward deps), statelessness, observability, no swallowed errors, no race conditions, async-over-polling, KISS/YAGNI, first-principles fit.
+> Global standards live in `rules/reference/architecture.md`. Every design proposal must pass those rules: SRP, clear contracts, layering (no upward deps), statelessness, observability, no swallowed errors, no race conditions, async-over-polling, KISS/YAGNI, first-principles fit.
 
 ### 1. Modularity & Separation of Concerns
 
