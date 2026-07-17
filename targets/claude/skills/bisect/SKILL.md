@@ -1,15 +1,22 @@
-Binary search for root cause. Defines a search space and pass/fail oracle, then iteratively tests midpoints, halving the space each step until the root cause is isolated. Works across git history, configuration, dependencies, or code modules.
+---
+name: bisect
+description: "Binary search for root cause: define a search space and a pass/fail oracle, then halve the space each step until the culprit commit, config key, or dependency is isolated. Works across git history, configuration, dependencies, or code modules."
+scope: universal
+ported-from: bisect command
+---
+
+# Bisect: Binary Search for Root Cause
+
+Define a search space and a pass/fail oracle, then iteratively test midpoints,
+halving the space each step until the root cause is isolated. Works across git
+history, configuration, dependencies, or code modules.
 
 ## Arguments
 
-$ARGUMENTS, format: `"description of the bug or regression"` with optional flags
+`"description of the bug or regression"`
 
-## Parse Arguments
-
-Extract:
-- **bug_description**: the quoted or unquoted description of the symptom or regression
-
-If the bug description is missing or unclear, ask the user to clarify before proceeding.
+- A description of the symptom or regression is the search target.
+- Missing or unclear: ask the user to clarify the symptom before starting.
 
 ## Phase 1: Define the Search Space
 

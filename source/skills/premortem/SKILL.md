@@ -1,18 +1,29 @@
-Prospective Failure Narratives. Spawns N independent agents, each writing a narrative from the future where the project FAILED for a different root cause. No agent sees others' failure stories. A lead agent then synthesizes all failure narratives into a structured risk registry with severity ratings and mitigations.
+---
+name: premortem
+description: "Prospective failure narratives. Independent agents each write a story from a future where the project failed for a different root cause, synthesized into a risk registry with severity ratings and mitigations."
+scope: universal
+ported-from: premortem command
+---
 
-Based on Gary Klein's premortem technique: "prospective hindsight", imagining an event has already occurred, increases the ability to identify reasons for future outcomes by ~30%. Starting from "it failed" bypasses the planning fallacy and optimism bias that normally prevent teams from envisioning failure modes.
+# Premortem: Prospective Failure Narratives
+
+Spawn N independent agents, each writing a narrative from the future where the
+project FAILED for a different root cause. No agent sees others' failure stories.
+A lead agent then synthesizes the narratives into a structured risk registry with
+severity ratings and mitigations.
+
+Based on Gary Klein's premortem technique: "prospective hindsight", imagining an
+event has already occurred, increases the ability to identify reasons for future
+outcomes by ~30%. Starting from "it failed" bypasses the planning fallacy and
+optimism bias that normally prevent teams from envisioning failure modes.
 
 ## Arguments
 
-$ARGUMENTS, format: `[N] [path/to/design.md or inline description]` where N is optional failure-lens count (default: 5, min 3, max 7)
+`[N] [path/to/design.md | inline description]`
 
-## Parse Arguments
-
-Extract:
-- **agent_count**: the optional leading integer (default 5, min 3, max 7)
-- **input**: path to a design document, architecture doc, PRD, or project plan, or an inline project description
-
-If the input is missing or unclear, ask the user to clarify before proceeding.
+- N is the number of failure lenses (default 5, min 3, max 7).
+- Input is a design doc, architecture doc, PRD, or project plan, or an inline
+  description. Missing or unclear: ask the user to clarify before starting.
 
 ## Phase 1: Frame the Project
 

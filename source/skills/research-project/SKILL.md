@@ -1,5 +1,6 @@
 ---
-description: "Run diverge → converge → premortem pipeline to produce a risk-annotated PRD"
+name: research-project
+description: "Run the diverge → converge → premortem pipeline to produce a risk-annotated PRD"
 argument-hint: '[N] "topic or feature description"'
 allowed-tools: ["Agent", "Read", "Write", "Glob", "Grep"]
 ---
@@ -10,7 +11,10 @@ Run the complete PRD creation pipeline as a single invocation. This chains three
 
 ## Arguments
 
-$ARGUMENTS, format: `[N] "research question or topic"` where N is optional agent count (default: 3)
+`[N] "research question or topic"`
+
+- N is the agent count for the diverge stage (default 3).
+- The topic is the research question or feature to investigate.
 
 ## Execution
 

@@ -1,8 +1,23 @@
-Structured debate and refinement using Agent Teams. Takes divergent findings (from /diverge or any independent research) and spawns a team where teammates advocate for different positions, debate trade-offs, and converge on a refined synthesis.
+---
+name: converge
+description: "Structured debate and refinement. Independent advocates argue competing positions and trade-offs over divergent findings, then converge on a refined synthesis. Pairs with diverge."
+scope: claude
+ported-from: converge command
+---
+
+# Converge: Structured Debate and Refinement
+
+Take divergent findings (from `diverge` or any independent research) and spawn a
+team whose members advocate for different positions, debate trade-offs, and
+converge on a refined synthesis.
 
 ## Arguments
 
-$ARGUMENTS, format: `[N] [path/to/diverge_output.md or inline topic]` where N is optional number of debaters (default: 3, min 2, max 5)
+`[N] [path/to/diverge_output.md | inline topic]`
+
+- N is the number of debaters (default 3, min 2, max 5).
+- Input is a path to prior diverge output, a PRD with open tensions, or a
+  description of the competing approaches.
 
 ## Prerequisites
 

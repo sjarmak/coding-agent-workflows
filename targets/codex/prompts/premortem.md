@@ -1,18 +1,22 @@
-Prospective Failure Narratives. Spawns N independent agents, each writing a narrative from the future where the project FAILED for a different root cause. No agent sees others' failure stories. A lead agent then synthesizes all failure narratives into a structured risk registry with severity ratings and mitigations.
+# Premortem: Prospective Failure Narratives
 
-Based on Gary Klein's premortem technique: "prospective hindsight", imagining an event has already occurred, increases the ability to identify reasons for future outcomes by ~30%. Starting from "it failed" bypasses the planning fallacy and optimism bias that normally prevent teams from envisioning failure modes.
+Spawn N independent agents, each writing a narrative from the future where the
+project FAILED for a different root cause. No agent sees others' failure stories.
+A lead agent then synthesizes the narratives into a structured risk registry with
+severity ratings and mitigations.
+
+Based on Gary Klein's premortem technique: "prospective hindsight", imagining an
+event has already occurred, increases the ability to identify reasons for future
+outcomes by ~30%. Starting from "it failed" bypasses the planning fallacy and
+optimism bias that normally prevent teams from envisioning failure modes.
 
 ## Arguments
 
-$ARGUMENTS, format: `[N] [path/to/design.md or inline description]` where N is optional failure-lens count (default: 5, min 3, max 7)
+`[N] [path/to/design.md | inline description]`
 
-## Parse Arguments
-
-Extract:
-- **agent_count**: the optional leading integer (default 5, min 3, max 7)
-- **input**: path to a design document, architecture doc, PRD, or project plan, or an inline project description
-
-If the input is missing or unclear, ask the user to clarify before proceeding.
+- N is the number of failure lenses (default 5, min 3, max 7).
+- Input is a design doc, architecture doc, PRD, or project plan, or an inline
+  description. Missing or unclear: ask the user to clarify before starting.
 
 ## Phase 1: Frame the Project
 
@@ -158,4 +162,3 @@ Sits between /converge and /diverge-prototype as a risk gate:
 - **Preserve all narratives**: even unlikely failures contain useful signal. Do not filter or discard any agent's output.
 - **Attribute findings**: always note which lens produced which risk in the synthesis.
 - **Be honest about confidence**: if the risk registry is weak in an area, say so.
-

@@ -1,17 +1,24 @@
-Essence Extraction via Progressive Compression. Takes a large artifact and runs it through a chain of compression agents where each must compress the previous output by ~50% while preserving the most important information. The key insight: the DROPS at each compression layer, what each agent chose to cut, reveal the priority hierarchy. The waste product IS the signal.
+---
+name: distill
+description: "Essence extraction via progressive compression. Chained compressors each halve the previous output while keeping what matters; what each layer drops reveals the priority hierarchy."
+scope: universal
+ported-from: distill command
+---
+
+# Distill: Essence Extraction via Progressive Compression
+
+Run a large artifact through a chain of compression steps, each compressing the
+previous output by ~50% while preserving the most important information. The key
+insight: the DROPS at each layer, what each step chose to cut, reveal the
+priority hierarchy. The waste product IS the signal.
 
 ## Arguments
 
-$ARGUMENTS, format: `[path/to/artifact.md or inline text]`
+`[path/to/artifact.md | inline text]`
 
-## Parse Arguments
-
-Extract:
-- **artifact_source**: a file path or inline text
-
-If the argument looks like a file path (contains `/` or ends in a common extension), treat it as a path and read the file. Otherwise, treat the entire argument as inline text.
-
-If no argument is provided, ask the user what artifact they want to distill.
+- A path (contains `/` or a common extension): read the file.
+- Inline text: treat the whole argument as the artifact.
+- No argument: ask the user what artifact to distill.
 
 ## Phase 1: Ingest the Artifact
 

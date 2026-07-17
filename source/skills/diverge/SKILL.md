@@ -1,17 +1,23 @@
-Multi-perspective divergent research. Spawns N independent agents with uncorrelated context windows to explore a question from different angles, then auto-synthesizes findings into a unified analysis and PRD.
+---
+name: diverge
+description: "Multi-perspective divergent research. N independent agents with uncorrelated context explore a question from different angles, then synthesize into one analysis and PRD."
+scope: claude
+ported-from: diverge command
+---
+
+# Diverge: Multi-Perspective Divergent Research
+
+Spawn N independent agents with uncorrelated context windows to explore a
+question from different angles, then auto-synthesize their findings into a
+unified analysis and PRD.
 
 ## Arguments
 
-$ARGUMENTS, format: `[N] "research question or topic"` where N is optional (default: 3)
+`[N] "research question or topic"`
 
-## Parse Arguments
-
-Extract:
-
-- **agent_count**: the optional leading integer (default 3, min 2, max 7)
-- **research_prompt**: the quoted or unquoted research question/topic
-
-If the research prompt is missing or unclear, ask the user to clarify before proceeding.
+- N is the number of agents (default 3, min 2, max 7).
+- The question is the research topic. Missing or unclear: ask the user to
+  clarify before starting.
 
 ## Phase 1: Frame the Research
 

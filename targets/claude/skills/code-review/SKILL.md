@@ -1,3 +1,10 @@
+---
+name: code-review
+description: "Comprehensive security and quality review of uncommitted changes. Scans the diff for injection, hardcoded secrets, auth gaps, and correctness issues, reported by severity."
+scope: universal
+ported-from: code-review command
+---
+
 # Code Review
 
 Comprehensive security and quality review of uncommitted changes:

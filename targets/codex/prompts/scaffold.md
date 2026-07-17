@@ -1,17 +1,17 @@
-Build-order planning via competing sequencing strategies. Takes a chosen design (from /diverge-prototype or any architecture decision) and spawns N independent agents, each proposing a different build-order strategy. Each agent produces a sequenced implementation plan with milestones, dependencies, and risk assessment. Synthesizes into a recommended build plan.
+# Scaffold: Build-Order Planning
+
+Take a chosen design (from `diverge-prototype` or any architecture decision) and
+spawn N independent agents, each proposing a different build-order strategy. Each
+produces a sequenced implementation plan with milestones, dependencies, and a
+risk assessment; the results synthesize into one recommended build plan.
 
 ## Arguments
 
-$ARGUMENTS, format: `[N] [path/to/design.md or inline description]` where N is optional (default: 4)
+`[N] [path/to/design.md | inline description]`
 
-## Parse Arguments
-
-Extract:
-
-- **agent_count**: the optional leading integer (default 4, min 2, max 6)
-- **design_input**: a file path to a design doc/prototype/PRD, or an inline description of what needs to be built
-
-If the design input is missing or unclear, ask the user to clarify before proceeding.
+- N is the number of strategies (default 4, min 2, max 6).
+- Input is a path to a design doc/prototype/PRD, or an inline description of what
+  needs to be built. Missing or unclear: ask the user to clarify before starting.
 
 ## Phase 1: Understand the Design
 
@@ -179,4 +179,3 @@ This skill sits after design selection and before focused implementation:
 ```
 diverge-prototype or architecture decision -> scaffold (plan + seed tasks) -> focus (work through tasks)
 ```
-
