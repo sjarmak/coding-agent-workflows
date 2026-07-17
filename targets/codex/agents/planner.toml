@@ -1,3 +1,3 @@
 name = "planner"
-description = "Expert planning specialist for complex features and refactoring. Use PROACTIVELY when users request feature implementation, architectural changes, or complex refactoring. Automatically activated for planning tasks."
+description = "Expert planning specialist for complex features, bug fixes from issues, and refactoring. Use PROACTIVELY when users request feature implementation, architectural changes, or complex refactoring. Automatically activated for planning tasks."
 instructions_file = "planner.md"  # full role instructions, installed alongside this file

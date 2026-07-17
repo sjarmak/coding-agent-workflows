@@ -45,7 +45,7 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 | go-build-resolver | claude | Go build, vet, and compilation error resolution specialist |
 | rust-build-resolver | claude | Rust build, compilation, and dependency error resolution specialist |
 | build-error-resolver | claude | Build and TypeScript error resolution specialist |
-| planner | universal | Expert planning specialist for complex features and refactoring |
+| planner | universal | Expert planning specialist for complex features, bug fixes from issues, and refactoring |
 | tdd-guide | universal | Test-Driven Development specialist enforcing write-tests-first methodology |
 | refactor-cleaner | claude | Dead code cleanup and consolidation specialist |
 
