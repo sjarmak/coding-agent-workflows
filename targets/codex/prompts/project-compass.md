@@ -25,7 +25,8 @@ is a judgment about what matters in an area, which is exactly what a model does
 well and a regex does not.
 
 - **Mechanism:** file discovery, directory sizing, content-hashing, reading
-  source, writing the file, updating the index.
+  source, writing the file, updating the index. The hash is computed by
+  `compass-hash.mjs` (ships in this skill dir), never by the model.
 - **Model:** purpose, what counts as a key entry point, which constraints are
   non-obvious, which gotchas are load-bearing.
 
@@ -50,7 +51,9 @@ For each chosen area, without reading every file:
   import tooling if available, else imports/exports)
 - cross-area edges: what it imports, what imports it
 - recent churn and the area's own test files
-- compute a `sources-hash` over the mapped files' contents (for staleness)
+- **record the exact set of files this map is written from** (area-relative
+  paths). This list, not "everything in the directory", is what the staleness
+  stamp hashes — so choose the files that actually inform the map.
 
 ### Phase 3 — Write the map (model)
 
@@ -64,8 +67,27 @@ Fill the `COMPASS.md` template with real judgment:
   state, implicit contracts, "looks wrong but is load-bearing" code.
 - **Failure modes seen here** — concrete incidents and their triggers.
 
-Stamp `sources-hash` and `generated` so the next run can tell whether the area
-drifted. Flag unknowns ("ownership unclear") rather than inventing them.
+Stamp the frontmatter so the next run can test drift without a model: write the
+`sources` list, then compute the hash mechanically and write `sources_hash` +
+`generated`. Flag unknowns ("ownership unclear") rather than inventing them.
+
+Compute the hash with the shipped helper, never by hand:
+
+```
+node <path-to-skill>/compass-hash.mjs path/to/COMPASS.md
+```
+
+Fill `sources` first, then run the helper: with the list present but the hash
+still a placeholder it reports `drifted` and prints the actual hash to paste in.
+Re-run until it reports `current`. The helper is the one implementation of the
+hash — the fleet scanner imports the same functions, so a map verified here is
+verified identically machine-wide.
+
+The stamp has a deliberate blind spot, and naming it is the point: the hash only
+sees the files in `sources`. A new file added to the area, or a whole new area
+with no map at all, is invisible to it — the same reason an incremental index
+misses a moved symbol. That gap is closed by the periodic full pass (Phase 1
+re-run), not by the hash. Do not pretend the hash covers it.
 
 ### Phase 4 — Update the index (mechanism)
 
@@ -75,10 +97,22 @@ one-line summary.
 
 ## Refresh, not rewrite
 
-On a refresh, recompute the `sources-hash`. If it is unchanged, report "current"
-and do nothing. If changed, re-read and update — preserving human-added notes,
-marking what changed. A compass refresh is content-hash-gated so an unchanged
-area costs nothing.
+On a refresh, run `compass-hash.mjs` over the area's `COMPASS.md` and act on the
+status it returns:
+
+- **current** — the mapped files are unchanged. Report and do nothing; this
+  costs no model tokens, which is the whole point of the stamp.
+- **drifted** — a mapped file changed. Re-read the sources and update the map,
+  preserving human-added notes and marking what changed. Then re-stamp.
+- **orphaned** — a mapped file is gone (the area moved or shrank). Reconcile the
+  `sources` list against what exists now, update the map, re-stamp.
+- **unstamped** — a legacy map with no machine-readable stamp (or one written
+  before this format). Add the `sources` list and stamp it on this pass.
+
+Point the helper at a whole repo to test every map at once (`node
+compass-hash.mjs <repo>`); it exits non-zero if any map is drifted or orphaned,
+so it can gate a pre-commit hook or CI. A compass refresh is hash-gated: an
+unchanged area is free, and only what actually drifted gets rewritten.
 
 ## Best practices
 

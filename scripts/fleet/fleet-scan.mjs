@@ -17,6 +17,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { pathToFileURL } from 'node:url';
 
 const HOME = os.homedir();
 const FLEET_DIR = path.join(HOME, '.claude', 'fleet');
@@ -221,6 +222,17 @@ function detectBundle(repo, bundlePath) {
   return { installed: true, drift };
 }
 
+// COMPASS staleness is checked by the canonical helper that ships with the
+// project-compass skill, imported from the bundle so there is exactly one
+// implementation of the hash. If the bundle predates the helper, compass
+// detection degrades to null rather than failing the scan.
+async function loadCompass(bundlePath) {
+  const helper = path.join(bundlePath, 'source', 'skills', 'project-compass', 'compass-hash.mjs');
+  if (!exists(helper)) return null;
+  try { return await import(pathToFileURL(helper).href); }
+  catch { return null; }
+}
+
 function detectPreCommit(repo) {
   if (exists(path.join(repo, '.pre-commit-config.yaml'))) return true;
   // A configured hooks dir only counts if it actually contains a pre-commit
@@ -274,41 +286,73 @@ function classify(r) {
 
 // --- output -------------------------------------------------------------------
 
+// Compact compass cell: '–' none, 'N✓' all current, 'N?' some unstamped
+// (unverifiable legacy map), 'N⚠' some drifted/orphaned (needs a refresh).
+function compassCell(c) {
+  if (!c || c.maps === 0) return '–';
+  if (c.drifted + c.orphaned > 0) return `${c.maps}⚠`;
+  if (c.unstamped > 0) return `${c.maps}?`;
+  return `${c.maps}✓`;
+}
+
 function statusTable(repos) {
   const flag = b => (b ? '✓' : '✗');
   const lines = [
     '# Fleet status (mechanical scan)', '',
     `Generated: ${new Date().toISOString()}  ·  repos: ${repos.length}`, '',
-    '| Repo | Tier | AGENTS | .claude | Bundle | In sync | Pre-commit | CI gate | Coverage | Mutation | Strict | Obs | 30d commits |',
-    '|------|------|--------|---------|--------|-------|------------|---------|----------|----------|--------|-----|-------------|',
+    '| Repo | Tier | AGENTS | .claude | Bundle | In sync | Pre-commit | CI gate | Coverage | Mutation | Strict | Obs | Compass | 30d commits |',
+    '|------|------|--------|---------|--------|-------|------------|---------|----------|----------|--------|-----|---------|-------------|',
   ];
   for (const r of repos) {
     const g = r.guardrails, t = r.testing, o = r.observability;
-    lines.push(`| ${r.name} | ${r.class} | ${flag(g.agentsMd || g.claudeMd)} | ${flag(g.claudeDir)} | ${flag(g.bundle.installed)} | ${g.bundle.drift === null ? '–' : flag(!g.bundle.drift)} | ${flag(g.preCommit)} | ${flag(t.ciHasTestGate)} | ${flag(t.coverageConfig)} | ${flag(t.mutationConfig)} | ${t.strictTypes === null ? '–' : flag(t.strictTypes)} | ${flag(o.structuredLogging || o.errorTracking)} | ${r.git.commits30d} |`);
+    lines.push(`| ${r.name} | ${r.class} | ${flag(g.agentsMd || g.claudeMd)} | ${flag(g.claudeDir)} | ${flag(g.bundle.installed)} | ${g.bundle.drift === null ? '–' : flag(!g.bundle.drift)} | ${flag(g.preCommit)} | ${flag(t.ciHasTestGate)} | ${flag(t.coverageConfig)} | ${flag(t.mutationConfig)} | ${t.strictTypes === null ? '–' : flag(t.strictTypes)} | ${flag(o.structuredLogging || o.errorTracking)} | ${compassCell(r.compass)} | ${r.git.commits30d} |`);
   }
   const active = repos.filter(r => r.class !== 'scratch' && r.git.commits30d > 0);
   const uninstrumented = active.filter(r => r.class === 'B' || r.class === 'C');
   lines.push('', '## Attention (active in last 30 days, not fully instrumented)', '');
   if (uninstrumented.length === 0) lines.push('None — all active repos are Tier A or marked scratch.');
   for (const r of uninstrumented) lines.push(`- **${r.name}** (${r.class}, ${r.git.commits30d} commits): ${r.path}`);
+
+  const staleCompass = repos.filter(r => r.compass && (r.compass.drifted + r.compass.orphaned) > 0);
+  lines.push('', '## Compass drift (mapped areas whose sources changed)', '');
+  if (staleCompass.length === 0) lines.push('None — every stamped COMPASS map is current (or the repo has none).');
+  for (const r of staleCompass) {
+    const c = r.compass;
+    lines.push(`- **${r.name}**: ${c.drifted} drifted, ${c.orphaned} orphaned of ${c.maps} map(s)`);
+    for (const d of c.detail.filter(d => d.status === 'drifted' || d.status === 'orphaned')) {
+      lines.push(`  - ${d.status}: ${path.relative(r.path, d.path)}`);
+    }
+  }
   lines.push('');
   return lines.join('\n');
 }
 
-function main() {
+async function main() {
   const config = loadConfig();
+  const compass = await loadCompass(config.bundlePath);
+  const excludeRes = config.exclude.map(e => new RegExp(e));
   const repoPaths = discoverRepos(config);
   const repos = repoPaths.map(p => {
     const r = scanRepo(p, config);
-    return { ...r, class: classify(r) };
+    const c = compass ? compass.summarizeCompass(p, { exclude: excludeRes }) : null;
+    return { ...r, compass: c, class: classify(r) };
   });
+
+  const compassTotals = repos.reduce((acc, r) => {
+    if (!r.compass) return acc;
+    acc.maps += r.compass.maps; acc.drifted += r.compass.drifted;
+    acc.orphaned += r.compass.orphaned; acc.unstamped += r.compass.unstamped;
+    return acc;
+  }, { maps: 0, drifted: 0, orphaned: 0, unstamped: 0 });
 
   const registry = {
     generatedAt: new Date().toISOString(),
     bundlePath: config.bundlePath,
+    compassAvailable: compass !== null,
     summary: {
       total: repos.length,
       byClass: repos.reduce((acc, r) => { acc[r.class] = (acc[r.class] || 0) + 1; return acc; }, {}),
+      compass: compassTotals,
     },
     repos,
   };
@@ -320,6 +364,11 @@ function main() {
 
   console.log(`Scanned ${repos.length} repos → ${out}`);
   console.log(`Classes: ${JSON.stringify(registry.summary.byClass)}`);
+  if (compass) {
+    console.log(`Compass: ${compassTotals.maps} map(s), ${compassTotals.drifted} drifted, ${compassTotals.orphaned} orphaned, ${compassTotals.unstamped} unstamped`);
+  } else {
+    console.log('Compass: helper not found at bundlePath — dimension skipped');
+  }
 }
 
-main();
+main().catch(err => { console.error(err); process.exit(1); });
