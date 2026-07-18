@@ -49,6 +49,7 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 | build-error-resolver | claude | Build and TypeScript error resolution specialist |
 | planner | universal | Expert planning specialist for complex features, bug fixes from issues, and refactoring |
 | tdd-guide | universal | Test-Driven Development specialist enforcing write-tests-first methodology |
+| e2e-runner | universal | End-to-end testing specialist |
 | refactor-cleaner | claude | Dead code cleanup and consolidation specialist |
 
 ## Skills
@@ -75,6 +76,7 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 - **agent-eval-design**: Design rigorous evaluations and benchmarks for AI agents, developer tools, retrieval systems, and repository-scale automation. Covers task selection, contamination control, metric choice tied to engineering decisions, and statistical validity. Use when asked to design an eval/benchmark, critique an existing benchmark, choose metrics for an agent or RAG system, or decide whether a measured improvement is real. NOT for running an existing performance-benchmark suite or a per-feature acceptance checklist, or one-off model spot-checks.
 - **regex-vs-llm-structured-text**: Decision framework for choosing between regex and LLM when parsing structured text — start with regex, add LLM only for low-confidence edge cases. Use when parsing quizzes, forms, invoices, or documents with repeating structure and cost matters.
 - **grill-me**: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree one at a time. Use for ambiguous or complex collaborative specs before any code is written.
+- **e2e-testing**: Thin methodology for end-to-end tests of critical user journeys — define journeys by risk, use semantic locators and condition-based waits, quarantine flaky tests with a tracked reason, and capture artifacts on failure. Use when adding or stabilizing E2E coverage; the e2e-runner agent applies it in depth.
 
 Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.
 

@@ -29,6 +29,7 @@
     "build-error-resolver": "claude",
     "planner": "universal",
     "tdd-guide": "universal",
+    "e2e-runner": "universal",
     "refactor-cleaner": "claude"
   },
   "skills": {
@@ -60,6 +61,7 @@
     "agent-eval-design": "universal",
     "regex-vs-llm-structured-text": "universal",
     "grill-me": "universal",
+    "e2e-testing": "universal",
     "coding-practices": "claude"
   },
   "workflows": {
