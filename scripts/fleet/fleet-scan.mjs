@@ -17,7 +17,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 const HOME = os.homedir();
 const FLEET_DIR = path.join(HOME, '.claude', 'fleet');
@@ -33,6 +33,7 @@ const DEFAULT_CONFIG = {
   exclude: [
     '/test_repos/', '/vendor/', '/node_modules/', '/go-path/', '/gopath/', '/go/',
     '/build/', '/scratch/', '-worktrees', '/\\.', '/Downloads/',
+    '/tmp/', // transient checkouts (also matches /var/tmp/); the hooks skip these too
   ],
   bundlePath: path.join(HOME, 'agentic-coding-practices'),
 };
@@ -71,7 +72,7 @@ function git(repo, args) {
 
 // --- discovery ---------------------------------------------------------------
 
-function discoverRepos(config) {
+export function discoverRepos(config) {
   const found = new Map();
   const excludeRes = config.exclude.map(e => new RegExp(e));
   const excluded = p => excludeRes.some(re => re.test(p + '/'));
@@ -83,7 +84,12 @@ function discoverRepos(config) {
       // .git as a FILE means a linked worktree — skip; the primary checkout
       // is scanned instead. .git as a dir is a real repo.
       if (isDir(gitPath)) found.set(dir, true);
-      return; // never descend into a repo looking for nested repos
+      // Below a root, a repo boundary halts the walk — we don't enumerate a
+      // project's submodules or vendored checkouts as separate fleet repos.
+      // A configured root is a container by intent, so descend into it even
+      // when it is itself a git repo: a stray `git init` at a root (e.g.
+      // ~/projects) must not hide the repos nested beneath it.
+      if (depth > 0) return;
     }
     if (depth === config.maxDepth) return;
     let entries = [];
@@ -95,12 +101,26 @@ function discoverRepos(config) {
 
   for (const root of config.roots) if (isDir(root)) walk(root, 0);
 
-  // Repos registered passively by the git-template / SessionStart hooks.
-  const known = readIf(path.join(FLEET_DIR, 'known-repos.list'));
+  // Repos registered passively by the git-template / SessionStart hooks. The
+  // hooks only append, so this list accretes transient checkouts (scratch
+  // repos under /tmp, since-deleted directories). Compact it on every scan:
+  // keep only entries that still resolve to a non-excluded real repo, and
+  // rewrite the file when it shrank so it stays bounded rather than growing
+  // without limit.
+  const knownPath = config.knownReposPath ?? path.join(FLEET_DIR, 'known-repos.list');
+  const known = readIf(knownPath);
   if (known) {
+    const kept = new Set();
+    let total = 0;
     for (const line of known.split('\n')) {
       const p = line.trim();
-      if (p && isDir(path.join(p, '.git')) && !excluded(p)) found.set(p, true);
+      if (!p) continue;
+      total++;
+      if (!excluded(p) && isDir(path.join(p, '.git'))) { kept.add(p); found.set(p, true); }
+    }
+    if (kept.size !== total) {
+      const sorted = [...kept].sort();
+      fs.writeFileSync(knownPath, sorted.length ? sorted.join('\n') + '\n' : '');
     }
   }
   return [...found.keys()].sort();
@@ -371,4 +391,8 @@ async function main() {
   }
 }
 
-main().catch(err => { console.error(err); process.exit(1); });
+// Run a live scan only when invoked as a CLI; importing the module (e.g. from
+// the test) must not touch ~/.claude/fleet.
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch(err => { console.error(err); process.exit(1); });
+}
