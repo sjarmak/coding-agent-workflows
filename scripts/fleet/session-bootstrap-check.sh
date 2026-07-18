@@ -16,6 +16,9 @@ KNOWN="$FLEET_DIR/known-repos.list"
 top="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
 # Linked worktrees have .git as a file; the primary checkout covers them.
 [ -d "$top/.git" ] || exit 0
+# Never register transient checkouts (scratch repos under temp dirs). They
+# accrete into the registry forever and never get cleaned up otherwise.
+case "$top" in /tmp/*|/var/tmp/*) exit 0 ;; esac
 
 mkdir -p "$FLEET_DIR"
 touch "$KNOWN"

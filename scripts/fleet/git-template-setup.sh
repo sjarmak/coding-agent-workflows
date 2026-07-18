@@ -20,6 +20,7 @@ cat > "$TEMPLATE_DIR/hooks/post-commit" <<'EOF'
 # Fleet registry registration (installed via init.templateDir). Never blocks.
 top="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
 [ -d "$top/.git" ] || exit 0
+case "$top" in /tmp/*|/var/tmp/*) exit 0 ;; esac  # skip transient checkouts
 KNOWN="$HOME/.claude/fleet/known-repos.list"
 mkdir -p "$(dirname "$KNOWN")" && touch "$KNOWN"
 grep -qxF "$top" "$KNOWN" 2>/dev/null || echo "$top" >> "$KNOWN"
