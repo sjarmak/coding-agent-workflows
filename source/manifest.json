@@ -54,6 +54,11 @@
     "project-compass": "universal",
     "failure-mode-capture": "universal",
     "writing-voice": "universal",
+    "systems-thinking": "universal",
+    "repo-architecture-review": "universal",
+    "agent-eval-design": "universal",
+    "regex-vs-llm-structured-text": "universal",
+    "grill-me": "universal",
     "coding-practices": "claude"
   },
   "workflows": {
