@@ -18,6 +18,7 @@ Each is a section (matched by heading) in `AGENTS.full.md`:
 - **Augmented Coding Patterns** (`common/augmented-coding-patterns.md`)
 - **Coding Style** (`common/coding-style.md`)
 - **Context Layering** (`common/context-layering.md`) — The four context layers an agent reads, and the one-fact-one-layer rule that keeps AGENTS.md thin and free of conflict with memory.
+- **Database & SQL** (`common/database.md`)
 - **Development Workflow** (`common/development-workflow.md`)
 - **Git Workflow** (`common/git-workflow.md`)
 - **House Rules (always-on)** (`common/house-rules.md`) — Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in rules/reference/ (on-demand).
@@ -36,6 +37,7 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 |------|-------|---------|
 | code-reviewer | universal | Expert code review specialist |
 | security-reviewer | universal | Security vulnerability detection and remediation specialist |
+| database-reviewer | universal | PostgreSQL specialist for query performance, schema design, security/RLS, and migration sa |
 | architect | universal | Software architecture specialist for system design, scalability, and technical decision-ma |
 | code-simplifier | universal | Simplify and clean up code after generation |
 | go-reviewer | claude | Expert Go code reviewer specializing in idiomatic Go, concurrency patterns, error handling |

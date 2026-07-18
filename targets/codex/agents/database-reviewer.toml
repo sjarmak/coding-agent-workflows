@@ -1,0 +1,3 @@
+name = "database-reviewer"
+description = "PostgreSQL specialist for query performance, schema design, security/RLS, and migration safety. Use PROACTIVELY when writing SQL, creating migrations, designing schemas, or troubleshooting database performance."
+instructions_file = "database-reviewer.md"  # full role instructions, installed alongside this file

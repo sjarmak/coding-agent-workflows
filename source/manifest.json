@@ -17,6 +17,7 @@
     "$comment": "Claude subagents map to Codex .codex/agents/*.toml where a clean equivalent exists; the rest are claude-only. Reviewers/architect/explorer translate; build-resolvers are claude-only (tightly tool-coupled).",
     "code-reviewer": "universal",
     "security-reviewer": "universal",
+    "database-reviewer": "universal",
     "architect": "universal",
     "code-simplifier": "universal",
     "go-reviewer": "claude",
