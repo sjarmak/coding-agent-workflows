@@ -4,6 +4,8 @@
 #
 # Usage:
 #   ./install.sh claude  [dest]    install Claude Code config into <dest>/.claude   (default dest: current dir)
+#   ./install.sh upgrade [dest]    re-install, then prune files dropped since the last install
+#   ./install.sh remove  [dest]    remove exactly what a prior claude install placed in <dest>/.claude
 #   ./install.sh codex   [dest]    install AGENTS.md + AGENTS.full.md into <dest> and Codex config into ~/.codex
 #   ./install.sh agents  [dest]    drop AGENTS.md (thin index) + AGENTS.full.md into <dest> (Amp, Aider, Gemini CLI, …)
 #
@@ -18,18 +20,74 @@ DEST="${2:-$PWD}"
 note() { printf '  %s\n' "$1"; }
 
 case "$AGENT" in
-  claude)
+  claude|upgrade)
+    mode="$AGENT"
     target="$DEST/.claude"
+    src="$REPO/targets/claude"
+    manifest="$target/.coding-agent-workflows-manifest"
     mkdir -p "$target"
-    cp -r "$REPO/targets/claude/." "$target/"
-    # record exactly what this install owns, so upgrades and removal are tractable
-    (cd "$REPO/targets/claude" && find . -type f | sort | sed 's|^\./||') \
-      > "$target/.coding-agent-workflows-manifest"
+
+    # Files this install writes (relative paths), and the prior install's list.
+    # Portable array fill (no mapfile) so this runs under stock macOS bash too.
+    files=(); while IFS= read -r f; do files+=("$f"); done \
+      < <(cd "$src" && find . -type f | sed 's|^\./||' | sort)
+    prev=(); [ -f "$manifest" ] && while IFS= read -r f; do [ -n "$f" ] && prev+=("$f"); done < "$manifest"
+    contains() { local x=$1; shift; local e; for e in "$@"; do [ "$e" = "$x" ] && return 0; done; return 1; }
+
+    # Collision guard: back up any file we would overwrite that we do NOT
+    # already own (absent from the prior manifest) and that differs from ours,
+    # so a user-level install (./install.sh claude ~) never silently clobbers
+    # hand-authored config in an existing ~/.claude.
+    backup="$target/.coding-agent-workflows-backup/$(date +%Y%m%d-%H%M%S)"
+    saved=0
+    for f in "${files[@]}"; do
+      [ -e "$target/$f" ] || continue
+      contains "$f" ${prev[@]+"${prev[@]}"} && continue
+      cmp -s "$src/$f" "$target/$f" && continue
+      mkdir -p "$backup/$(dirname "$f")"
+      cp "$target/$f" "$backup/$f"
+      saved=$((saved + 1))
+    done
+
+    cp -r "$src/." "$target/"
+
+    # upgrade: prune files the previous install owned that we no longer ship.
+    pruned=0
+    if [ "$mode" = upgrade ]; then
+      for f in ${prev[@]+"${prev[@]}"}; do
+        contains "$f" "${files[@]}" && continue
+        rm -f "$target/$f" && pruned=$((pruned + 1))
+      done
+    fi
+
+    printf '%s\n' "${files[@]}" > "$manifest"
     echo "Installed Claude Code config → $target"
+    [ "$saved" -gt 0 ] && note "Backed up $saved pre-existing file(s) before overwrite → $backup"
+    [ "$pruned" -gt 0 ] && note "Pruned $pruned file(s) the bundle no longer ships."
     note "rules/ agents/ skills/ commands/ are now available."
-    note "Overwrote any same-named files; your other .claude contents are untouched."
-    note "File list written to .claude/.coding-agent-workflows-manifest (for upgrade/removal)."
+    note "Files you did not have are added; foreign same-named files were backed up, not lost."
+    note "File list written to .claude/.coding-agent-workflows-manifest (drives upgrade/remove)."
     note "Wanted user-level instead? re-run: ./install.sh claude ~"
+    ;;
+  remove)
+    target="$DEST/.claude"
+    manifest="$target/.coding-agent-workflows-manifest"
+    if [ ! -f "$manifest" ]; then
+      echo "No bundle manifest at $manifest — nothing to remove." >&2
+      echo "(remove only undoes a prior './install.sh claude' into this dest.)" >&2
+      exit 1
+    fi
+    removed=0
+    while IFS= read -r f; do
+      [ -n "$f" ] || continue
+      [ -e "$target/$f" ] && rm -f "$target/$f" && removed=$((removed + 1))
+    done < "$manifest"
+    rm -f "$manifest"
+    # Drop directories the install left empty, but never .claude itself.
+    find "$target" -mindepth 1 -type d -empty -delete 2>/dev/null || true
+    echo "Removed $removed bundle file(s) from $target"
+    note "Your non-bundle .claude contents are left in place."
+    note "Any collision backups remain under .claude/.coding-agent-workflows-backup/."
     ;;
   codex)
     cp "$REPO/AGENTS.md" "$DEST/AGENTS.md"
@@ -110,8 +168,10 @@ case "$AGENT" in
     note "Schedule the 'fleet-conformance' workflow weekly for the semantic audit + report."
     ;;
   *)
-    echo "usage: ./install.sh {claude|codex|agents|init|fleet} [dest_dir]" >&2
+    echo "usage: ./install.sh {claude|upgrade|remove|codex|agents|init|fleet} [dest_dir]" >&2
     echo "  claude  → <dest>/.claude   (default dest: current dir; use ~ for user-level)" >&2
+    echo "  upgrade → re-install into <dest>/.claude and prune files dropped since last install" >&2
+    echo "  remove  → delete exactly what a prior claude install placed in <dest>/.claude" >&2
     echo "  codex   → AGENTS.md + AGENTS.full.md in <dest> + config into ~/.codex" >&2
     echo "  agents  → AGENTS.md (thin index) + AGENTS.full.md in <dest>" >&2
     echo "  init    → thin, project-specific AGENTS.md template in <dest> (filled by project-init)" >&2
