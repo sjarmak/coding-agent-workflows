@@ -16,6 +16,7 @@ Each is a section (matched by heading) in `AGENTS.full.md`:
 - **Anti-Slop & Code Erosion** (`common/anti-slop.md`)
 - **Architecture Principles** (`common/architecture.md`)
 - **Augmented Coding Patterns** (`common/augmented-coding-patterns.md`)
+- **Code Knowledge Graphs** (`common/code-graph.md`)
 - **Coding Style** (`common/coding-style.md`)
 - **Context Layering** (`common/context-layering.md`) — The four context layers an agent reads, and the one-fact-one-layer rule that keeps AGENTS.md thin and free of conflict with memory.
 - **Database & SQL** (`common/database.md`)

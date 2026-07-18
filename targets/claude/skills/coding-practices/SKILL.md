@@ -33,6 +33,7 @@ This skill is the catalog of that on-demand detail.
 - `.claude/rules/reference/anti-slop.md` — Anti-Slop & Code Erosion
 - `.claude/rules/reference/architecture.md` — Architecture Principles
 - `.claude/rules/reference/augmented-coding-patterns.md` — Augmented Coding Patterns
+- `.claude/rules/reference/code-graph.md` — Code Knowledge Graphs
 - `.claude/rules/reference/coding-style.md` — Coding Style
 - `.claude/rules/reference/context-layering.md` — The four context layers an agent reads, and the one-fact-one-layer rule that keeps AGENTS.md thin and free of conflict with memory.
 - `.claude/rules/reference/database.md` — Database & SQL
