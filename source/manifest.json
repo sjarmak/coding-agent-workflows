@@ -62,6 +62,7 @@
     "regex-vs-llm-structured-text": "universal",
     "grill-me": "universal",
     "e2e-testing": "universal",
+    "dashboard": "universal",
     "coding-practices": "claude"
   },
   "workflows": {

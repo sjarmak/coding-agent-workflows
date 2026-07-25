@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "node build/render.mjs",
-    "test": "node scripts/fleet/fleet-scan.test.mjs",
+    "test": "node scripts/fleet/fleet-scan.test.mjs && node source/skills/dashboard/allowlist.test.mjs && node source/skills/dashboard/render.test.mjs",
     "check": "node build/check.mjs",
     "sanitize": "node build/sanitize.mjs",
     "validate": "node build/validate.mjs",

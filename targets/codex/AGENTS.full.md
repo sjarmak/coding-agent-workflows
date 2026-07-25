@@ -1177,6 +1177,7 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 - **regex-vs-llm-structured-text**: Decision framework for choosing between regex and LLM when parsing structured text — start with regex, add LLM only for low-confidence edge cases. Use when parsing quizzes, forms, invoices, or documents with repeating structure and cost matters.
 - **grill-me**: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree one at a time. Use for ambiguous or complex collaborative specs before any code is written.
 - **e2e-testing**: Thin methodology for end-to-end tests of critical user journeys — define journeys by risk, use semantic locators and condition-based waits, quarantine flaky tests with a tracked reason, and capture artifacts on failure. Use when adding or stabilizing E2E coverage; the e2e-runner agent applies it in depth.
+- **dashboard**: Generate an HTML dashboard of project status and recent outputs, scoped to what the user asks about. Use when the user asks for a dashboard or project status, asks what is blocking a release, what needs attention, or where work was left off, or wants a visual read on a repo instead of scrolling terminal output. Renders a self-contained page to .dashboard/index.html, plus a rollup mode across several repos.
 
 Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.
 
