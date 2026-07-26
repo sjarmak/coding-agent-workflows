@@ -55,7 +55,7 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 
 ## Skills
 
-- **focus**: Single-task execution loop (plan, execute, verify, hand off). Keeps one agent on one unit of work with a structured context handoff so progress survives across sessions.
+- **focus**: Dependency-aware execution workflow for durable task stores. Selects ready work, runs independent tasks in isolated worktrees, verifies trusted branches, converges them onto one integration branch, and closes only landed work.
 - **simplify**: Reduce a diff to its essential complexity, removing dead paths, over-engineering, premature abstraction, and incidental churn, without changing behavior.
 - **code-review**: Comprehensive security and quality review of uncommitted changes. Scans the diff for injection, hardcoded secrets, auth gaps, and correctness issues, reported by severity.
 - **distill**: Essence extraction via progressive compression. Chained compressors each halve the previous output while keeping what matters; what each layer drops reveals the priority hierarchy.

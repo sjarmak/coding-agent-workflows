@@ -88,6 +88,14 @@ for (const [name, scope] of Object.entries(manifest.skills)) {
   if (name.startsWith('$')) continue;
   if (scope === 'universal' || scope === 'claude') {
     copyDir(path.join(SRC, 'skills', name), path.join(C, 'skills', name));
+    const { data, body } = readSkill(name);
+    if (data.command === 'true') {
+      const desc = (data.description || '').toString().replace(/"/g, "'");
+      write(
+        path.join(C, 'commands', `${name}.md`),
+        `---\ndescription: "${desc}"\n---\n\n${body}\n`,
+      );
+    }
   }
 }
 // coding-practices skill: inject a generated catalog of the rule files. The Claude

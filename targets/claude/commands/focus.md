@@ -1,9 +1,5 @@
 ---
-name: focus
-description: Dependency-aware execution workflow for durable task stores. Selects ready work, runs independent tasks in isolated worktrees, verifies trusted branches, converges them onto one integration branch, and closes only landed work.
-scope: universal
-ported-from: focus command
-command: true
+description: "Dependency-aware execution workflow for durable task stores. Selects ready work, runs independent tasks in isolated worktrees, verifies trusted branches, converges them onto one integration branch, and closes only landed work."
 ---
 
 # Focus: Dependency-Aware Execution
