@@ -1,7 +1,5 @@
 # coding-agent-workflows
 
-**Status: superseded.** This portable instantiation of the workflow system is superseded by [agent-workflows](https://github.com/sjarmak/agent-workflows), where development continues.
-
 Coding standards, agent roles, skills, and multi-step workflows that read the
 same whether you drive Claude Code, Codex, Amp, or anything that reads an
 `AGENTS.md`. One neutral source renders to a native config for each agent, and
