@@ -1,13 +1,13 @@
 ---
 name: slop-check
-description: LLM-judge slop & erosion scan of a diff, mirroring SlopCodeBench. Scores code on Erosion (verbosity, dead branches, redundant structure accumulated under iterative change) and Verbosity (unnecessary complexity), then reports per-category findings weighted toward code that EXTENDS existing modules. Use after iteratively extending existing code, before opening a PR on a non-greenfield change, when a module has grown across several requirement changes, or when the user says "slop check", "check for erosion", "is this over-engineered". Complements the review skill (correctness + reuse) — this lens is specifically the accumulated-cruft axis. Scans code, not prose; for AI-writing patterns in prose or docs use writing-voice.
+description: LLM-judge slop & erosion scan of a diff, mirroring SlopCodeBench. Scores code on Erosion (verbosity, dead branches, redundant structure accumulated under iterative change) and Verbosity (unnecessary complexity), then reports per-category findings weighted toward code that EXTENDS existing modules. Use after iteratively extending existing code, before opening a PR on a non-greenfield change, when a module has grown across several requirement changes, or when the user says "slop check", "check for erosion", "is this over-engineered". Complements the review skill (correctness + reuse) — this lens is specifically the accumulated-cruft axis. Scans code, not prose; for AI-writing patterns in prose or docs use no-ai-slop.
 ---
 
 # Slop & Erosion Check
 
 A focused LLM-judge pass that scores a change the way [SlopCodeBench](https://www.scbench.ai) scores agents: on **Erosion** (verbosity, dead branches, redundant structure that piles up as code is extended) and **Verbosity** (unnecessary complexity), both _lower-is-better_. The premise: agents rarely write _wrong_ code — they patch their way into slop, and early design decisions compound across changes.
 
-This is the accumulated-cruft axis, and it scans **code, not prose**. For correctness and reuse, use the review skill; for security, the security-review skill; for AI-writing slop in prose or docs (including READMEs), use writing-voice. They compose.
+This is the accumulated-cruft axis, and it scans **code, not prose**. For correctness and reuse, use the review skill; for security, the security-review skill; for AI-writing slop in prose or docs (including READMEs), use no-ai-slop. They compose.
 
 ## When to use
 

@@ -44,7 +44,7 @@ Default interpretations:
 
 ## Public-Facing Prose
 
-Every external or public-facing artifact — PR body, issue title/body/comment, public reply, release notes, upstream maintainer communication — gets a de-slop pass before it is sent. Run the `writing-voice` skill and read the draft against it line by line. Do not approximate the rules from memory; that is how the tells slip through.
+Every external or public-facing artifact — PR body, issue title/body/comment, public reply, release notes, upstream maintainer communication — gets a de-slop pass before it is sent. Run the `no-ai-slop` skill and read the draft against it line by line. Do not approximate the rules from memory; that is how the tells slip through.
 
 Hard bans, no exceptions:
 

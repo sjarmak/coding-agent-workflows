@@ -6,7 +6,7 @@
 #   ./install.sh claude  [dest]    install Claude Code config into <dest>/.claude   (default dest: current dir)
 #   ./install.sh upgrade [dest]    re-install, then prune files dropped since the last install
 #   ./install.sh remove  [dest]    remove exactly what a prior claude install placed in <dest>/.claude
-#   ./install.sh codex   [dest]    install AGENTS.md + AGENTS.full.md into <dest> and Codex config into ~/.codex
+#   ./install.sh codex   [dest]    install AGENTS.md + AGENTS.full.md into <dest> and config into $CODEX_HOME (or ~/.codex)
 #   ./install.sh agents  [dest]    drop AGENTS.md (thin index) + AGENTS.full.md into <dest> (Amp, Aider, Gemini CLI, …)
 #
 # For user-level (not project-level) Claude install:  ./install.sh claude ~
@@ -92,15 +92,17 @@ case "$AGENT" in
   codex)
     cp "$REPO/AGENTS.md" "$DEST/AGENTS.md"
     cp "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
-    mkdir -p "$HOME/.codex"
-    cp -r "$REPO/targets/codex/agents" "$REPO/targets/codex/prompts" "$HOME/.codex/"
-    if [ -e "$HOME/.codex/config.toml" ]; then
-      cp "$REPO/targets/codex/config.toml" "$HOME/.codex/config.toml.from-coding-agent-workflows"
-      note "~/.codex/config.toml already exists; wrote ours as config.toml.from-coding-agent-workflows, merge manually."
+    codex_home="${CODEX_HOME:-$HOME/.codex}"
+    mkdir -p "$codex_home"
+    cp -r "$REPO/targets/codex/agents" "$REPO/targets/codex/prompts" \
+      "$REPO/targets/codex/skills" "$codex_home/"
+    if [ -e "$codex_home/config.toml" ]; then
+      cp "$REPO/targets/codex/config.toml" "$codex_home/config.toml.from-coding-agent-workflows"
+      note "$codex_home/config.toml already exists; wrote ours as config.toml.from-coding-agent-workflows, merge manually."
     else
-      cp "$REPO/targets/codex/config.toml" "$HOME/.codex/config.toml"
+      cp "$REPO/targets/codex/config.toml" "$codex_home/config.toml"
     fi
-    echo "Installed AGENTS.md + AGENTS.full.md → $DEST   and Codex agents/prompts → ~/.codex"
+    echo "Installed AGENTS.md + AGENTS.full.md → $DEST   and Codex agents/prompts/skills → $codex_home"
     note "Codex reads AGENTS.md automatically from your project root."
     ;;
   agents)
@@ -172,7 +174,7 @@ case "$AGENT" in
     echo "  claude  → <dest>/.claude   (default dest: current dir; use ~ for user-level)" >&2
     echo "  upgrade → re-install into <dest>/.claude and prune files dropped since last install" >&2
     echo "  remove  → delete exactly what a prior claude install placed in <dest>/.claude" >&2
-    echo "  codex   → AGENTS.md + AGENTS.full.md in <dest> + config into ~/.codex" >&2
+    echo "  codex   → AGENTS.md + AGENTS.full.md in <dest> + config into CODEX_HOME (default: ~/.codex)" >&2
     echo "  agents  → AGENTS.md (thin index) + AGENTS.full.md in <dest>" >&2
     echo "  init    → thin, project-specific AGENTS.md template in <dest> (filled by project-init)" >&2
     echo "  fleet   → machine-level conformance scanner + bootstrap hooks (~/.claude/fleet)" >&2

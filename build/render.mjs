@@ -3,7 +3,7 @@
 //   - AGENTS.md          thin always-loaded index (Codex, Amp, anything that reads AGENTS.md)
 //   - AGENTS.full.md     full bundle the index points into, read on demand per section
 //   - targets/claude/    native Claude Code layout (rules, agents, skills, commands)
-//   - targets/codex/     native Codex layout (AGENTS.md, AGENTS.full.md, config.toml, agents/, prompts/)
+//   - targets/codex/     native Codex layout (AGENTS.md, AGENTS.full.md, config.toml, agents/, prompts/, skills/)
 //
 // Scope rules from source/manifest.json decide where each artifact lands:
 //   universal -> AGENTS.md prose + both targets
@@ -149,23 +149,37 @@ write(path.join(X, 'config.toml'),
   `# Universal practices live in the AGENTS.md at repo root (Codex reads it automatically).\n` +
   `# Subagents below mirror the universal Claude reviewers.\n\n` +
   `[agents]\n# see agents/*.toml\n`);
-// universal agents -> codex agent toml + full instructions alongside. The
-// instructions file ships next to the toml so the reference still resolves
-// after install.sh copies the agents/ dir into ~/.codex.
+// universal agents -> standalone Codex custom-agent TOML. Codex requires the
+// complete role body in developer_instructions; it does not follow file refs.
 for (const [name, scope] of Object.entries(manifest.agents)) {
   if (name.startsWith('$') || scope !== 'universal') continue;
   const { data, body } = parse(fs.readFileSync(path.join(SRC, 'agents', `${name}.md`), 'utf8'));
   const desc = (data.description || data.name || name).toString().replace(/"/g, "'");
-  write(path.join(X, 'agents', `${name}.md`), body + '\n');
+  if (body.includes("'''")) {
+    throw new Error(`agent ${name}: role body contains the TOML multiline literal delimiter`);
+  }
   write(path.join(X, 'agents', `${name}.toml`),
     `name = "${name}"\n` +
     `description = "${desc}"\n` +
-    `instructions_file = "${name}.md"  # full role instructions, installed alongside this file\n`);
+    `developer_instructions = '''\n${body}\n'''\n`);
 }
-// universal skills + workflows -> codex prompts
+// Universal skills ship twice for Codex:
+//   - skills/<name>/SKILL.md for native metadata-based discovery
+//   - prompts/<name>.md for explicit slash-command invocation
+//
+// Codex skill frontmatter intentionally contains only the two supported
+// discovery fields. Source-only portability metadata (scope, ported-from) is
+// useful to this renderer but should not leak into an installed skill.
 for (const [name, scope] of Object.entries(manifest.skills)) {
   if (name.startsWith('$') || scope !== 'universal') continue;
-  const { body } = readSkill(name);
+  const sourceSkill = path.join(SRC, 'skills', name);
+  const { data, body } = readSkill(name);
+  const codexSkill = path.join(X, 'skills', name);
+  copyDir(sourceSkill, codexSkill);
+  const skillName = (data.name || name).toString().replace(/"/g, '\\"');
+  const description = (data.description || '').toString().replace(/"/g, '\\"');
+  write(path.join(codexSkill, 'SKILL.md'),
+    `---\nname: "${skillName}"\ndescription: "${description}"\n---\n\n${body}\n`);
   write(path.join(X, 'prompts', `${name}.md`), body + '\n');
 }
 for (const [name, scope] of Object.entries(manifest.workflows)) {
@@ -324,4 +338,4 @@ console.log('rendered:');
 console.log('  AGENTS.md        (thin index)');
 console.log('  AGENTS.full.md   (full bundle, read on demand)');
 console.log('  targets/claude/  (rules, agents, skills, commands)');
-console.log('  targets/codex/   (AGENTS.md, AGENTS.full.md, config.toml, agents, prompts)');
+console.log('  targets/codex/   (AGENTS.md, AGENTS.full.md, config.toml, agents, prompts, skills)');

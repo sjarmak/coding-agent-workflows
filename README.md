@@ -39,7 +39,8 @@ If you would rather not run a script, copy what you need: Claude Code reads a
 `.claude/` directory, so copy `targets/claude/{rules,agents,skills,commands}`
 into one. Codex reads `AGENTS.md` at the repo root plus `~/.codex`, so place
 `AGENTS.md` + `AGENTS.full.md` at your root and copy
-`targets/codex/{config.toml,agents,prompts}` into `~/.codex`. Every other
+`targets/codex/{config.toml,agents,prompts,skills}` into `$CODEX_HOME` (falling
+back to `~/.codex`). Every other
 `AGENTS.md`-aware agent needs only those two files at your repo root.
 
 ## Layout
@@ -49,7 +50,7 @@ into one. Codex reads `AGENTS.md` at the repo root plus `~/.codex`, so place
 | `AGENTS.md` | Thin always-loaded index; points by section into the full bundle |
 | `AGENTS.full.md` | The full bundle: principles, agent roster, skills, workflows, as prose any agent can follow |
 | `targets/claude/` | Native Claude Code layout: `rules/`, `agents/`, `skills/`, `commands/` |
-| `targets/codex/` | Native Codex layout: `config.toml`, `agents/`, `prompts/` |
+| `targets/codex/` | Native Codex layout: `config.toml`, `agents/` (one standalone TOML per agent), `prompts/`, `skills/` |
 | `source/` | The only hand-edited layer; everything above renders from it |
 
 The index-plus-manual split keeps loaded context small: agents auto-load the

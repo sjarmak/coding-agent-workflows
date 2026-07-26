@@ -2,7 +2,7 @@
 
 A focused LLM-judge pass that scores a change the way [SlopCodeBench](https://www.scbench.ai) scores agents: on **Erosion** (verbosity, dead branches, redundant structure that piles up as code is extended) and **Verbosity** (unnecessary complexity), both _lower-is-better_. The premise: agents rarely write _wrong_ code — they patch their way into slop, and early design decisions compound across changes.
 
-This is the accumulated-cruft axis, and it scans **code, not prose**. For correctness and reuse, use the review skill; for security, the security-review skill; for AI-writing slop in prose or docs (including READMEs), use writing-voice. They compose.
+This is the accumulated-cruft axis, and it scans **code, not prose**. For correctness and reuse, use the review skill; for security, the security-review skill; for AI-writing slop in prose or docs (including READMEs), use no-ai-slop. They compose.
 
 ## When to use
 

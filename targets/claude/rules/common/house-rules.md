@@ -33,13 +33,13 @@ text, do NOT run `gh pr create`.
 
 **Public-facing prose** — every external artifact (PR body, issue title/body/
 comment, public reply, release notes, upstream maintainer comms) gets the de-slop
-pass before it is sent. ACTUALLY RUN the `writing-voice` skill and read the draft
+pass before it is sent. ACTUALLY RUN the `no-ai-slop` skill and read the draft
 against it line by line; do NOT approximate the rules from memory (that is how the
 tells slip through). Hard bans in the sent artifact: no em dashes (use commas,
 semicolons, parentheses, or recast); no agreement-performance openers ("you're
 right", "great point", "good catch"); no "I hope this helps"; no flow-narration or
 list-itis; no hedging stacks; no honesty-signaling. Declarative, concrete, varied
-rhythm. Full catalog → `/writing-voice`.
+rhythm. Full catalog → `/no-ai-slop`.
 
 **Evidence gate for cross-repo claims** — never assert a bug (especially a crash
 or DoS) in another project's tracker from inferred symptoms. A severe claim needs
