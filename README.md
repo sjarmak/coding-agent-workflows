@@ -1,12 +1,15 @@
 # coding-agent-workflows
 
+**Status: superseded.** This portable instantiation of the workflow system is superseded by [agent-workflows](https://github.com/sjarmak/agent-workflows), where development continues.
+
 Coding standards, agent roles, skills, and multi-step workflows that read the
 same whether you drive Claude Code, Codex, Amp, or anything that reads an
-`AGENTS.md`. One neutral source produces a native config for each agent, and the
-agent-specific pieces stay scoped to the agents that need them.
+`AGENTS.md`. One neutral source renders to a native config for each agent, and
+the agent-specific pieces stay scoped to the agents that need them.
 
-Everything here is pre-rendered and committed. There is no build step to run
-before you use it.
+Everything is pre-rendered and committed. There is no build step between clone
+and use, and installing is a plain file copy: no hooks, no daemons, nothing
+running in the background.
 
 ## Install
 
@@ -15,175 +18,150 @@ git clone https://github.com/sjarmak/coding-agent-workflows.git
 cd coding-agent-workflows
 ```
 
-Install for your agent:
+Then install for your agent:
 
 ```bash
-./install.sh claude          # → ./.claude  (project-level; use `./install.sh claude ~` for user-level)
-./install.sh codex           # → AGENTS.md + AGENTS.full.md in current dir + config into ~/.codex
-./install.sh agents          # → AGENTS.md (thin index) + AGENTS.full.md (Amp, Aider, Gemini CLI, …)
-./install.sh init            # → a thin, project-specific AGENTS.md (intention + pointers)
+./install.sh claude          # Claude Code config into ./.claude (project-level; `./install.sh claude ~` for user-level)
+./install.sh codex           # AGENTS.md + AGENTS.full.md into the current dir, Codex config into ~/.codex
+./install.sh agents          # AGENTS.md (thin index) + AGENTS.full.md (Amp, Aider, Gemini CLI, ...)
+./install.sh init            # scaffold a thin, project-specific AGENTS.md (intention + pointers)
+./install.sh upgrade         # re-install, then prune files dropped since the last install
+./install.sh remove          # delete exactly what a prior claude install placed in .claude
 ```
 
 Pass a destination as the second argument to target a specific project, for
-example `./install.sh claude ~/work/myrepo`.
-
-`AGENTS.md` is deliberately thin: a ~80-line index that agents auto-load, pointing
-by section into `AGENTS.full.md`, the full bundle read on demand. The agent pulls
-in only the section a task needs, and the always-loaded context stays small. For
-an agent that can only ever read one file, copy `AGENTS.full.md` as its
-`AGENTS.md` instead.
-
-`agents` and `init` produce files for two different jobs. `agents` drops the
-practices bundle (index + full text). `init` scaffolds a thin, per-project
-`AGENTS.md` that holds only this repo's intention and failure-mode preventions
-and points to the bundle for everything else. See
-[Project context layers](#project-context-layers) below.
+example `./install.sh claude ~/work/myrepo`. The `claude` install writes a
+manifest of every file it owns and backs up any pre-existing file it would
+otherwise overwrite; `remove` undoes exactly that manifest, so a user-level
+install never silently clobbers hand-authored config. A separate `fleet`
+subcommand installs a machine-level conformance scanner into `~/.claude/fleet`;
+it is the one mode that wires a hook, and it says so when it runs.
 
 If you would rather not run a script, copy what you need: Claude Code reads a
 `.claude/` directory, so copy `targets/claude/{rules,agents,skills,commands}`
-into one; Codex reads an `AGENTS.md` at the repo root plus `~/.codex`, so put
+into one. Codex reads `AGENTS.md` at the repo root plus `~/.codex`, so place
 `AGENTS.md` + `AGENTS.full.md` at your root and copy
-`targets/codex/{config.toml,agents,prompts}` into `~/.codex`; every other
-`AGENTS.md`-aware agent needs just those two files at your repo root.
+`targets/codex/{config.toml,agents,prompts}` into `~/.codex`. Every other
+`AGENTS.md`-aware agent needs only those two files at your repo root.
 
-## What's inside
+## Layout
 
-The universal layer is two files: `AGENTS.md`, the thin always-loaded index, and
-`AGENTS.full.md`, the full text it points into — principles, the agent roster,
-the skills, and the workflows, written as prose any agent can follow.
-`targets/claude/` is the native Claude Code layout (`rules/`, `agents/`,
-`skills/`, `commands/`). `targets/codex/` is the native Codex layout (the same
-two AGENTS files, `config.toml`, `agents/` with a toml plus full role
-instructions per agent, `prompts/`).
+| Path | Contents |
+| --- | --- |
+| `AGENTS.md` | Thin always-loaded index; points by section into the full bundle |
+| `AGENTS.full.md` | The full bundle: principles, agent roster, skills, workflows, as prose any agent can follow |
+| `targets/claude/` | Native Claude Code layout: `rules/`, `agents/`, `skills/`, `commands/` |
+| `targets/codex/` | Native Codex layout: `config.toml`, `agents/`, `prompts/` |
+| `source/` | The only hand-edited layer; everything above renders from it |
 
-The rules are the best-practice layer: architecture, coding style, testing, security,
-git and development workflow, performance, context layering, task management, skill
-management, anti-slop, and the augmented-coding-patterns catalog, plus language
-specifics for Go, Python, TypeScript, and Rust. The agents, skills, and workflows
-operationalize them; the `coding-practices` skill indexes the rules in full.
+The index-plus-manual split keeps loaded context small: agents auto-load the
+thin `AGENTS.md` and pull in sections of `AGENTS.full.md` only when a task
+needs them. For an agent that can only ever read one file, copy
+`AGENTS.full.md` as its `AGENTS.md`.
 
-Claude Code auto-discovers skills, agents, and commands, but does not auto-load
-`rules/`. Nothing is forced into your context on install: the `coding-practices`
-skill is a generated index that lets an agent discover the rules and read only the
-one it needs, on demand. (AGENTS.md-based agents get the same on-demand shape via
-the `AGENTS.md` index over `AGENTS.full.md`.) Install is a plain file copy: no
-hooks, no daemons, nothing running.
+The rules cover architecture, coding style, testing, security, git and
+development workflow, performance, context layering, task management, skill
+management, and anti-slop, plus language specifics for Go, Python, TypeScript,
+and Rust. Twenty-eight skills and seven workflows operationalize them. Claude
+Code auto-discovers skills, agents, and commands but does not auto-load
+`rules/`; the generated `coding-practices` skill indexes the rules so an agent
+reads only the one it needs, on demand.
 
-### Project context layers
+## Workflows
 
-The bundle's `AGENTS.md` is a thin index over `AGENTS.full.md`, the reference
-manual. A consuming project's own `AGENTS.md` is kept thin for the same reason:
-nothing bulky lives in an always-loaded file. `install.sh init` plus the
-`project-init` workflow set up four layers, each owning one kind of knowledge so
-no fact is stored twice:
-
-- **Bundle** — universal practices, agents, skills, workflows. Installed once,
-  referenced everywhere.
-- **`AGENTS.md`** (per project, thin) — this repo's intention and failure-mode
-  preventions, plus pointers to the rest. Target ~120 lines.
-- **Compass files** (`COMPASS.md` per area) — the tribal knowledge: the why, the
-  gotchas, how an area connects. Generated by `project-compass`, kept fresh with a
-  content-hash, indexed (not duplicated) by `AGENTS.md`.
-- **Memory** (`CLAUDE.md`, instincts) — host- and session-specific state, left to
-  the agent's own memory system.
-
-Maintenance is explicit, not automated: `failure-mode-capture` appends a
-prevention to `AGENTS.md` (deduping against memory first), and `project-compass`
-refreshes a map when an area changes. The boundary rules live in the
-`context-layering` practice. The codebase-compass idea follows Meta's work on
-[mapping tribal knowledge in large-scale pipelines](https://engineering.fb.com/2026/04/06/developer-tools/how-meta-used-ai-to-map-tribal-knowledge-in-large-scale-data-pipelines/).
-
-### The workflows encode the process
-
-Each workflow is a multi-step procedure that composes the skills into a repeatable
-sequence an agent runs the same way every time:
+Each workflow is a multi-step procedure that composes the skills into a
+repeatable sequence:
 
 - **implement-review**: plan, execute, simplify, then review as a hard gate before finalizing.
 - **research**: diverge across angles, converge to a recommendation, pre-mortem it.
 - **brainstorm-loop**: generate shape-distinct ideas, pre-mortem the frontrunners, converge.
-- **decompose**: split large work into independently-reviewable units.
+- **decompose**: split large work into independently reviewable units.
 - **epic-review**: review the assembled whole at the integration boundary.
+- **project-init**: recon a repo and fill in its thin `AGENTS.md` intention layer.
+- **fleet-conformance**: audit every repo on a machine against the bundle.
 
 The review-as-a-gate step in `implement-review` is the load-bearing one: the
-agent that wrote the code checks the diff against the acceptance criteria, with
-authority to reject and retry from a fresh context.
+reviewing agent checks the diff against the acceptance criteria with authority
+to reject and retry from a fresh context.
 
-### Two kinds of slop, two separate guards
+## Project context layers
 
-"Slop" means two different things here, and they never share a tool. **Code slop**
-is erosion and bloat in a diff; **writing slop** is AI tells in prose. Reach for the
-guard that matches what you're checking:
+`install.sh init` plus the `project-init` workflow set up four layers, each
+owning one kind of knowledge so no fact is stored twice: the **bundle**
+(universal practices, installed once), a thin per-project **`AGENTS.md`**
+(intention and failure-mode preventions, with pointers to the rest), per-area
+**`COMPASS.md`** files (the why, the gotchas, kept fresh with a content hash),
+and agent **memory** (host- and session-specific state). Maintenance is
+explicit, not automated: the `failure-mode-capture` skill appends a prevention
+to `AGENTS.md`, and `project-compass` refreshes a map when an area changes. The
+boundary rules live in the `context-layering` practice.
 
-- **Code slop →** the [`slop-check`](./source/skills/slop-check/SKILL.md) skill scores
-  a diff for **erosion** (dead branches and redundant structure that accrue as code
-  is extended) and **verbosity**, mirroring the
-  [SlopCodeBench](https://www.scbench.ai) judge rubric; the same rubric backs the
-  `anti-slop` rule
-  ([`source/rules/common/anti-slop.md`](./source/rules/common/anti-slop.md)) and the
-  slop pass in the `code-reviewer` agent and `review` skill.
-- **Writing slop →** the [`writing-voice`](./source/skills/writing-voice/SKILL.md)
-  skill guards prose and docs (articles, blog posts, READMEs) against telltale AI
-  writing patterns and adds positive craft defaults. A README is prose, not code, so
-  it routes here, not to `slop-check`.
+## Two kinds of slop, two separate guards
 
-Separately, the [`caveman`](./source/skills/caveman/SKILL.md) skill cuts
-conversational token use ~75% while preserving technical accuracy.
+Code slop and writing slop never share a tool. The
+[`slop-check`](./source/skills/slop-check/SKILL.md) skill scores a diff for
+erosion (dead branches and redundant structure that accrue as code is extended)
+and verbosity, mirroring the [SlopCodeBench](https://www.scbench.ai) judge
+rubric; the same rubric backs the anti-slop rule in
+[`source/rules/common/`](./source/rules/common/) and the slop pass in the
+`code-reviewer` agent. The
+[`writing-voice`](./source/skills/writing-voice/SKILL.md) skill guards prose
+(articles, docs, READMEs) against telltale AI writing patterns. Separately, the
+[`caveman`](./source/skills/caveman/SKILL.md) skill cuts conversational token
+use by roughly 75% while preserving technical accuracy.
 
-These pair well with [CodeGraph](https://github.com/colbymchenry/codegraph), a
-local pre-indexed code knowledge graph (CLI + MCP) that cuts exploration tokens
-and tool calls; orthogonal to the guards above, but the same goal: less slop,
-fewer tokens.
+## Companion tools
 
-### Recommended companion tools (non-invasive)
+Two rules point at external tools chosen for the same reason the bundle is
+built the way it is: capability without background weight.
+[skillager](https://github.com/jarmak-personal/skillager) (the
+`skill-management` rule) discovers, vets, and exposes agent skills on demand,
+so a session loads only the few a task needs.
+[beads_rust](https://github.com/Dicklesworthstone/beads_rust) (the
+`task-management` rule) is a dependency-aware task store frozen at SQLite plus
+JSONL, with the fuller [beads](https://github.com/gastownhall/beads) as the
+upgrade path when a project needs multi-machine sync.
 
-Two rules point at external tools chosen for the reason the bundle is: they add
-capability without installing themselves into everything.
+## CI and architecture page
 
-- **[skillager](https://pypi.org/project/skillager/)** (the `skill-management` rule)
-  is a local CLI that discovers, vets, and exposes agent skills on demand. You search
-  skills by metadata and load only the few a task needs, rather than every skill in
-  every chat. Installed once as a user tool (`uv tool install skillager`), nothing
-  runs in the background, and it discovers the skills this bundle ships. Source:
-  [github.com/jarmak-personal/skillager](https://github.com/jarmak-personal/skillager).
-- **[beads_rust](https://github.com/Dicklesworthstone/beads_rust)** (the
-  `task-management` rule) is a dependency-aware task store frozen at a SQLite + JSONL
-  architecture: no Dolt dependency, no auto-installed git hooks. The fuller
-  [beads](https://github.com/gastownhall/beads) adds a Dolt backend for versioned,
-  multiplayer sync when a project actually needs it.
+CI (`.github/workflows/check.yml`) fails any push or PR where the committed
+`AGENTS.md`, `AGENTS.full.md`, or `targets/` drift from a fresh render of
+`source/`, then sanitize-scans the rendered output for stray paths, PII, and
+internal jargon. A LikeC4 model under `architecture/` deploys to
+[an interactive architecture page](https://sjarmak.github.io/coding-agent-workflows/)
+on every push that touches it.
 
-Both follow the rule the bundle preaches: take the lightest thing that solves the
-problem, and add weight only when a concrete need appears.
+## Related
 
-## Provenance & license
+- [agent-workflows](https://github.com/sjarmak/agent-workflows): twenty-one
+  experimental multi-agent workflow skills for Claude Code (parallel research,
+  debate, stress-testing, review). The experimental sibling; this repo carries
+  the curated, agent-neutral set.
 
-MIT. Derived from [Everything Claude Code](https://github.com/affaan-m/everything-claude-code)
-(MIT, Affaan Mustafa); the augmented-coding-patterns rule synthesizes the
-[Augmented Coding Patterns](https://lexler.github.io/augmented-coding-patterns/)
-catalog; the anti-slop rule and slop-check skill adapt the code-erosion rubric
-from [SlopCodeBench](https://www.scbench.ai)
-([SprocketLab/slop-code-bench](https://github.com/SprocketLab/slop-code-bench)).
-See [NOTICE](./NOTICE).
+## Maintainer notes
 
----
-
-<details>
-<summary><b>Maintainer notes</b> (you don't need these to use the repo)</summary>
-
-The committed `AGENTS.md`, `AGENTS.full.md`, and `targets/` are generated from `source/`, the only
-hand-edited layer. To change the bundle, edit `source/` and run:
+`AGENTS.md`, `AGENTS.full.md`, and `targets/` are generated; edit `source/`
+only, then run:
 
 ```bash
 npm run build      # regenerate AGENTS.md + AGENTS.full.md + targets/ from source/
-npm run sanitize   # release gate: scan rendered output for paths, PII, internal jargon
-npm run release    # build + sanitize
-npm run check      # CI: fail if committed output drifted from source/
+npm run sanitize   # scan rendered output for paths, PII, internal jargon
+npm run validate   # structural validation of the rendered bundle
+npm run release    # build + sanitize + validate
+npm run check      # CI gate: fail if committed output drifted from source/
 ```
 
-`source/manifest.json` is the scope map (`universal`, `claude`, or `codex`) that
-decides where each artifact renders. `rule_overrides` marks an individual rule
-file such as `hooks.md` as Claude-only, so it ships to `targets/claude/` but
-stays out of the universal layer. The `templates` section lists project-scaffolding
-files (`AGENTS.project.md`, `COMPASS.md`) that ship verbatim into each target's
-`templates/` dir and are excluded from the universal `AGENTS.md` prose.
+`source/manifest.json` is the scope map (`universal`, `claude`, or `codex`)
+deciding where each artifact renders; `rule_overrides` marks individual rules
+as agent-specific, and `templates` lists project-scaffolding files that ship
+verbatim into each target.
 
-</details>
+## Provenance and license
+
+MIT. Derived from
+[Everything Claude Code](https://github.com/affaan-m/everything-claude-code)
+(MIT, Affaan Mustafa). The augmented-coding-patterns rule synthesizes the
+[Augmented Coding Patterns](https://lexler.github.io/augmented-coding-patterns/)
+catalog; the anti-slop rule and `slop-check` skill adapt the code-erosion
+rubric from [SlopCodeBench](https://github.com/SprocketLab/slop-code-bench).
+See [NOTICE](./NOTICE).
