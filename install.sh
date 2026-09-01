@@ -19,6 +19,18 @@ DEST="${2:-$PWD}"
 
 note() { printf '  %s\n' "$1"; }
 
+# cp that is a no-op when source and destination are the same file, so
+# `./install.sh codex|agents` run from inside this repo does not abort on
+# "AGENTS.md and AGENTS.md are the same file".
+cp_unless_same() {
+  local src=$1 dst=$2
+  if [ -e "$dst" ] && [ "$src" -ef "$dst" ]; then
+    note "$dst is this repo's own file; left as is."
+    return 0
+  fi
+  cp "$src" "$dst"
+}
+
 case "$AGENT" in
   claude|upgrade)
     mode="$AGENT"
@@ -49,21 +61,53 @@ case "$AGENT" in
       saved=$((saved + 1))
     done
 
-    cp -r "$src/." "$target/"
+    # A pre-existing symlink in the destination (a skill dir linked to a
+    # collection the user maintains elsewhere) cannot be overwritten by a
+    # directory, and writing through it would edit files outside $target.
+    # Skip those paths and report them instead of failing the whole install.
+    skipped_links=()
+    while IFS= read -r d; do
+      [ -n "$d" ] || continue
+      [ -L "$target/$d" ] || continue
+      skipped_links+=("$d")
+    done < <(cd "$src" && find . -mindepth 1 -type d | sed 's|^\./||' | sort)
+
+    under_skipped() {
+      local f=$1 d
+      for d in ${skipped_links[@]+"${skipped_links[@]}"}; do
+        case "$f" in "$d"/*) return 0 ;; esac
+      done
+      return 1
+    }
+
+    installed=()
+    for f in "${files[@]}"; do
+      under_skipped "$f" && continue
+      # a symlinked file would be written through to its target; replace the link
+      [ -L "$target/$f" ] && rm -f "$target/$f"
+      mkdir -p "$target/$(dirname "$f")"
+      cp "$src/$f" "$target/$f"
+      installed+=("$f")
+    done
 
     # upgrade: prune files the previous install owned that we no longer ship.
     pruned=0
     if [ "$mode" = upgrade ]; then
       for f in ${prev[@]+"${prev[@]}"}; do
-        contains "$f" "${files[@]}" && continue
+        contains "$f" ${installed[@]+"${installed[@]}"} && continue
         rm -f "$target/$f" && pruned=$((pruned + 1))
       done
     fi
 
-    printf '%s\n' "${files[@]}" > "$manifest"
+    printf '%s\n' ${installed[@]+"${installed[@]}"} > "$manifest"
     echo "Installed Claude Code config → $target"
     [ "$saved" -gt 0 ] && note "Backed up $saved pre-existing file(s) before overwrite → $backup"
     [ "$pruned" -gt 0 ] && note "Pruned $pruned file(s) the bundle no longer ships."
+    if [ "${#skipped_links[@]}" -gt 0 ]; then
+      note "Skipped ${#skipped_links[@]} path(s) that are symlinks in $target (left untouched):"
+      for d in "${skipped_links[@]}"; do note "  $d -> $(readlink "$target/$d")"; done
+      note "Remove a symlink and re-run to install the bundle's version there."
+    fi
     note "rules/ agents/ skills/ commands/ are now available."
     note "Files you did not have are added; foreign same-named files were backed up, not lost."
     note "File list written to .claude/.coding-agent-workflows-manifest (drives upgrade/remove)."
@@ -90,8 +134,8 @@ case "$AGENT" in
     note "Any collision backups remain under .claude/.coding-agent-workflows-backup/."
     ;;
   codex)
-    cp "$REPO/AGENTS.md" "$DEST/AGENTS.md"
-    cp "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
+    cp_unless_same "$REPO/AGENTS.md" "$DEST/AGENTS.md"
+    cp_unless_same "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
     codex_home="${CODEX_HOME:-$HOME/.codex}"
     mkdir -p "$codex_home"
     cp -r "$REPO/targets/codex/agents" "$REPO/targets/codex/prompts" \
@@ -106,8 +150,8 @@ case "$AGENT" in
     note "Codex reads AGENTS.md automatically from your project root."
     ;;
   agents)
-    cp "$REPO/AGENTS.md" "$DEST/AGENTS.md"
-    cp "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
+    cp_unless_same "$REPO/AGENTS.md" "$DEST/AGENTS.md"
+    cp_unless_same "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
     echo "Installed AGENTS.md (thin index) + AGENTS.full.md → $DEST"
     note "Any AGENTS.md-aware agent (Amp, Aider, Gemini CLI, …) auto-loads the index;"
     note "it reads sections of AGENTS.full.md on demand, keeping loaded context small."
