@@ -22,7 +22,7 @@ Each is a section (matched by heading) in `AGENTS.full.md`:
 - **Database & SQL** (`common/database.md`)
 - **Development Workflow** (`common/development-workflow.md`)
 - **Git Workflow** (`common/git-workflow.md`)
-- **House Rules (always-on)** (`common/house-rules.md`) — Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in rules/reference/ (on-demand).
+- **House Rules (always-on)** (`common/house-rules.md`) — Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in the rules layer (on-demand).
 - **Common Patterns** (`common/patterns.md`)
 - **Performance Optimization** (`common/performance.md`)
 - **Security Guidelines** (`common/security.md`)
@@ -79,6 +79,8 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 - **e2e-testing**: Thin methodology for end-to-end tests of critical user journeys — define journeys by risk, use semantic locators and condition-based waits, quarantine flaky tests with a tracked reason, and capture artifacts on failure. Use when adding or stabilizing E2E coverage; the e2e-runner agent applies it in depth.
 - **dashboard**: Generate an HTML dashboard of project status and recent outputs, scoped to what the user asks about. Use when the user asks for a dashboard or project status, asks what is blocking a release, what needs attention, or where work was left off, or wants a visual read on a repo instead of scrolling terminal output. Renders a self-contained page to .dashboard/index.html, plus a rollup mode across several repos.
 - **handoff-doc**: Write a handoff document to a handoff directory so a new agent session can be pointed at the file, read it, and delete it. Use when nearing context limits or starting fresh while preserving context. Triggers on: handoff doc, file handoff, write handoff, new session, continue in new thread.
+- **ruling-capture**: Capture a standing decision, policy, or correction a user gives mid-session ("always do X", "never do Y", "from now on, Z") into a durable, searchable document instead of losing it to the transcript. Writes the full ruling to the topic-owning document, leaves a one-line pointer in the main instructions file, and ships a heuristic checker for rulings that were inlined or documents nothing points at. Use when the user issues a standing directive, overrules an approach, or says "remember this" / "make that the rule".
+- **working-set-snapshot**: Preserve curated session state across context compaction. The agent maintains a short working-set file (doing / decided / blocked / next); a hook fires at the pre-compaction boundary, blocks a bounded number of times until the file exists, snapshots it with a content hash and cheap boundary facts, then warns if the file is stale or unchanged across three boundaries. Use when a session is long enough to compact, when state keeps getting lost across compaction, or when the user says "write the working set" / "set up the compaction hook".
 
 Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.
 

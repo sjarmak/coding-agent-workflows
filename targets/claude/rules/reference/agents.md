@@ -32,9 +32,9 @@ Reach for a specialized role without being asked:
 3. Bug fix or new feature → **tdd-guide**
 4. Architectural decision → **architect**
 
-## Parallel by Default
+## Bounded Parallelism
 
-Run independent agents concurrently, not in sequence:
+Run independent agents concurrently, not in sequence — up to the ceiling below:
 
 ```
 GOOD: one dispatch, three agents in parallel:
@@ -46,12 +46,19 @@ BAD: agent 1, then agent 2, then agent 3, for work that has no dependency betwee
 ```
 
 When the host supports a single batched dispatch (e.g. multiple subagent calls
-in one turn), use it. See `agent-collaboration.md` for the full parallel-by-default rule.
+in one turn), use it.
+
+**Bounded, though:** at most 3 agents live at once, and a subagent never spawns
+its own subagents. Depth-2 spawning is what turned a 4-slot default into 10-15
+live threads and burned a weekly allowance in under five hours. See
+`agent-collaboration.md` §Bounded Parallelism for the measurement and the
+review-panel sizing rule.
 
 ## Multi-Perspective Analysis
 
-For high-stakes or ambiguous problems, split into independent reviewer roles so
-blind spots in one are caught by another:
+For **high-stakes or ambiguous** problems only — not as the default review shape —
+split into independent reviewer roles so blind spots in one are caught by another.
+Pick the two or three lenses the change actually exercises from:
 
 - factual / correctness reviewer
 - senior-engineer (design & maintainability) reviewer
@@ -59,5 +66,9 @@ blind spots in one are caught by another:
 - consistency reviewer
 - redundancy / dead-code reviewer
 
+Running all five is almost never right; the marginal lens costs a full context
+re-read per turn and usually restates what the first two already found.
+
 Where a second model is available (e.g. routing one reviewer to a different
-provider), use it; uncorrelated reviewers catch more than duplicates of the same model.
+provider), use it: one uncorrelated reviewer beats two duplicates of the same
+model, and it is the cheapest way to add coverage.

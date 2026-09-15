@@ -63,6 +63,8 @@
     "e2e-testing": "universal",
     "dashboard": "universal",
     "handoff-doc": "universal",
+    "ruling-capture": "universal",
+    "working-set-snapshot": "universal",
     "coding-practices": "claude"
   },
   "workflows": {

@@ -28,6 +28,30 @@ out across every worker it dispatches. Push execution down instead. Lower tiers
 compensate with explicit process — prefer adding a verification gate over
 up-tiering.
 
+## Concurrency and Context Are the Bill
+
+Usage scales with **agents x turns x context**, not with tasks completed. Every
+live agent re-sends its whole conversation on every turn, and cached input is
+metered at or near full rate, so a long-running agent parked at a large context
+costs the same each turn whether or not anything new happened.
+
+Measured on 2026-09-05: a weekly Codex allowance was consumed in 4h51m — 8,847
+model responses, mean context 133K tokens, 1.18B billed tokens, of which only
+22.4M were new content (98.4% was context re-read). The week before had run the
+same 8,000-odd responses over 37 hours. The delta was concurrency (10-15 live
+threads vs 1-2), not work done.
+
+The three levers, in order of effect:
+
+1. **Cap concurrency and depth.** At most 3 agents live at once; a subagent
+   never spawns its own subagents. Depth-2 spawning is what multiplies a 4-slot
+   default into 15 threads.
+2. **Cap context.** Compact well below the model's ceiling — the cost of one
+   compaction is repaid within a handful of turns at a 200K context.
+3. **Route effort down.** Subagents run at medium effort unless the task is
+   genuinely hard; reasoning tokens were a minor term (908K of 3.28M output) but
+   effort also drives turn count.
+
 ## Context Window Management
 
 Avoid last 20% of context window for:

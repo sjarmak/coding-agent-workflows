@@ -1,5 +1,5 @@
 ---
-summary: Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in rules/reference/ (on-demand).
+summary: Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in the rules layer (on-demand).
 autoload: claude
 ---
 
@@ -47,9 +47,16 @@ a panic/stack trace or a clean repro, not routine log noise (a broken pipe on
 flush is usually a disconnect; "context canceled" is usually a shutdown).
 Cross-repo credibility is a standing asset; protect it. Full rule → `/coding-practices`.
 
-**Parallel by default** — dispatch ≥2 independent agents in one message. Non-
-trivial code review = 2 independent reviewers + a Codex meta-review unless told
-otherwise; route to Codex when available.
+**Bounded parallelism** — fan independent work out in one message rather than
+sequencing it, but keep **at most 3 agents live at once** and never let a
+subagent spawn its own subagents. Concurrency is the usage multiplier: a
+2026-09-05 audit burned a full weekly Codex allowance in 4h51m at 10-15
+concurrent threads, doing the same amount of model work that had previously
+taken 37 hours at 1-2. Every live agent re-sends its whole context on every
+turn, so the bill scales with agents x turns x context, not with tasks
+completed. Scale the review panel to the change: one reviewer for a routine
+diff, two (plus a cross-provider read) only for non-trivial or security-
+sensitive work. Review the landed change once; do not review per worker.
 
 **Receiving review** — evaluate technically; the reviewer can be wrong, the
 codebase is the authority. Per item: read → restate → verify against the code →
@@ -138,5 +145,5 @@ Route by cognitive load: planning, orchestration, architecture, and judge panels
 mechanical/high-frequency → Haiku class. A bad plan costs more than the tokens
 saved producing it. Lower tiers compensate with explicit process (plan schemas,
 decision tables, verification gates) — prefer adding a gate over up-tiering.
-Full table → `rules/reference/performance.md`. Avoid the last 20% of the context
+Full table → `performance.md` in this bundle. Avoid the last 20% of the context
 window for large refactors and multi-file features.

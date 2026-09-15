@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "node build/render.mjs",
-    "test": "node scripts/fleet/fleet-scan.test.mjs && node source/skills/dashboard/allowlist.test.mjs && node source/skills/dashboard/render.test.mjs && node source/skills/focus/focus-contract.test.mjs",
+    "test": "node scripts/fleet/fleet-scan.test.mjs && node source/skills/dashboard/allowlist.test.mjs && node source/skills/dashboard/render.test.mjs && node source/skills/focus/focus-contract.test.mjs && bash source/skills/working-set-snapshot/working-set-snapshot.test.sh && bash source/skills/ruling-capture/check-rulings-durability.test.sh",
     "check": "node build/check.mjs",
     "sanitize": "node build/sanitize.mjs",
     "validate": "node build/validate.mjs",

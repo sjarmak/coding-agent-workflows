@@ -72,11 +72,24 @@ Never assert a bug in another project's tracker from inferred symptoms, especial
 
 Credibility across repos is a standing asset. One confidently-filed issue that turns out to be log noise costs more trust than the bug would have earned, and that trust does not reset per repo. When the evidence does not clear the bar, investigate further or report the observation as a question, not as a bug.
 
-## Parallel by Default
+## Bounded Parallelism
 
-When dispatching ≥2 independent agents, fan them out in a single message with multiple Agent tool calls. Don't sequence agents that don't depend on each other.
+Fan independent work out in a single message with multiple Agent tool calls rather than sequencing agents that don't depend on each other. Parallelism is still the default shape; what is not the default is unbounded parallelism.
 
-When reviewing non-trivial code: default to 2 independent reviewers + a Codex meta-review unless told otherwise. Reviews are always prescriptive; route to Codex when routing is available.
+**The ceiling: at most 3 agents live at once, depth 1 only.** A subagent does not spawn its own subagents. Past that ceiling the wall-clock gain flattens and the token cost keeps compounding, because every live agent re-sends its entire context on every turn.
+
+**Why the ceiling exists.** A 2026-09-05 audit of a Codex account found a freshly redeemed weekly allowance consumed in 4 hours 51 minutes: 8,847 model responses at a mean 133K-token context, 1.18 billion billed tokens, of which only 22.4M were new content. The preceding week had done the *same* volume of model work (8,298 responses) spread over 37 hours. The difference was not workload. It was 10-15 concurrent threads instead of 1-2, produced by depth-2 subagent spawning. Reviewer subagents alone accounted for 34% of the week.
+
+**Scale the review panel to the change, not to the worker count:**
+
+- Routine diff, single module: one reviewer.
+- Non-trivial, cross-cutting, or security-sensitive: two reviewers, plus one cross-provider read (Codex) when routing is available.
+- Review the landed change **once**. Do not run a panel per worker, and do not re-run the full panel on each fix iteration; re-review only the delta, with one reviewer.
+
+Reviews are always prescriptive.
+
+**Prefer a fork over a fan-out for search.** When the question is "find/understand X" rather than "judge X from N angles", one `subagent_type: "fork"` (or one Explore agent) answers it and keeps the search output out of the parent context. N independent reviewers on a lookup is pure waste.
+
 
 ## Receiving Code Review
 
@@ -139,9 +152,9 @@ Reach for a specialized role without being asked:
 3. Bug fix or new feature → **tdd-guide**
 4. Architectural decision → **architect**
 
-## Parallel by Default
+## Bounded Parallelism
 
-Run independent agents concurrently, not in sequence:
+Run independent agents concurrently, not in sequence — up to the ceiling below:
 
 ```
 GOOD: one dispatch, three agents in parallel:
@@ -153,12 +166,19 @@ BAD: agent 1, then agent 2, then agent 3, for work that has no dependency betwee
 ```
 
 When the host supports a single batched dispatch (e.g. multiple subagent calls
-in one turn), use it. See `agent-collaboration.md` for the full parallel-by-default rule.
+in one turn), use it.
+
+**Bounded, though:** at most 3 agents live at once, and a subagent never spawns
+its own subagents. Depth-2 spawning is what turned a 4-slot default into 10-15
+live threads and burned a weekly allowance in under five hours. See
+`agent-collaboration.md` §Bounded Parallelism for the measurement and the
+review-panel sizing rule.
 
 ## Multi-Perspective Analysis
 
-For high-stakes or ambiguous problems, split into independent reviewer roles so
-blind spots in one are caught by another:
+For **high-stakes or ambiguous** problems only — not as the default review shape —
+split into independent reviewer roles so blind spots in one are caught by another.
+Pick the two or three lenses the change actually exercises from:
 
 - factual / correctness reviewer
 - senior-engineer (design & maintainability) reviewer
@@ -166,8 +186,12 @@ blind spots in one are caught by another:
 - consistency reviewer
 - redundancy / dead-code reviewer
 
+Running all five is almost never right; the marginal lens costs a full context
+re-read per turn and usually restates what the first two already found.
+
 Where a second model is available (e.g. routing one reviewer to a different
-provider), use it; uncorrelated reviewers catch more than duplicates of the same model.
+provider), use it: one uncorrelated reviewer beats two duplicates of the same
+model, and it is the cheapest way to add coverage.
 
 # Anti-Slop & Code Erosion
 
@@ -844,6 +868,30 @@ out across every worker it dispatches. Push execution down instead. Lower tiers
 compensate with explicit process — prefer adding a verification gate over
 up-tiering.
 
+## Concurrency and Context Are the Bill
+
+Usage scales with **agents x turns x context**, not with tasks completed. Every
+live agent re-sends its whole conversation on every turn, and cached input is
+metered at or near full rate, so a long-running agent parked at a large context
+costs the same each turn whether or not anything new happened.
+
+Measured on 2026-09-05: a weekly Codex allowance was consumed in 4h51m — 8,847
+model responses, mean context 133K tokens, 1.18B billed tokens, of which only
+22.4M were new content (98.4% was context re-read). The week before had run the
+same 8,000-odd responses over 37 hours. The delta was concurrency (10-15 live
+threads vs 1-2), not work done.
+
+The three levers, in order of effect:
+
+1. **Cap concurrency and depth.** At most 3 agents live at once; a subagent
+   never spawns its own subagents. Depth-2 spawning is what multiplies a 4-slot
+   default into 15 threads.
+2. **Cap context.** Compact well below the model's ceiling — the cost of one
+   compaction is repaid within a handful of turns at a 200K context.
+3. **Route effort down.** Subagents run at medium effort unless the task is
+   genuinely hard; reasoning tokens were a minor term (908K of 3.28M output) but
+   effort also drives turn count.
+
 ## Context Window Management
 
 Avoid last 20% of context window for:
@@ -1178,6 +1226,8 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 - **e2e-testing**: Thin methodology for end-to-end tests of critical user journeys — define journeys by risk, use semantic locators and condition-based waits, quarantine flaky tests with a tracked reason, and capture artifacts on failure. Use when adding or stabilizing E2E coverage; the e2e-runner agent applies it in depth.
 - **dashboard**: Generate an HTML dashboard of project status and recent outputs, scoped to what the user asks about. Use when the user asks for a dashboard or project status, asks what is blocking a release, what needs attention, or where work was left off, or wants a visual read on a repo instead of scrolling terminal output. Renders a self-contained page to .dashboard/index.html, plus a rollup mode across several repos.
 - **handoff-doc**: Write a handoff document to a handoff directory so a new agent session can be pointed at the file, read it, and delete it. Use when nearing context limits or starting fresh while preserving context. Triggers on: handoff doc, file handoff, write handoff, new session, continue in new thread.
+- **ruling-capture**: Capture a standing decision, policy, or correction a user gives mid-session ("always do X", "never do Y", "from now on, Z") into a durable, searchable document instead of losing it to the transcript. Writes the full ruling to the topic-owning document, leaves a one-line pointer in the main instructions file, and ships a heuristic checker for rulings that were inlined or documents nothing points at. Use when the user issues a standing directive, overrules an approach, or says "remember this" / "make that the rule".
+- **working-set-snapshot**: Preserve curated session state across context compaction. The agent maintains a short working-set file (doing / decided / blocked / next); a hook fires at the pre-compaction boundary, blocks a bounded number of times until the file exists, snapshots it with a content hash and cheap boundary facts, then warns if the file is stale or unchanged across three boundaries. Use when a session is long enough to compact, when state keeps getting lost across compaction, or when the user says "write the working set" / "set up the compaction hook".
 
 Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.
 

@@ -62,11 +62,24 @@ Never assert a bug in another project's tracker from inferred symptoms, especial
 
 Credibility across repos is a standing asset. One confidently-filed issue that turns out to be log noise costs more trust than the bug would have earned, and that trust does not reset per repo. When the evidence does not clear the bar, investigate further or report the observation as a question, not as a bug.
 
-## Parallel by Default
+## Bounded Parallelism
 
-When dispatching ≥2 independent agents, fan them out in a single message with multiple Agent tool calls. Don't sequence agents that don't depend on each other.
+Fan independent work out in a single message with multiple Agent tool calls rather than sequencing agents that don't depend on each other. Parallelism is still the default shape; what is not the default is unbounded parallelism.
 
-When reviewing non-trivial code: default to 2 independent reviewers + a Codex meta-review unless told otherwise. Reviews are always prescriptive; route to Codex when routing is available.
+**The ceiling: at most 3 agents live at once, depth 1 only.** A subagent does not spawn its own subagents. Past that ceiling the wall-clock gain flattens and the token cost keeps compounding, because every live agent re-sends its entire context on every turn.
+
+**Why the ceiling exists.** A 2026-09-05 audit of a Codex account found a freshly redeemed weekly allowance consumed in 4 hours 51 minutes: 8,847 model responses at a mean 133K-token context, 1.18 billion billed tokens, of which only 22.4M were new content. The preceding week had done the *same* volume of model work (8,298 responses) spread over 37 hours. The difference was not workload. It was 10-15 concurrent threads instead of 1-2, produced by depth-2 subagent spawning. Reviewer subagents alone accounted for 34% of the week.
+
+**Scale the review panel to the change, not to the worker count:**
+
+- Routine diff, single module: one reviewer.
+- Non-trivial, cross-cutting, or security-sensitive: two reviewers, plus one cross-provider read (Codex) when routing is available.
+- Review the landed change **once**. Do not run a panel per worker, and do not re-run the full panel on each fix iteration; re-review only the delta, with one reviewer.
+
+Reviews are always prescriptive.
+
+**Prefer a fork over a fan-out for search.** When the question is "find/understand X" rather than "judge X from N angles", one `subagent_type: "fork"` (or one Explore agent) answers it and keeps the search output out of the parent context. N independent reviewers on a lookup is pure waste.
+
 
 ## Receiving Code Review
 
