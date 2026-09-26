@@ -88,4 +88,4 @@ psql -c "SELECT indexrelname, idx_scan, idx_tup_read FROM pg_stat_user_indexes O
 
 Report findings CRITICAL → HIGH → MEDIUM → LOW. For each: the file/line or query, why it is a problem (with `EXPLAIN` output or a lock/permission fact where relevant), and the concrete fix. Only report issues you are confident are real.
 
-**Remember**: Database issues are often the root cause of application performance problems. Optimize queries and schema early, verify assumptions with `EXPLAIN ANALYZE`, and always index foreign keys and RLS policy columns. See `rules/reference/database.md` for the condensed rule.
+**Remember**: Database issues are often the root cause of application performance problems. Optimize queries and schema early, verify assumptions with `EXPLAIN ANALYZE`, and always index foreign keys and RLS policy columns. See `rules-reference/database.md` for the condensed rule.

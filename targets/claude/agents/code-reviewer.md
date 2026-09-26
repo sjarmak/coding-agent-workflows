@@ -69,6 +69,7 @@ const result = await db.query(query, [userId]);
 - **console.log statements**: Remove debug logging before merge
 - **Missing tests**: New code paths without test coverage
 - **Dead code**: Commented-out code, unused imports, unreachable branches
+- **Any added comment (HIGH, blocks the commit)**: No comments in code (Stephanie, 2026-09-25: "never leave comments in the code", applied globally). Add no comment of any kind to code or config: no why-notes, docstrings, JSDoc, TODOs, dated change notes or commented-out code. Names, types and tests carry meaning; rationale goes in the commit message, PR body, bead or a doc. Exempt only what a tool reads or a configured linter requires (shebangs, build tags, encoding lines, lint/type pragmas, Rust `// SAFETY:` under clippy). Before every commit, list added comment lines with `git diff --cached -U0 -- . ':!*.md' | grep -E '^\+([[:space:]]*(#|//|/\*|\*|--|<!--)|.*[[:space:]](#|//)[[:space:]])' | grep -v '^+++'` and delete each one that is not exempt. No sweep (Stephanie, 2026-09-25, dec-rz6b (a)): existing comments on lines you did not change stay; a comment on a line you change or rewrite goes with that change.
 
 ```typescript
 // BAD: Deep nesting + mutation
@@ -173,7 +174,7 @@ const usersWithPosts = await db.query(`
 
 ### Architecture Principles (HIGH)
 
-Check against `rules/reference/architecture.md`:
+Check against `rules-reference/architecture.md`:
 
 - **SRP violations**: Modules with multiple reasons to change; classes named "Manager"/"Helper"/"Util" that accumulate unrelated methods
 - **Layering violations**: Upward dependencies (lower layer importing from a higher one), presentation logic in data layer, business rules leaking into controllers
@@ -189,9 +190,9 @@ Check against `rules/reference/architecture.md`:
 
 ### AI Slop & Erosion (HIGH)
 
-Check against `rules/reference/anti-slop.md`. These are the patterns AI-generated and iteratively-extended code accumulates — weight your attention toward code that **extends** an existing function/module rather than greenfield additions:
+Check against `rules-reference/anti-slop.md`. These are the patterns AI-generated and iteratively-extended code accumulates — weight your attention toward code that **extends** an existing function/module rather than greenfield additions:
 
-- **Documentation noise**: narration comments ("Step 1:"), docstrings that restate the function name, entry/exit logging in short functions
+- **Documentation noise**: entry/exit logging in short functions (comments of any kind are a finding under Dead code above)
 - **Overengineering**: single-implementer interfaces, single-entry registries, factories that return a constant, strategies set once and never varied, primitive/monadic wrappers with no behavior
 - **Premature optimization**: caching arithmetic/constants, parallelism for tiny collections, lazy-init for always-accessed values
 - **Over-handling**: defending against inputs the spec excludes, defaults on guaranteed-non-null values, repeated null checks
@@ -267,7 +268,7 @@ When reviewing AI-generated changes, prioritize:
 2. Security assumptions and trust boundaries
 3. Hidden coupling or accidental architecture drift
 4. Unnecessary model-cost-inducing complexity
-5. Slop and erosion signatures — run the **AI Slop & Erosion** checklist above (`rules/reference/anti-slop.md`). AI-extended code is the highest-yield surface for the overengineering, documentation-noise, and error-obscuring patterns.
+5. Slop and erosion signatures — run the **AI Slop & Erosion** checklist above (`rules-reference/anti-slop.md`). AI-extended code is the highest-yield surface for the overengineering, documentation-noise, and error-obscuring patterns.
 
 Cost-awareness check:
 

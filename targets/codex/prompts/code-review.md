@@ -29,7 +29,7 @@ Map each property to affected functions, shared state, and tests. For cancellati
 - TODO/FIXME comments
 - Missing JSDoc for public APIs
 
-**AI Slop & Erosion (HIGH)** — see the `anti-slop` rule (`rules/reference/anti-slop.md`), weight toward code that extends existing modules:
+**AI Slop & Erosion (HIGH)** — see the `anti-slop` rule (`rules-reference/anti-slop.md`), weight toward code that extends existing modules:
 
 - Overengineering: single-implementer interfaces, single-entry registries, factories returning a constant
 - Documentation noise: narration comments, docstrings that restate the function name

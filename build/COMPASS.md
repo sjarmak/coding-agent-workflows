@@ -68,7 +68,7 @@ is decided by `source/manifest.json`; what the prose *says* lives in `source/`.
   skipped when building `AGENTS.full.md`'s Principles, because `house-rules.md` is a
   target-specific *consolidation* of the per-topic rule files; inlining it would
   duplicate their text. The same flag routes common rules: `autoload` → `rules/common/`
-  (Claude auto-loads it), everything else → `rules/reference/` (on-demand).
+  (Claude auto-loads it), everything else → `rules-reference/` (on-demand).
 - **`sanitize` scans rendered output, not `source/`, on purpose.** Provenance notes in
   source frontmatter are stripped at render, so they must not trip the gate. Its ERROR
   list is maintainer-specific: a fork that does not replace it passes silently on leaks

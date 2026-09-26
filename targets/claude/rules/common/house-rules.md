@@ -1,5 +1,5 @@
 ---
-summary: Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in the rules layer (on-demand).
+summary: Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in ~/.claude/rules-reference/ (on-demand).
 autoload: claude
 ---
 
@@ -92,6 +92,7 @@ commands per criterion.
 - **No placeholder code** — no `throw "not implemented"`, no fake returns, no
   TODO standing in for in-scope work. **No commented-out history** — git holds
   it; delete removed code outright.
+- **No comments in code** (Stephanie, 2026-09-25: "never leave comments in the code", applied globally). Add no comment of any kind to code or config: no why-notes, docstrings, JSDoc, TODOs, dated change notes or commented-out code. Names, types and tests carry meaning; rationale goes in the commit message, PR body, bead or a doc. Exempt only what a tool reads or a configured linter requires (shebangs, build tags, encoding lines, lint/type pragmas, Rust `// SAFETY:` under clippy). Before every commit, list added comment lines with `git diff --cached -U0 -- . ':!*.md' | grep -E '^\+([[:space:]]*(#|//|/\*|\*|--|<!--)|.*[[:space:]](#|//)[[:space:]])' | grep -v '^+++'` and delete each one that is not exempt. No sweep (Stephanie, 2026-09-25, dec-rz6b (a)): existing comments on lines you did not change stay; a comment on a line you change or rewrite goes with that change.
 - **Codebase ownership** — fix issues you discover (broken tests, build errors,
   stale refs, security) regardless of the current ticket's scope.
 
@@ -145,5 +146,5 @@ Route by cognitive load: planning, orchestration, architecture, and judge panels
 mechanical/high-frequency → Haiku class. A bad plan costs more than the tokens
 saved producing it. Lower tiers compensate with explicit process (plan schemas,
 decision tables, verification gates) — prefer adding a gate over up-tiering.
-Full table → `performance.md` in this bundle. Avoid the last 20% of the context
+Full table → `~/.claude/rules-reference/performance.md`. Avoid the last 20% of the context
 window for large refactors and multi-file features.

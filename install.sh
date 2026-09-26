@@ -43,6 +43,16 @@ case "$AGENT" in
     # Portable array fill (no mapfile) so this runs under stock macOS bash too.
     files=(); while IFS= read -r f; do files+=("$f"); done \
       < <(cd "$src" && find . -type f | sed 's|^\./||' | sort)
+    for f in "${files[@]}"; do
+      case "$f" in rules/reference/*)
+        echo "refusing to install: bundle ships $f, and Claude Code auto-loads rules/reference/ into every session" >&2
+        exit 1 ;;
+      esac
+    done
+    if [ -e "$target/rules/reference" ]; then
+      echo "refusing to install: $target/rules/reference exists and is auto-loaded into every session; move it to $target/rules-reference and re-run" >&2
+      exit 1
+    fi
     prev=(); [ -f "$manifest" ] && while IFS= read -r f; do [ -n "$f" ] && prev+=("$f"); done < "$manifest"
     contains() { local x=$1; shift; local e; for e in "$@"; do [ "$e" = "$x" ] && return 0; done; return 1; }
 

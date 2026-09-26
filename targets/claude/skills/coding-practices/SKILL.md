@@ -1,7 +1,7 @@
 ---
 name: coding-practices
 summary: Discovery index for this project's coding-practice rules; load it to find the right rule, then read that rule file on demand.
-description: Index of this project's coding-practice rules — architecture, coding style, testing, security, git workflow, task management, context layering, anti-slop, performance, and language-specific rules. The thin always-on essentials live in .claude/rules/common/house-rules.md; the full per-topic detail ships under .claude/rules/reference/ and .claude/rules/<lang>/ and is read on demand. Invoke this skill when you need the project's standards for a task, then open the specific rule file it points to.
+description: Index of this project's coding-practice rules — architecture, coding style, testing, security, git workflow, task management, context layering, anti-slop, performance, and language-specific rules. The thin always-on essentials live in .claude/rules/common/house-rules.md; the full per-topic detail ships under .claude/rules-reference/ and .claude/rules/<lang>/ and is read on demand. Invoke this skill when you need the project's standards for a task, then open the specific rule file it points to.
 origin: agentic-coding-practices
 scope: claude
 ---
@@ -11,7 +11,7 @@ scope: claude
 The always-on essentials load every session from
 `.claude/rules/common/house-rules.md` (autonomy boundary, output discipline,
 coding/architecture/security standards, ZFC, the anti-slop trigger). The **full
-per-topic detail** is **not** auto-loaded — it ships under `.claude/rules/reference/`
+per-topic detail** is **not** auto-loaded — it ships under `.claude/rules-reference/`
 (common topics) and `.claude/rules/<lang>/` (language rules) to keep the context
 window lean. Read the one rule relevant to your current task, when you need it.
 This skill is the catalog of that on-demand detail.
@@ -28,24 +28,24 @@ This skill is the catalog of that on-demand detail.
 
 ### Common (all languages)
 
-- `.claude/rules/reference/agent-collaboration.md` — Agent Collaboration
-- `.claude/rules/reference/agents.md` — Agent Orchestration
-- `.claude/rules/reference/anti-slop.md` — Anti-Slop & Code Erosion
-- `.claude/rules/reference/architecture.md` — Architecture Principles
-- `.claude/rules/reference/augmented-coding-patterns.md` — Augmented Coding Patterns
-- `.claude/rules/reference/code-graph.md` — Code Knowledge Graphs
-- `.claude/rules/reference/coding-style.md` — Coding Style
-- `.claude/rules/reference/context-layering.md` — The four context layers an agent reads, and the one-fact-one-layer rule that keeps AGENTS.md thin and free of conflict with memory.
-- `.claude/rules/reference/database.md` — Database & SQL
-- `.claude/rules/reference/development-workflow.md` — Development Workflow
-- `.claude/rules/reference/git-workflow.md` — Git Workflow
-- `.claude/rules/reference/hooks.md` — Hooks
-- `.claude/rules/reference/patterns.md` — Common Patterns
-- `.claude/rules/reference/performance.md` — Performance Optimization
-- `.claude/rules/reference/security.md` — Security Guidelines
-- `.claude/rules/reference/skill-management.md` — Discover, vet, and expose agent skills on demand with skillager, so the right skills are available per task without loading every skill into every chat.
-- `.claude/rules/reference/task-management.md` — Track multi-step agent work in a durable, dependency-aware task store; prefer the lightest non-invasive backend (SQLite + JSONL) and only add heavier sync when you actually need it.
-- `.claude/rules/reference/testing.md` — Testing Requirements
+- `.claude/rules-reference/agent-collaboration.md` — Agent Collaboration
+- `.claude/rules-reference/agents.md` — Agent Orchestration
+- `.claude/rules-reference/anti-slop.md` — Anti-Slop & Code Erosion
+- `.claude/rules-reference/architecture.md` — Architecture Principles
+- `.claude/rules-reference/augmented-coding-patterns.md` — Augmented Coding Patterns
+- `.claude/rules-reference/code-graph.md` — Code Knowledge Graphs
+- `.claude/rules-reference/coding-style.md` — Coding Style
+- `.claude/rules-reference/context-layering.md` — The four context layers an agent reads, and the one-fact-one-layer rule that keeps AGENTS.md thin and free of conflict with memory.
+- `.claude/rules-reference/database.md` — Database & SQL
+- `.claude/rules-reference/development-workflow.md` — Development Workflow
+- `.claude/rules-reference/git-workflow.md` — Git Workflow
+- `.claude/rules-reference/hooks.md` — Hooks
+- `.claude/rules-reference/patterns.md` — Common Patterns
+- `.claude/rules-reference/performance.md` — Performance Optimization
+- `.claude/rules-reference/security.md` — Security Guidelines
+- `.claude/rules-reference/skill-management.md` — Discover, vet, and expose agent skills on demand with skillager, so the right skills are available per task without loading every skill into every chat.
+- `.claude/rules-reference/task-management.md` — Track multi-step agent work in a durable, dependency-aware task store; prefer the lightest non-invasive backend (SQLite + JSONL) and only add heavier sync when you actually need it.
+- `.claude/rules-reference/testing.md` — Testing Requirements
 
 ### go
 

@@ -57,11 +57,6 @@ mkdirp(TARGETS);
 // targets/claude: native Claude Code layout
 // =========================================================================
 const C = path.join(TARGETS, 'claude');
-// rules: detailed rule files are meant to be read on demand, not auto-loaded.
-// Claude Code DOES auto-load rules/common/*.md, so the full common set ships to
-// rules/reference/ (a sibling dir, not auto-loaded like rules/<lang>/), and only
-// files marked `autoload: claude` (the thin house-rules.md) stay in rules/common/
-// to load every session. Language rules stay under rules/<lang>/ (on-demand).
 for (const lang of Object.keys(manifest.rules)) {
   if (lang.startsWith('$')) continue;
   if (lang !== 'common') {
@@ -72,8 +67,8 @@ for (const lang of Object.keys(manifest.rules)) {
   for (const f of fs.readdirSync(commonSrc).filter(x => x.endsWith('.md'))) {
     const raw = fs.readFileSync(path.join(commonSrc, f), 'utf8');
     const { data } = parse(raw);
-    const sub = data.autoload === 'claude' ? 'common' : 'reference';
-    write(path.join(C, 'rules', sub, f), raw);
+    const dest = data.autoload === 'claude' ? path.join(C, 'rules', 'common', f) : path.join(C, 'rules-reference', f);
+    write(dest, raw);
   }
 }
 // agents: universal + claude
@@ -116,11 +111,9 @@ if (fs.existsSync(cpPath)) {
     const dir = path.join(SRC, 'rules', lang);
     catalog.push('', `### ${lang === 'common' ? 'Common (all languages)' : lang}`, '');
     for (const f of fs.readdirSync(dir).filter(x => x.endsWith('.md')).sort()) {
-      // common detail ships to rules/reference/; autoload files load every
-      // session and are not on-demand catalog entries.
       if (lang === 'common') {
         if (parse(fs.readFileSync(path.join(dir, f), 'utf8')).data.autoload === 'claude') continue;
-        catalog.push(`- \`.claude/rules/reference/${f}\` — ${ruleEntry(path.join(dir, f))}`);
+        catalog.push(`- \`.claude/rules-reference/${f}\` — ${ruleEntry(path.join(dir, f))}`);
       } else {
         catalog.push(`- \`.claude/rules/${lang}/${f}\` — ${ruleEntry(path.join(dir, f))}`);
       }
