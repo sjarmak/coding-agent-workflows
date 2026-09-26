@@ -148,8 +148,17 @@ case "$AGENT" in
     cp_unless_same "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
     codex_home="${CODEX_HOME:-$HOME/.codex}"
     mkdir -p "$codex_home"
-    cp -r "$REPO/targets/codex/agents" "$REPO/targets/codex/prompts" \
-      "$REPO/targets/codex/skills" "$codex_home/"
+    for kind in agents prompts skills; do
+      mkdir -p "$codex_home/$kind"
+      for entry in "$REPO/targets/codex/$kind"/*; do
+        name=$(basename "$entry")
+        if [ -L "$codex_home/$kind/$name" ]; then
+          note "$codex_home/$kind/$name is a symlink; left untouched."
+          continue
+        fi
+        cp -r "$entry" "$codex_home/$kind/"
+      done
+    done
     if [ -e "$codex_home/config.toml" ]; then
       cp "$REPO/targets/codex/config.toml" "$codex_home/config.toml.from-coding-agent-workflows"
       note "$codex_home/config.toml already exists; wrote ours as config.toml.from-coding-agent-workflows, merge manually."
