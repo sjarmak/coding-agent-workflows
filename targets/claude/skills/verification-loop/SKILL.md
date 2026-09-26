@@ -1,126 +1,43 @@
 ---
 name: verification-loop
-description: "A comprehensive verification system for Claude Code sessions."
+description: Verify changes with build, type, lint, test, security, and behavioral-property evidence. Use before handoff or PR readiness and after significant changes.
 origin: ECC
 ---
 
-# Verification Loop Skill
+# Verification Loop
 
-A comprehensive verification system for Claude Code sessions.
+Use the repository's configured quality gates. Preserve real exit statuses and enough output to diagnose failures; do not pipe a checker through `head` or `tail` and treat the pipeline's status as the check's result. Capture logs first if output needs summarizing. Missing tools and skipped checks are not passes.
 
-## When to Use
+## Establish what must hold
 
-Invoke this skill:
-- After completing a feature or significant code change
-- Before creating a PR
-- When you want to ensure quality gates pass
-- After refactoring
+For significant behavioral changes, list acceptance properties and connect each to relevant code and tests. For state/concurrency changes include event ordering, ownership, cancellation, retries, and cleanup where applicable. For core logic include boundary conditions and input/output contracts. Derive expectations from requirements, not from the implementation under test.
 
-## Verification Phases
+Use the `formal-methods` skill for targeted modeling when required by the task or justified by risk. Ordinary changes need proportionate tests, not mandatory Lean/TLA+ projects. Keep existing coverage requirements; coverage measures executed code, not whether the right property was asserted.
 
-### Phase 1: Build Verification
-```bash
-# Check if project builds
-npm run build 2>&1 | tail -20
-# OR
-pnpm build 2>&1 | tail -20
-```
+## Run applicable gates
 
-If build fails, STOP and fix before continuing.
+1. **Build:** use the project's build command; resolve failures before claiming readiness.
+2. **Types and lint:** run configured checkers and report unresolved errors.
+3. **Tests:** run affected unit, integration, and critical-flow tests; check the project's coverage threshold (80% where required). For fixes, record the regression failing before the fix and passing after it.
+4. **Behavioral properties:** run adopted property-based, conformance, model, or proof checks affected by the change. Follow the formal-methods evidence rules for bounds, reachability, axioms, and implementation correspondence. Replay relevant counterexamples against real code.
+5. **Security:** run configured scanners and review affected security boundaries. Report secret locations with values redacted; do not print matching credential lines. Keyword searches alone do not establish security.
+6. **Diff:** inspect the whole task diff, including staged and new files, against the appropriate base. Check for unintended behavior, missing error paths, and model/test drift. Do not substitute the previous commit's diff for the current task.
 
-### Phase 2: Type Check
-```bash
-# TypeScript projects
-npx tsc --noEmit 2>&1 | head -30
+A tool timeout or incomplete model exploration is unresolved. A Lean build does not establish proof integrity without theorem/axiom review. Neither a finite-model check nor differential tests establish unbounded correctness of production code.
 
-# Python projects
-pyright . 2>&1 | head -30
-```
+## Report evidence
 
-Report all type errors. Fix critical ones before continuing.
+For each applicable gate, report PASS, FAIL, or NOT RUN with its command, result, and any limitation. Mark inapplicable checks N/A with a reason. Give test counts and measured coverage when available.
 
-### Phase 3: Lint Check
-```bash
-# JavaScript/TypeScript
-npm run lint 2>&1 | head -30
+For significant behavioral properties, add a compact evidence table:
 
-# Python
-ruff check . 2>&1 | head -30
-```
+| Property | Code/model scope and revision | Evidence command/artifact | Result | Assumptions and gaps |
+| --- | --- | --- | --- | --- |
 
-### Phase 4: Test Suite
-```bash
-# Run tests with coverage
-npm run test -- --coverage 2>&1 | tail -50
+Distinguish tested behavior, finite-model checking, proofs about a model, and proofs linked to implementation. State configured bounds and whether exploration completed, or the theorem and audited dependencies. Identify what establishes correspondence to production code. No tool run means no verification claim.
 
-# Check coverage threshold
-# Target: 80% minimum
-```
+Separate reproduced defects from model-only counterexamples and untested suspicions. Readiness requires applicable mandatory gates to pass and unresolved acceptance-critical issues to be resolved or explicitly accepted by the user. Report optional exploratory checks separately; don't invent new approval requirements for routine work.
 
-Report:
-- Total tests: X
-- Passed: X
-- Failed: X
-- Coverage: X%
+## Rerun when evidence changes
 
-### Phase 5: Security Scan
-```bash
-# Check for secrets
-grep -rn "sk-" --include="*.ts" --include="*.js" . 2>/dev/null | head -10
-grep -rn "api_key" --include="*.ts" --include="*.js" . 2>/dev/null | head -10
-
-# Check for console.log
-grep -rn "console.log" --include="*.ts" --include="*.tsx" src/ 2>/dev/null | head -10
-```
-
-### Phase 6: Diff Review
-```bash
-# Show what changed
-git diff --stat
-git diff HEAD~1 --name-only
-```
-
-Review each changed file for:
-- Unintended changes
-- Missing error handling
-- Potential edge cases
-
-## Output Format
-
-After running all phases, produce a verification report:
-
-```
-VERIFICATION REPORT
-==================
-
-Build:     [PASS/FAIL]
-Types:     [PASS/FAIL] (X errors)
-Lint:      [PASS/FAIL] (X warnings)
-Tests:     [PASS/FAIL] (X/Y passed, Z% coverage)
-Security:  [PASS/FAIL] (X issues)
-Diff:      [X files changed]
-
-Overall:   [READY/NOT READY] for PR
-
-Issues to Fix:
-1. ...
-2. ...
-```
-
-## Continuous Mode
-
-For long sessions, run verification every 15 minutes or after major changes:
-
-```markdown
-Set a mental checkpoint:
-- After completing each function
-- After finishing a component
-- Before moving to next task
-
-Run: /verify
-```
-
-## Integration with Hooks
-
-This skill complements PostToolUse hooks but provides deeper verification.
-Hooks catch issues immediately; this skill provides comprehensive review.
+Rerun affected gates after a meaningful edit, failed check, or changed assumption. Once checks pass, avoid repeating them without a new reason. Existing hooks can assist but do not replace evidence for the current revision; do not assume a particular agent's hooks or slash commands are installed.

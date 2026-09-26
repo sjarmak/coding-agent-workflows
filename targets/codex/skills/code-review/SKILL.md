@@ -1,15 +1,19 @@
 ---
 name: "code-review"
-description: "Comprehensive security and quality review of uncommitted changes. Scans the diff for injection, hardcoded secrets, auth gaps, and correctness issues, reported by severity."
+description: "Review changes for security, correctness, and maintainability; require behavioral properties and evidence for risky state, concurrency, and core-logic changes."
 ---
 
 # Code Review
 
 Comprehensive security and quality review of uncommitted changes:
 
-1. Get changed files: git diff --name-only HEAD
+1. Inspect the task's diff against its intended base, including staged and untracked files. For uncommitted work use `git diff HEAD` and `git status --short`; read relevant new files explicitly.
 
-2. For each changed file, check for:
+2. For risky changes, establish behavioral properties from requirements and callers, not just the implementation. Identify safety properties (what must never happen) and progress properties (what must eventually happen, under which assumptions).
+
+Map each property to affected functions, shared state, and tests. For cancellation, retries, ownership, persistence, authorization, or shared-state transitions, attempt a violating execution. Trace across awaits, callbacks, transactions, and callers outside the diff. Prefer a deterministic regression test; use the `formal-methods` skill when interleavings or general logical guarantees justify modeling. Ordinary edits do not require a formal model.
+
+3. For each changed file, check for:
 
 **Security Issues (CRITICAL):**
 
@@ -46,12 +50,17 @@ Comprehensive security and quality review of uncommitted changes:
 - Missing tests for new code
 - Accessibility issues (a11y)
 
-3. Generate report with:
+4. Generate report with:
+
    - Severity: CRITICAL, HIGH, MEDIUM, LOW
    - File location and line numbers
    - Issue description
    - Suggested fix
+   - Violated property and evidence: reproduced implementation defect, model-only counterexample, or untested suspicion
+   - Reproduction command or trace, assumptions, and remaining uncertainty
 
-4. Block commit if CRITICAL or HIGH issues found
+Do not present a model-only counterexample as a confirmed implementation bug. When a formal check succeeds, review the specification, reachable scenarios, abstraction boundaries, and correspondence to the code. A proof of the wrong requirement is not acceptance evidence. Distinguish confidence from impact; a severe hypothetical consequence does not establish a confirmed defect.
+
+5. Block commit for confirmed CRITICAL or HIGH findings. Report unresolved high-impact risks explicitly; do not silently approve a required property whose check failed or could not run.
 
 Never approve code with security vulnerabilities!

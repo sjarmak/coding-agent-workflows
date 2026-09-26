@@ -65,7 +65,9 @@
     "handoff-doc": "universal",
     "ruling-capture": "universal",
     "working-set-snapshot": "universal",
-    "coding-practices": "claude"
+    "coding-practices": "claude",
+    "formal-methods": "universal",
+    "click-path-audit": "universal"
   },
   "workflows": {
     "$comment": "Ported formula step-DAGs. Universal ones render as AGENTS.md workflow sections, .claude/commands, and .codex/prompts. fleet-conformance is claude-only: it drives a specific installed scanner binary with no portable equivalent, so it ships to .claude/commands only.",
