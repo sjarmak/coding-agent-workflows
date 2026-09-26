@@ -172,6 +172,11 @@ const usersWithPosts = await db.query(`
 - **Unoptimized images**: Large images without compression or lazy loading
 - **Synchronous I/O**: Blocking operations in async contexts
 
+### Testing (MEDIUM)
+
+- **Pure logic without a property test**: parsers, codecs, round-trips, arithmetic, ordering, dedup, state machines added or changed with only example tests. Non-blocking. Name the property that is missing (round-trip, idempotence, invariant, differential oracle). Tools per `rules-reference/testing.md`: Hegel, or Hypothesis for Python.
+- **Shrunk failure not pinned**: a fix for a property-test failure that does not add the shrunk example as an explicit regression test in the same commit.
+
 ### Architecture Principles (HIGH)
 
 Check against `rules-reference/architecture.md`:

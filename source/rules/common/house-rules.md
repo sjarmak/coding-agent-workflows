@@ -125,8 +125,11 @@ requirement over a net-positive one. Full signature catalog → `/slop-check`.
 repos|code`) → primary/Context7 docs → Exa (only if the first two fall short).
   Check package registries; prefer porting a proven implementation over net-new.
 - **TDD**: write the failing test first (RED → GREEN → refactor); target 80%+
-  coverage (unit + integration + E2E for critical flows). Plan complex/refactor
-  work first (`planner`); run `code-reviewer` after writing code.
+  coverage (unit + integration + E2E for critical flows). Pure logic (parsers,
+  codecs, round-trips, arithmetic, invariants, state machines) also gets a
+  property test: Hegel for Rust/Go/C++/TS/Java/OCaml, Hypothesis for Python →
+  `property-testing` skill. Plan complex/refactor work first (`planner`); run
+  `code-reviewer` after writing code.
 - **Git**: conventional commit types (`feat|fix|refactor|docs|test|chore|perf|
 ci`). Attribution is disabled globally. For PRs, draft from the full diff
   (`git diff <base>...HEAD`), not just the last commit; include a test plan.

@@ -48,6 +48,7 @@ Map each property to affected functions, shared state, and tests. For cancellati
 - Mutation patterns (use immutable instead)
 - Emoji usage in code/comments
 - Missing tests for new code
+- Pure logic (parsers, codecs, round-trips, arithmetic, ordering, state machines) without a property test; non-blocking
 - Accessibility issues (a11y)
 
 4. Generate report with:

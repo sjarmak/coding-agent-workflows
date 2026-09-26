@@ -49,6 +49,7 @@ npm run test:coverage
 | **Unit**        | Individual functions in isolation  | Always         |
 | **Integration** | API endpoints, database operations | Always         |
 | **E2E**         | Critical user flows (Playwright)   | Critical paths |
+| **Property**    | Pure logic: parsers, codecs, round-trips, arithmetic, ordering, state machines | Always, in the RED step (Hegel; Hypothesis for Python; see `property-testing` skill) |
 
 ## Edge Cases You MUST Test
 
@@ -79,6 +80,7 @@ npm run test:coverage
 - [ ] Tests are independent (no shared state)
 - [ ] Assertions are specific and meaningful
 - [ ] Coverage is 80%+
+- [ ] Pure logic has a property test; shrunk failures are pinned as regression tests
 
 For detailed mocking patterns and framework-specific examples, see `skill: tdd-workflow`.
 

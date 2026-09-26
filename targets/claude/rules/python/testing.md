@@ -17,6 +17,13 @@ Use **pytest** as the testing framework.
 pytest --cov=src --cov-report=term-missing
 ```
 
+## Property-Based Testing
+
+Hypothesis for pure logic: `@given` with strategies, `assume` for rejection,
+`@example` to pin a shrunk failure as a regression. `.hypothesis/` is
+gitignored. See the `property-testing` skill for the catalog and
+`common/testing.md` for when a property test is required.
+
 ## Test Organization
 
 Use `pytest.mark` for test categorization:

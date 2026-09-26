@@ -47,6 +47,13 @@ ALWAYS write tests first, then implement code to make tests pass.
 - Browser automation
 - UI interactions
 
+#### Property Tests (required for pure logic)
+- Parsers, codecs, round-trips, arithmetic, ordering, state machines
+- State what holds for every input; the library generates and shrinks
+- Hegel for Rust/Go/C++/TypeScript/Java/OCaml, Hypothesis for Python
+- Written in the RED step alongside the example tests, not after
+- Catalog, install and API: `property-testing` skill
+
 ## TDD Workflow Steps
 
 ### Step 1: Write User Journeys

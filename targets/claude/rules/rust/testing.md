@@ -10,7 +10,7 @@ paths:
 
 - **`#[test]`** with `#[cfg(test)]` modules for unit tests
 - **rstest** for parameterized tests and fixtures
-- **proptest** for property-based testing
+- **Hegel** (crate `hegeltest`, imported as `hegel`, exact pin) for property-based testing in new tests; proptest stays where a crate already uses it
 - **mockall** for trait-based mocking
 - **`#[tokio::test]`** for async tests
 

@@ -26,6 +26,13 @@ go test -race ./...
 go test -cover ./...
 ```
 
+## Property-Based Testing
+
+Hegel (`github.com/hegeldev/hegel-go`, exact pin) for structured properties:
+round-trips, invariants, state machines. Native `go test -fuzz` stays for
+byte and string inputs at parsers and boundaries. See the `property-testing`
+skill for the API and `common/testing.md` for when a property test is required.
+
 ## Reference
 
 See skill: `golang-testing` for detailed Go testing patterns and helpers.

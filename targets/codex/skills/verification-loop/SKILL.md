@@ -9,7 +9,7 @@ Use the repository's configured quality gates. Preserve real exit statuses and e
 
 ## Establish what must hold
 
-For significant behavioral changes, list acceptance properties and connect each to relevant code and tests. For state/concurrency changes include event ordering, ownership, cancellation, retries, and cleanup where applicable. For core logic include boundary conditions and input/output contracts. Derive expectations from requirements, not from the implementation under test.
+For significant behavioral changes, list acceptance properties and connect each to relevant code and tests. For state/concurrency changes include event ordering, ownership, cancellation, retries, and cleanup where applicable. For core logic include boundary conditions and input/output contracts. Derive expectations from requirements, not from the implementation under test. For pure logic (parsers, codecs, round-trips, arithmetic, ordering, state machines) write the properties before reading the implementation and run them as property tests with the language's library (Hegel, or Hypothesis for Python; see the `property-testing` skill). A shrunk counterexample is a reproduced defect; pin it as an explicit regression test in the fix commit.
 
 Use the `formal-methods` skill for targeted modeling when required by the task or justified by risk. Ordinary changes need proportionate tests, not mandatory Lean/TLA+ projects. Keep existing coverage requirements; coverage measures executed code, not whether the right property was asserted.
 
