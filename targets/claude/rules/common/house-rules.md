@@ -131,7 +131,10 @@ repos|code`) → primary/Context7 docs → Exa (only if the first two fall short
   `property-testing` skill. Plan complex/refactor work first (`planner`); run
   `code-reviewer` after writing code.
 - **Git**: conventional commit types (`feat|fix|refactor|docs|test|chore|perf|
-ci`). Attribution is disabled globally. For PRs, draft from the full diff
+ci`). Every commit that is not purely mechanical (formatting, a dependency
+  bump, generated files) carries a body line starting literally `Why:` that
+  states the author's reason for the change, so tools can find it with grep
+  (Stephanie, 2026-09-27, `dec-gwxz`). Attribution is disabled globally. For PRs, draft from the full diff
   (`git diff <base>...HEAD`), not just the last commit; include a test plan.
 
 ## Security (pre-commit)
