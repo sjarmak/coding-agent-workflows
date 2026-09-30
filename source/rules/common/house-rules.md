@@ -1,5 +1,5 @@
 ---
-summary: Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in ~/.claude/rules-reference/ (on-demand).
+summary: Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in rules-reference/ (on-demand).
 autoload: claude
 ---
 

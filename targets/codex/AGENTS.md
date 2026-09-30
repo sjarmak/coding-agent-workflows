@@ -22,7 +22,7 @@ Each is a section (matched by heading) in `AGENTS.full.md`:
 - **Database & SQL** (`common/database.md`)
 - **Development Workflow** (`common/development-workflow.md`)
 - **Git Workflow** (`common/git-workflow.md`)
-- **House Rules (always-on)** (`common/house-rules.md`) — Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in ~/.claude/rules-reference/ (on-demand).
+- **House Rules (always-on)** (`common/house-rules.md`) — Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in rules-reference/ (on-demand).
 - **Common Patterns** (`common/patterns.md`)
 - **Performance Optimization** (`common/performance.md`)
 - **Security Guidelines** (`common/security.md`)
@@ -37,6 +37,7 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 | Role | Scope | Purpose |
 |------|-------|---------|
 | code-reviewer | universal | Expert code review specialist |
+| code-search | universal | Code search and understanding specialist |
 | security-reviewer | universal | Security vulnerability detection and remediation specialist |
 | database-reviewer | universal | PostgreSQL specialist for query performance, schema design, security/RLS, and migration sa |
 | architect | universal | Software architecture specialist for system design, scalability, and technical decision-ma |

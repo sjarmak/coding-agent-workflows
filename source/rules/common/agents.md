@@ -11,6 +11,7 @@ same everywhere.
 | Role | Scope | Purpose | When to use |
 |------|-------|---------|-------------|
 | code-reviewer | universal | Code quality & maintainability review | After writing/modifying code |
+| code-search | universal | Source-cited code understanding and change guidance | Investigations spanning files, behavior traces, change impact |
 | security-reviewer | universal | Vulnerability detection | Auth, input handling, secrets, endpoints |
 | architect | universal | System design & scalability | Architectural decisions |
 | code-simplifier | universal | Reduce complexity without changing behavior | After implementation, before review |
@@ -31,6 +32,13 @@ Reach for a specialized role without being asked:
 2. Code just written/modified → **code-reviewer**
 3. Bug fix or new feature → **tdd-guide**
 4. Architectural decision → **architect**
+5. Substantial code investigation → **code-search**; keep simple symbol lookups inline
+
+For code-search, pass the absolute repository root, question, success criteria,
+relevant revision/worktree, and existing findings. It returns evidence and likely
+change points; the parent implements. Reuse its findings and narrow follow-ups
+instead of repeating the investigation. If the host cannot select a named role,
+give an available subagent the installed code-search role body explicitly.
 
 ## Bounded Parallelism
 

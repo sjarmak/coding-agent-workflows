@@ -68,6 +68,10 @@ reads only the one it needs, on demand.
 
 ## Workflows
 
+The [code-search specialist](docs/code-search.md) handles substantial code
+investigations in either client, using Codegraph when available and returning
+source citations and change guidance to the main agent.
+
 Each workflow is a multi-step procedure that composes the skills into a
 repeatable sequence:
 

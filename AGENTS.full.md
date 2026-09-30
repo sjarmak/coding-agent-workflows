@@ -131,6 +131,7 @@ same everywhere.
 | Role | Scope | Purpose | When to use |
 |------|-------|---------|-------------|
 | code-reviewer | universal | Code quality & maintainability review | After writing/modifying code |
+| code-search | universal | Source-cited code understanding and change guidance | Investigations spanning files, behavior traces, change impact |
 | security-reviewer | universal | Vulnerability detection | Auth, input handling, secrets, endpoints |
 | architect | universal | System design & scalability | Architectural decisions |
 | code-simplifier | universal | Reduce complexity without changing behavior | After implementation, before review |
@@ -151,6 +152,13 @@ Reach for a specialized role without being asked:
 2. Code just written/modified → **code-reviewer**
 3. Bug fix or new feature → **tdd-guide**
 4. Architectural decision → **architect**
+5. Substantial code investigation → **code-search**; keep simple symbol lookups inline
+
+For code-search, pass the absolute repository root, question, success criteria,
+relevant revision/worktree, and existing findings. It returns evidence and likely
+change points; the parent implements. Reuse its findings and narrow follow-ups
+instead of repeating the investigation. If the host cannot select a named role,
+give an available subagent the installed code-search role body explicitly.
 
 ## Bounded Parallelism
 
@@ -469,36 +477,35 @@ Set expectations accordingly; these don't get "fixed," they get managed:
 
 # Code Knowledge Graphs
 
-When a repo has a code knowledge-graph tool available (a symbol/edge index exposed
-as MCP tools or a CLI), prefer it over raw grep/glob for **structural** questions —
-callers, callees, impact / blast radius, symbol lookup, area exploration. It returns
-precise edges in a fraction of the tokens a text scan costs. Grep/glob stays the
-right tool for non-code: config, docs, comments, string literals.
+Delegate substantial code investigations to **code-search**: questions spanning
+files, tracing behavior, or assessing change impact. Pass the absolute repository
+root, question, success criteria, revision/worktree when relevant, and existing
+findings. Keep simple symbol lookups in the parent. The specialist returns a
+concise cited answer and change guidance; the parent makes edits.
 
-## Routing when more than one graph tool is available
+## Tool routing
 
-Two overlapping graph tools are easy to conflate; give each a lane and don't use
-both for the same question.
+- Prefer Codegraph's `codegraph_explore` for indexed code, with an explicit
+  `projectPath`. Name the relevant symbols or ask a focused natural-language
+  question. Use the returned source, call paths, and impact information together.
+  Discover the actual tools; do not assume older per-operation tools exist.
+- Treat source returned by the graph as already read. Follow up only for a
+  specific gap. Graph edges are navigation evidence; ambiguous name matches do
+  not prove runtime dispatch or correctness.
+- Use `rg` and targeted reads for strings, configs, docs, unindexed code, and
+  gaps or failures in graph results. If no index exists, continue with these
+  tools without initializing one or asking the user to do so.
+- Use another available graph tool for capabilities the first lacks, such as
+  arbitrary graph queries or document relationships. Avoid duplicate searches.
 
-- **Default to the fixed-verb navigator** for everyday "who calls X / what does X
-  call / what's the blast radius / show me this area." The tool with dedicated
-  caller/callee/impact/explore verbs is the cheapest path and the one to reach for
-  first.
-- **Reserve the query-language graph** (arbitrary Cypher/SQL over the graph,
-  cross-service or HTTP-call edges, degree analytics like dead-code and fan-in/out,
-  architecture rollups, decision/trace ingestion) for what the fixed verbs cannot
-  express. It is the specialist, not the default.
-- **Keep heavy, source-dumping exploration in a sub-agent, not the main context
-  window.** Tools that return large contiguous code sections crowd out the main
-  task; run them behind an explorer agent and let it return the conclusion.
+## Freshness
 
-## Freshness is not free
-
-Graph indexes are usually built and refreshed **manually**, and go stale silently
-between runs. Treat any graph result as possibly stale and confirm against the
-actual code when the answer is load-bearing. Wire a refresh — a commit/merge hook
-or a scheduled sweep — rather than trusting the index to be current; an unmaintained
-graph quietly answers yesterday's question.
+Follow the tool's freshness signals rather than assuming a refresh mechanism.
+For Codegraph, inspect pending-sync, auto-sync-disabled, and changed-on-disk
+warnings. Current full source returned for a changed file is usable; if omitted,
+read the flagged file directly. Its indexed edges and prior line numbers may
+still be stale. Reuse previously returned source only when present in your own
+context. Cite current evidence and explain any remaining coverage limits.
 
 # Coding Style
 
@@ -1225,6 +1232,7 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 | Role | Scope | Purpose |
 |------|-------|---------|
 | code-reviewer | universal | Expert code review specialist |
+| code-search | universal | Code search and understanding specialist |
 | security-reviewer | universal | Security vulnerability detection and remediation specialist |
 | database-reviewer | universal | PostgreSQL specialist for query performance, schema design, security/RLS, and migration sa |
 | architect | universal | Software architecture specialist for system design, scalability, and technical decision-ma |

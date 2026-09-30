@@ -159,10 +159,12 @@ for (const [name, scope] of Object.entries(manifest.agents)) {
   if (body.includes("'''")) {
     throw new Error(`agent ${name}: role body contains the TOML multiline literal delimiter`);
   }
+  const settingsPath = path.join(SRC, 'agents', `${name}.codex.toml`);
+  const settings = fs.existsSync(settingsPath) ? '\n' + fs.readFileSync(settingsPath, 'utf8') : '';
   write(path.join(X, 'agents', `${name}.toml`),
     `name = "${name}"\n` +
     `description = "${desc}"\n` +
-    `developer_instructions = '''\n${body}\n'''\n`);
+    `developer_instructions = '''\n${body}\n'''\n` + settings);
 }
 // Universal skills ship twice for Codex:
 //   - skills/<name>/SKILL.md for native metadata-based discovery
