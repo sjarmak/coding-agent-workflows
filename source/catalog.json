@@ -1,0 +1,270 @@
+{
+  "version": 1,
+  "skills": {
+    "focus": {
+      "origin": "focus command",
+      "collection": "core",
+      "requires": []
+    },
+    "simplify": {
+      "origin": "Existing curated bundle, baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "code-review": {
+      "origin": "code-review command",
+      "collection": "core",
+      "requires": []
+    },
+    "review": {
+      "origin": "Existing curated bundle, baseline 7446e81",
+      "collection": "runtime",
+      "requires": [
+        "code-review"
+      ]
+    },
+    "distill": {
+      "origin": "distill command",
+      "collection": "core",
+      "requires": []
+    },
+    "verification-loop": {
+      "origin": "ECC; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": [
+        "property-testing"
+      ]
+    },
+    "brainstorm": {
+      "origin": "brainstorm command (Python/SQLite session backend replaced by model-tracked state)",
+      "collection": "core",
+      "requires": []
+    },
+    "premortem": {
+      "origin": "premortem command",
+      "collection": "core",
+      "requires": []
+    },
+    "diverge": {
+      "origin": "diverge command",
+      "collection": "runtime",
+      "requires": []
+    },
+    "converge": {
+      "origin": "converge command",
+      "collection": "runtime",
+      "requires": []
+    },
+    "research-project": {
+      "origin": "Existing curated bundle, baseline 7446e81",
+      "collection": "runtime",
+      "requires": []
+    },
+    "bisect": {
+      "origin": "bisect command",
+      "collection": "core",
+      "requires": []
+    },
+    "scaffold": {
+      "origin": "scaffold command",
+      "collection": "core",
+      "requires": []
+    },
+    "codebase-onboarding": {
+      "origin": "ECC; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "architecture-decision-records": {
+      "origin": "ECC; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "security-review": {
+      "origin": "ECC; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "tdd-workflow": {
+      "origin": "ECC; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": [
+        "property-testing"
+      ]
+    },
+    "slop-check": {
+      "origin": "Existing curated bundle, baseline 7446e81",
+      "collection": "core",
+      "requires": [
+        "no-ai-slop"
+      ]
+    },
+    "project-compass": {
+      "origin": "agentic-coding-practices; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "failure-mode-capture": {
+      "origin": "agentic-coding-practices; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "systems-thinking": {
+      "origin": "global skill",
+      "collection": "core",
+      "requires": []
+    },
+    "repo-architecture-review": {
+      "origin": "global skill",
+      "collection": "core",
+      "requires": []
+    },
+    "agent-eval-design": {
+      "origin": "Reconciled with the installed agent-eval-design skill and references, reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "regex-vs-llm-structured-text": {
+      "origin": "global skill",
+      "collection": "core",
+      "requires": []
+    },
+    "grill-me": {
+      "origin": "global skill",
+      "collection": "core",
+      "requires": []
+    },
+    "e2e-testing": {
+      "origin": "global skill",
+      "collection": "core",
+      "requires": []
+    },
+    "dashboard": {
+      "origin": "Existing curated bundle, baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "handoff-doc": {
+      "origin": "Existing curated bundle, baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "ruling-capture": {
+      "origin": "agentic-coding-practices; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "working-set-snapshot": {
+      "origin": "agentic-coding-practices; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "coding-practices": {
+      "origin": "agentic-coding-practices; curated bundle baseline 7446e81",
+      "collection": "runtime",
+      "requires": []
+    },
+    "formal-methods": {
+      "origin": "Existing curated bundle, baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "click-path-audit": {
+      "origin": "community; curated bundle baseline 7446e81",
+      "collection": "core",
+      "requires": []
+    },
+    "property-testing": {
+      "origin": "Adapted from the installed property-testing skill, reviewed 2026-10-01",
+      "collection": "core",
+      "requires": []
+    },
+    "no-ai-slop": {
+      "origin": "Adapted from the installed no-ai-slop skill, reviewed 2026-10-01",
+      "collection": "core",
+      "requires": []
+    },
+    "code-hygiene": {
+      "origin": "Adapted from the installed code-hygiene skill, reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "perf-audit": {
+      "origin": "Adapted from the installed perf-audit skill, reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "code-hygiene"
+      ]
+    },
+    "browser-qa": {
+      "origin": "Adapted from the installed browser-qa skill, reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "e2e-testing"
+      ]
+    },
+    "agent-harness-traceability": {
+      "origin": "Adapted from the installed agent-harness-traceability skill, reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "reliability-pass": {
+      "origin": "Adapted from the installed reliability-pass skill, reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": [
+        "agent-eval-design",
+        "agent-harness-traceability",
+        "failure-mode-capture"
+      ]
+    },
+    "ultracode": {
+      "origin": "Adapted from the installed ultracode skill, reviewed 2026-10-01",
+      "collection": "runtime",
+      "requires": []
+    }
+  },
+  "rule_dependencies": {
+    "common/testing.md": [
+      "property-testing"
+    ],
+    "common/house-rules.md": [
+      "property-testing",
+      "no-ai-slop",
+      "code-review",
+      "slop-check"
+    ],
+    "common/agent-collaboration.md": [
+      "no-ai-slop"
+    ],
+    "common/performance.md": [
+      "perf-audit"
+    ],
+    "go/testing.md": [
+      "property-testing"
+    ],
+    "python/testing.md": [
+      "property-testing"
+    ],
+    "typescript/testing.md": [
+      "property-testing"
+    ],
+    "common/augmented-coding-patterns.md": [
+      "focus",
+      "simplify"
+    ],
+    "common/anti-slop.md": [
+      "slop-check"
+    ],
+    "rust/security.md": [
+      "security-review"
+    ]
+  },
+  "optional": {
+    "caveman": {
+      "path": "optional/skills/caveman",
+      "origin": "Previously shipped Claude communication mode, baseline 7446e81",
+      "collection": "optional",
+      "requires": []
+    }
+  }
+}

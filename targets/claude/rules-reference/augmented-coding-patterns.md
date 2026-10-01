@@ -60,7 +60,7 @@ Set expectations accordingly; these don't get "fixed," they get managed:
 - **Hallucinations / Non-Determinism / Black Box**: fabricated APIs, inconsistent
   runs, opaque reasoning. → verify against reality, never against memory.
 - **Excess Verbosity**: unnecessarily long output. → terseness is a practice, not
-  a nicety: cut fluff, keep technical substance. The `caveman` skill (Claude,
-  opt-in) is one concrete lever for this when token budget matters.
+  a nicety: cut fluff, keep technical substance. The optional `caveman` collection provides a requested interaction mode,
+  but clear ordinary prose is the default.
 - **Negative Bleedthrough**: earlier bad output contaminates later responses. → a
   fresh context beats a polluted one; prefer handoff over pushing through.

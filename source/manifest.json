@@ -11,7 +11,11 @@
   },
   "rule_overrides": {
     "$comment": "Per-file scope overrides. A rule file marked 'claude' ships to targets/claude/rules but is excluded from the universal AGENTS.md, for content that is genuinely a Claude Code mechanism, not a portable principle.",
-    "common/hooks.md": "claude"
+    "common/hooks.md": "claude",
+    "go/hooks.md": "claude",
+    "python/hooks.md": "claude",
+    "typescript/hooks.md": "claude",
+    "rust/hooks.md": "claude"
   },
   "agents": {
     "$comment": "Claude subagents map to Codex .codex/agents/*.toml where a clean equivalent exists; the rest are claude-only. Reviewers/architect/explorer translate; build-resolvers are claude-only (tightly tool-coupled).",
@@ -34,7 +38,7 @@
     "refactor-cleaner": "claude"
   },
   "skills": {
-    "$comment": "Formula-invoked working set. 'claude' ones lean on the Skill/subagent mechanism; 'universal' degrade to AGENTS.md prose so Codex and Amp still get the practice.",
+    "$comment": "Default shipped skills. Universal skills include procedures and resources for each target; runtime skills ship only to that runtime. Optional collections are listed in source/catalog.json.",
     "focus": "universal",
     "simplify": "universal",
     "code-review": "universal",
@@ -53,7 +57,6 @@
     "security-review": "universal",
     "tdd-workflow": "universal",
     "slop-check": "universal",
-    "caveman": "claude",
     "project-compass": "universal",
     "failure-mode-capture": "universal",
     "systems-thinking": "universal",
@@ -68,7 +71,15 @@
     "working-set-snapshot": "universal",
     "coding-practices": "claude",
     "formal-methods": "universal",
-    "click-path-audit": "universal"
+    "click-path-audit": "universal",
+    "property-testing": "universal",
+    "no-ai-slop": "universal",
+    "code-hygiene": "universal",
+    "perf-audit": "universal",
+    "browser-qa": "universal",
+    "agent-harness-traceability": "universal",
+    "reliability-pass": "universal",
+    "ultracode": "codex"
   },
   "workflows": {
     "$comment": "Ported formula step-DAGs. Universal ones render as AGENTS.md workflow sections, .claude/commands, and .codex/prompts. fleet-conformance is claude-only: it drives a specific installed scanner binary with no portable equivalent, so it ships to .claude/commands only.",

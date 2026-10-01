@@ -91,4 +91,4 @@ Remaining errors: 3
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-For detailed Go error patterns and code examples, see `skill: golang-patterns`.
+For detailed Go error patterns and code examples, use `golang-patterns` if separately installed; otherwise follow the bundled Go rules.

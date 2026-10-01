@@ -21,9 +21,10 @@ Then install for your agent:
 ```bash
 ./install.sh claude          # Claude Code config into ./.claude (project-level; `./install.sh claude ~` for user-level)
 ./install.sh codex           # AGENTS.md + AGENTS.full.md into the current dir, Codex config into ~/.codex
-./install.sh agents          # AGENTS.md (thin index) + AGENTS.full.md (Amp, Aider, Gemini CLI, ...)
+./install.sh agents          # portable instructions, skills, references, and language rules
 ./install.sh init            # scaffold a thin, project-specific AGENTS.md (intention + pointers)
-./install.sh upgrade         # re-install, then prune files dropped since the last install
+./install.sh upgrade         # Claude: re-install, then prune previously owned files
+./install.sh codex-upgrade   # Codex: re-install, then prune previously owned files
 ./install.sh remove          # delete exactly what a prior claude install placed in .claude
 ```
 
@@ -31,7 +32,11 @@ Pass a destination as the second argument to target a specific project, for
 example `./install.sh claude ~/work/myrepo`. The `claude` install writes a
 manifest of every file it owns and backs up any pre-existing file it would
 otherwise overwrite; `remove` undoes exactly that manifest, so a user-level
-install never silently clobbers hand-authored config. A separate `fleet`
+install never silently clobbers hand-authored config. Codex records ownership
+inside `$CODEX_HOME` and backs up collisions before copying; `codex-upgrade`
+prunes only previously owned files. Symlinked artifact paths are skipped; a
+symlinked Codex install root is rejected. Portable installs place universal
+skills in `.agents/skills/` and rules in `.agents/rules/`. A separate `fleet`
 subcommand installs a machine-level conformance scanner into `~/.claude/fleet`;
 it is the one mode that wires a hook, and it says so when it runs.
 
@@ -39,9 +44,10 @@ If you would rather not run a script, copy what you need: Claude Code reads a
 `.claude/` directory, so copy `targets/claude/{rules,agents,skills,commands}`
 into one. Codex reads `AGENTS.md` at the repo root plus `~/.codex`, so place
 `AGENTS.md` + `AGENTS.full.md` at your root and copy
-`targets/codex/{config.toml,agents,prompts,skills}` into `$CODEX_HOME` (falling
-back to `~/.codex`). Every other
-`AGENTS.md`-aware agent needs only those two files at your repo root.
+`targets/codex/{config.toml,agents,prompts,skills,rules}` into `$CODEX_HOME` (falling
+back to `~/.codex`). For other agents, use the `agents` installer so the
+procedures and supporting resources are available alongside the index. Copying
+only the two Markdown files provides an overview, not the complete skill bundle.
 
 ## Layout
 
@@ -50,8 +56,9 @@ back to `~/.codex`). Every other
 | `AGENTS.md` | Thin always-loaded index; points by section into the full bundle |
 | `AGENTS.full.md` | The full bundle: principles, agent roster, skills, workflows, as prose any agent can follow |
 | `targets/claude/` | Native Claude Code layout: `rules/`, `agents/`, `skills/`, `commands/` |
-| `targets/codex/` | Native Codex layout: `config.toml`, `agents/` (one standalone TOML per agent), `prompts/`, `skills/` |
-| `source/` | The only hand-edited layer; everything above renders from it |
+| `targets/codex/` | Native Codex layout: `config.toml`, `agents/` (one standalone TOML per agent), `prompts/`, `skills/`, `rules/` |
+| `source/` | Hand-edited practices, manifest, and dependency/provenance catalog |
+| `optional/skills/` | Opt-in skills excluded from default installations |
 
 The index-plus-manual split keeps loaded context small: agents auto-load the
 thin `AGENTS.md` and pull in sections of `AGENTS.full.md` only when a task
@@ -61,10 +68,43 @@ needs them. For an agent that can only ever read one file, copy
 The rules cover architecture, coding style, testing, security, git and
 development workflow, performance, context layering, task management, skill
 management, and anti-slop, plus language specifics for Go, Python, TypeScript,
-and Rust. Twenty-eight skills and seven workflows operationalize them. Claude
-Code auto-discovers skills, agents, and commands but does not auto-load
-`rules/`; the generated `coding-practices` skill indexes the rules so an agent
-reads only the one it needs, on demand.
+and Rust. The [manifest](source/manifest.json) is the current inventory of
+skills and workflows. Claude loads the small always-on rule set from `rules/`;
+the generated `coding-practices` skill indexes the detailed common rules under
+`rules-reference/` for on-demand reading.
+
+## Skill surface and ownership
+
+The [catalog](source/catalog.json) records each shipped skill's origin,
+collection, and required skills, plus rule-to-skill dependencies. Validation
+checks those records against the manifest and runtime scope. `requires` means
+the referenced skill or resource must ship for the advertised procedure to work,
+including a selected protocol; it does not mean invoking it on every run.
+Categories describe ownership and
+purpose; they do not imply that every skill should run on every task.
+
+- **Core:** portable implementation, review, research, testing, and documentation
+  workflows, including `property-testing` and `no-ai-slop`.
+- **Engineering:** repository hygiene, measured performance investigations, and
+  browser QA. Load these when the task calls for them.
+- **Agent systems:** eval design, traceability, and reliability protocols. These
+  carry evidence contracts without assuming a particular product or service.
+- **Runtime:** native mechanisms such as Codex's goal-driven `ultracode` loop
+  and Claude-specific workflow accelerators.
+- **Optional:** personal interaction modes. `caveman` remains available under
+  `optional/skills/caveman`; copy that folder into a supported native skill
+  directory only when wanted. It is no longer installed by default.
+
+Project commands, datasets, service credentials, and domain-specific verifier
+procedures belong in project-local skills or separately maintained collections.
+Promote a practice only when its assumptions can be stated without those local
+contracts. An installed skill is not evidence of recent invocation; absence
+from a runtime directory is not sufficient reason to retire it.
+
+When reconciling a live skill back into this bundle, review its complete body
+and resources, preserve attribution, declare dependencies, and remove local
+paths and work-specific examples. Update the catalog and render all targets.
+Do not bulk-copy the entire installed environment into the shared core.
 
 ## Workflows
 
@@ -108,29 +148,25 @@ and verbosity, mirroring the [SlopCodeBench](https://www.scbench.ai) judge
 rubric; the same rubric backs the anti-slop rule in
 [`source/rules/common/`](./source/rules/common/) and the slop pass in the
 `code-reviewer` agent. The
-[`writing-voice`](./source/skills/writing-voice/SKILL.md) skill guards prose
-(articles, docs, READMEs) against telltale AI writing patterns. Separately, the
-[`caveman`](./source/skills/caveman/SKILL.md) skill cuts conversational token
-use by roughly 75% while preserving technical accuracy.
+[`no-ai-slop`](./source/skills/no-ai-slop/SKILL.md) skill edits prose
+while preserving the writer's intent and voice. The optional
+[`caveman`](./optional/skills/caveman/SKILL.md) mode changes conversational style;
+it is separate from prose editing and is not a default engineering practice.
 
 ## Companion tools
 
-Two rules point at external tools chosen for the same reason the bundle is
-built the way it is: capability without background weight.
-[skillager](https://github.com/jarmak-personal/skillager) (the
-`skill-management` rule) discovers, vets, and exposes agent skills on demand,
-so a session loads only the few a task needs.
-[beads_rust](https://github.com/Dicklesworthstone/beads_rust) (the
-`task-management` rule) is a dependency-aware task store frozen at SQLite plus
-JSONL, with the fuller [beads](https://github.com/gastownhall/beads) as the
-upgrade path when a project needs multi-machine sync.
+The `skill-management` rule describes metadata-first discovery and selective
+exposure, with skillager as one available adapter. The `task-management` rule
+honors the consuming repository's authoritative tracker and backend. Neither
+installing this bundle nor creating a handoff migrates a project's task store.
 
 ## CI and architecture page
 
 CI (`.github/workflows/check.yml`) fails any push or PR where the committed
 `AGENTS.md`, `AGENTS.full.md`, or `targets/` drift from a fresh render of
 `source/`, then sanitize-scans the rendered output for stray paths, PII, and
-internal jargon. A LikeC4 model under `architecture/` deploys to
+internal jargon, validates scopes and dependencies, and runs the regression
+suite. A LikeC4 model under `architecture/` deploys to
 [an interactive architecture page](https://sjarmak.github.io/coding-agent-workflows/)
 on every push that touches it.
 
@@ -155,7 +191,8 @@ npm run check      # CI gate: fail if committed output drifted from source/
 ```
 
 `source/manifest.json` is the scope map (`universal`, `claude`, or `codex`)
-deciding where each artifact renders; `rule_overrides` marks individual rules
+deciding where each artifact renders; `source/catalog.json` records provenance
+and skill dependencies. `rule_overrides` marks individual rules
 as agent-specific, and `templates` lists project-scaffolding files that ship
 verbatim into each target.
 

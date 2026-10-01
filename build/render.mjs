@@ -22,6 +22,8 @@ const SRC = path.join(ROOT, 'source');
 const TARGETS = path.join(ROOT, 'targets');
 
 const manifest = JSON.parse(fs.readFileSync(path.join(SRC, 'manifest.json'), 'utf8'));
+const ruleOverrides = manifest.rule_overrides || {};
+const ruleScope = (lang, file) => ruleOverrides[`${lang}/${file}`] || manifest.rules[lang] || 'universal';
 
 // --- tiny frontmatter parser (only the fields we emit) ---
 function parse(md) {
@@ -60,13 +62,18 @@ const C = path.join(TARGETS, 'claude');
 for (const lang of Object.keys(manifest.rules)) {
   if (lang.startsWith('$')) continue;
   if (lang !== 'common') {
-    copyDir(path.join(SRC, 'rules', lang), path.join(C, 'rules', lang));
+    const sourceDir = path.join(SRC, 'rules', lang);
+    for (const file of fs.readdirSync(sourceDir).filter(name => name.endsWith('.md'))) {
+      if (!['universal', 'claude'].includes(ruleScope(lang, file))) continue;
+      write(path.join(C, 'rules', lang, file), fs.readFileSync(path.join(sourceDir, file), 'utf8'));
+    }
     continue;
   }
   const commonSrc = path.join(SRC, 'rules', 'common');
   for (const f of fs.readdirSync(commonSrc).filter(x => x.endsWith('.md'))) {
     const raw = fs.readFileSync(path.join(commonSrc, f), 'utf8');
     const { data } = parse(raw);
+    if (!['universal', 'claude'].includes(ruleScope('common', f))) continue;
     const dest = data.autoload === 'claude' ? path.join(C, 'rules', 'common', f) : path.join(C, 'rules-reference', f);
     write(dest, raw);
   }
@@ -145,6 +152,13 @@ for (const [name, scope] of Object.entries(manifest.templates || {})) {
 // =========================================================================
 const X = path.join(TARGETS, 'codex');
 mkdirp(X);
+for (const lang of Object.keys(manifest.rules)) {
+  if (lang.startsWith('$')) continue;
+  const sourceDir = path.join(SRC, 'rules', lang);
+  for (const file of fs.readdirSync(sourceDir).filter(name => name.endsWith('.md'))) {
+    if (['universal', 'codex'].includes(ruleScope(lang, file))) write(path.join(X, 'rules', lang, file), fs.readFileSync(path.join(sourceDir, file), 'utf8'));
+  }
+}
 write(path.join(X, 'config.toml'),
   `# Codex configuration: coding-agent-workflows\n` +
   `# Universal practices live in the AGENTS.md at repo root (Codex reads it automatically).\n` +
@@ -174,7 +188,7 @@ for (const [name, scope] of Object.entries(manifest.agents)) {
 // discovery fields. Source-only portability metadata (scope, ported-from) is
 // useful to this renderer but should not leak into an installed skill.
 for (const [name, scope] of Object.entries(manifest.skills)) {
-  if (name.startsWith('$') || scope !== 'universal') continue;
+  if (name.startsWith('$') || (scope !== 'universal' && scope !== 'codex')) continue;
   const sourceSkill = path.join(SRC, 'skills', name);
   const { data, body } = readSkill(name);
   const codexSkill = path.join(X, 'skills', name);
@@ -185,6 +199,15 @@ for (const [name, scope] of Object.entries(manifest.skills)) {
     `---\nname: "${skillName}"\ndescription: "${description}"\n---\n\n${body}\n`);
   write(path.join(X, 'prompts', `${name}.md`), body + '\n');
 }
+write(path.join(X, 'universal-skills.list'), Object.entries(manifest.skills)
+  .filter(([name, scope]) => !name.startsWith('$') && scope === 'universal')
+  .map(([name]) => name).join('\n') + '\n');
+write(path.join(X, 'universal-rules.list'), Object.keys(manifest.rules)
+  .filter(lang => !lang.startsWith('$'))
+  .flatMap(lang => fs.readdirSync(path.join(SRC, 'rules', lang))
+    .filter(file => file.endsWith('.md') && ruleScope(lang, file) === 'universal')
+    .map(file => `${lang}/${file}`))
+  .sort().join('\n') + '\n');
 for (const [name, scope] of Object.entries(manifest.workflows)) {
   if (name.startsWith('$') || scope !== 'universal') continue;
   const { body } = readWorkflow(name);
@@ -215,7 +238,7 @@ for (const [name, scope] of Object.entries(manifest.skills)) {
   skillLines.push(`- **${name}**: ${data.description || ''}`);
 }
 const skillsNote =
-  'Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.';
+  'Full skill procedures and resources are installed at `.agents/skills/<name>/SKILL.md` for AGENTS-only installs or `$CODEX_HOME/skills/<name>/SKILL.md` for Codex; Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.';
 
 const h1of = body => {
   const m = body.match(/^#\s+(.+)$/m);
@@ -235,20 +258,19 @@ parts.push('');
 // principles: the common rules in full — this file is the read-on-demand text behind the index
 parts.push('## Principles');
 parts.push('');
-const ruleOverrides = manifest.rule_overrides || {};
 const commonDir = path.join(SRC, 'rules', 'common');
 for (const f of fs.readdirSync(commonDir).sort()) {
   if (!f.endsWith('.md')) continue;
   const { data, body } = parse(fs.readFileSync(path.join(commonDir, f), 'utf8'));
   // autoload files are a target-specific consolidation of the others — skip them
   // here so their content isn't duplicated alongside the full per-topic text.
-  if (data.autoload) continue;
+  if (data.autoload && f !== 'house-rules.md') continue;
   // claude/codex-scoped rule files ship to their target but stay out of universal AGENTS.md
   if ((ruleOverrides[`common/${f}`] || 'universal') !== 'universal') continue;
   parts.push(body.trim());
   parts.push('');
 }
-parts.push('Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/` in each target.');
+parts.push('Language-specific rules (Go, Python, TypeScript, Rust) live under `.agents/rules/<lang>/` for AGENTS-only installs and `$CODEX_HOME/rules/<lang>/` for Codex.');
 parts.push('');
 
 // agent roster
@@ -310,7 +332,7 @@ for (const f of fs.readdirSync(commonDir).sort()) {
   lite.push(`- **${head}** (\`common/${f}\`)${data.summary ? ` — ${data.summary}` : ''}`);
 }
 lite.push('');
-lite.push('Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/` in each target.');
+lite.push('Language-specific rules (Go, Python, TypeScript, Rust) live under `.agents/rules/<lang>/` for AGENTS-only installs and `$CODEX_HOME/rules/<lang>/` for Codex.');
 lite.push('');
 lite.push('## Agent Roles');
 lite.push('');

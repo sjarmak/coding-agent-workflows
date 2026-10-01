@@ -10,7 +10,26 @@ this bundle works to avoid (see [coding-practices discovery](./context-layering.
 discoverable, but inert until pulled). The fix is the same here as for rules: keep
 skills **searchable by metadata** and expose only the few a task actually needs.
 
-## skillager
+## Shared surface and local extensions
+
+Keep portable practices in the shared bundle, runtime mechanisms in their
+runtime adapter, and service commands or domain procedures in project-local
+skills. Optional interaction modes need not be exposed by default.
+
+The bundle's source catalog records each shipped skill's origin, collection,
+and required skills. Reconcile deliberate installed changes through that catalog
+and the source manifest; an installation directory is not the source of truth.
+Validate required skills and local resources before distributing a skill.
+
+When auditing freshness, distinguish installation, references, and actual
+invocations. Missing telemetry means usage is unknown. Retire a skill only when
+its contract is obsolete, replaced, or explicitly no longer wanted; record the
+replacement and ensure upgrades can remove only bundle-owned files.
+
+## skillager adapter
+
+The following is an optional discovery adapter. Use the installed version's
+help to confirm its commands; equivalent metadata-first tooling is acceptable.
 
 [skillager](https://pypi.org/project/skillager/) is a local CLI for discovering,
 reviewing, searching, and exposing agent skills without loading them all. Install it

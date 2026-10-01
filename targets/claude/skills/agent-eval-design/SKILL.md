@@ -1,8 +1,6 @@
 ---
 name: agent-eval-design
-description: "Design rigorous evaluations and benchmarks for AI agents, developer tools, retrieval systems, and repository-scale automation. Covers task selection, contamination control, metric choice tied to engineering decisions, and statistical validity. Use when asked to design an eval/benchmark, critique an existing benchmark, choose metrics for an agent or RAG system, or decide whether a measured improvement is real. NOT for running an existing performance-benchmark suite or a per-feature acceptance checklist, or one-off model spot-checks."
-scope: universal
-ported-from: global skill
+description: "Design or critique evals and benchmarks for AI agents, dev tools, RAG, and repo-scale automation: task selection, contamination, metrics, statistical validity. Use to choose metrics or judge whether an improvement is real."
 ---
 
 # Agent Evaluation & Benchmark Design
@@ -31,6 +29,39 @@ puzzles.
 Correctness · completeness · reliability · latency · cost · determinism ·
 reproducibility · developer effort · failure recovery · robustness. Pick the few
 that map to real decisions for _this_ system; don't report all ten by reflex.
+
+## From traces to a regression suite
+
+Use the stages that match the available evidence; an existing, validated rubric
+does not need to be rediscovered on every run.
+
+1. **Discover failures.** Review real inputs, outputs, tool results, and outcomes
+   before selecting product-quality metrics. Read
+   [trace review](references/trace-review.md) when failure modes are unclear.
+   Supplement observations with explicit requirements and adversarial cases;
+   absence from sampled traces does not make a requirement unnecessary.
+2. **Define the rubric.** For each failure mode, record evidence, the expected
+   behavior, valid alternatives, and the decision a check would inform. Resolve
+   ambiguous requirements before treating disagreement as model failure.
+3. **Validate the evaluator.** Prefer execution or deterministic checks where
+   they actually measure the criterion. Use a narrow LLM judge for semantic
+   judgments and read [judge calibration](references/judge-calibration.md)
+   before trusting its scores. Deterministic verifiers also need valid controls,
+   independent references, and evidence that legitimate solutions pass.
+4. **Design regression coverage.** Turn confirmed failures into regression cases,
+   retain representative held-out measurement data, and compare matched cases
+   across changes. Report targeted-suite results separately from population
+   estimates. Revisit failure categories and evaluator validity as behavior drifts.
+
+Prefer explicit pass/fail boundaries for individual failure modes. Preserve
+continuous scientific measurements and justified graded rubrics where those carry
+meaning; binary product checks are not a replacement for scientific validity.
+
+For retrieval systems, diagnose retrieval and generation separately: did the
+system obtain the required evidence, use it faithfully, and answer the request?
+For multi-hop tasks, check coverage of all required evidence, not merely whether
+one relevant result appeared. Validate synthetic questions against real queries;
+retrieval metrics alone do not establish end-to-end usefulness.
 
 ## Repository-scale evaluations
 
@@ -83,3 +114,7 @@ Recommend, with evidence:
 4. **Stronger validation** — contamination controls, statistical power, repro pinning.
 5. **Cost-performance framing** — the tradeoff curve, not a single winner.
 6. **Opportunities** — publication or product angles the eval surfaces, when they exist.
+
+## Evidence gates
+
+Classify each trial as valid, invalid, or a measured zero before aggregation. Retain invalid trials with a reason; exclude only under a declared rule. Keep measured zeros in the denominator. Preserve failed and interrupted evidence immutably, including negative controls, and state observations separately from inferences.

@@ -1,87 +1,49 @@
 # Performance Optimization
 
-## Model Selection Strategy
+## Model selection
 
-This is the routing table of record; other rules reference it rather than
-restating the tiers. Route by cognitive load, not by task size. The tiers are
-roles. Model families name them here because the routing outlives any one
-generation's version numbers; map them onto your provider's equivalents.
+Route by the task's reasoning demands, measured quality, and available budget.
+Use configured model roles rather than hard-coded provider names or generations.
 
-**Opus class** (deepest reasoning):
-- Planning, orchestration, and decomposition
-- Architectural decisions and first-principles checks
-- Adoption review and judge panels
-- Research and analysis
+| Role | Typical work | Selection evidence |
+| --- | --- | --- |
+| Deep reasoning | Planning, architecture, ambiguous diagnosis, evaluation | Performance on representative decisions and failure cases |
+| Execution | Implementing a resolved plan, focused debugging | Correctness, recovery behavior, and cost on the project workload |
+| Mechanical | Bounded transforms and repetitive checks | Reliable adherence to explicit contracts and verification gates |
 
-**Sonnet class** (main execution):
-- Main development work
-- Executing a plan produced by a higher tier
-- Complex coding tasks carrying explicit process (schemas, checklists, gates)
+Do not assume the most expensive model is best for every task or that adding
+process compensates for a model that fails the acceptance criteria. Compare
+against the incumbent with matched tasks before changing a routing policy.
 
-**Haiku class** (mechanical, high-frequency):
-- Lightweight agents invoked often
-- Worker agents running well-bounded mechanical steps
+## Concurrency and context
 
-Planning and orchestration sit in the top tier: a bad plan costs more downstream
-than the tokens saved producing it, and a cheap orchestrator fans its mistakes
-out across every worker it dispatches. Push execution down instead. Lower tiers
-compensate with explicit process — prefer adding a verification gate over
-up-tiering.
+Parallel work consumes context and tool capacity as well as output tokens.
+Account for input, cached input, output, and tool costs using the provider's
+actual usage records; caching discounts and quota accounting vary.
 
-## Concurrency and Context Are the Bill
+- Respect the runtime's concurrency limit. Default to at most three live agents,
+  including the coordinator, and one delegation level unless configured otherwise.
+- Dispatch independent work only when its benefit justifies coordination cost.
+- Keep task context focused and preserve durable state before compaction.
+- Scale review to the change; do not repeat a full panel after every small fix.
 
-Usage scales with **agents x turns x context**, not with tasks completed. Every
-live agent re-sends its whole conversation on every turn, and cached input is
-metered at or near full rate, so a long-running agent parked at a large context
-costs the same each turn whether or not anything new happened.
+See [agent-collaboration.md](./agent-collaboration.md) for delegation and review
+contracts. Measure user-visible latency and cost before optimizing a workflow;
+use `perf-audit` for a bounded performance investigation.
 
-Measured on 2026-09-05: a weekly Codex allowance was consumed in 4h51m — 8,847
-model responses, mean context 133K tokens, 1.18B billed tokens, of which only
-22.4M were new content (98.4% was context re-read). The week before had run the
-same 8,000-odd responses over 37 hours. The delta was concurrency (10-15 live
-threads vs 1-2), not work done.
+## Context and reasoning budget
 
-The three levers, in order of effect:
+Leave context headroom for multi-file changes, complex debugging, and the final
+verification pass. Before a large task approaches its context limit, persist
+decisions, current evidence, and next steps in the repository's approved store.
 
-1. **Cap concurrency and depth.** At most 3 agents live at once; a subagent
-   never spawns its own subagents. Depth-2 spawning is what multiplies a 4-slot
-   default into 15 threads.
-2. **Cap context.** Compact well below the model's ceiling — the cost of one
-   compaction is repaid within a handful of turns at a 200K context.
-3. **Route effort down.** Subagents run at medium effort unless the task is
-   genuinely hard; reasoning tokens were a minor term (908K of 3.28M output) but
-   effort also drives turn count.
+Reserve extended reasoning for unresolved design and correctness questions.
+Use an explicit plan for complex changes; add independent critique when it can
+test a material assumption. Routine file edits do not need a panel.
 
-## Context Window Management
+## Build troubleshooting
 
-Avoid last 20% of context window for:
-- Large-scale refactoring
-- Feature implementation spanning multiple files
-- Debugging complex interactions
-
-Lower context sensitivity tasks:
-- Single-file edits
-- Independent utility creation
-- Documentation updates
-- Simple bug fixes
-
-## Deep Reasoning and Plan Mode
-
-Reserve extended-reasoning budget for the tasks that need it: architectural
-decisions, multi-file features, and debugging complex interactions. Most agents
-expose an extended-thinking or reasoning-effort control and a plan mode; consult
-your agent's settings for how to enable them and how much budget to allow.
-
-For complex tasks requiring deep reasoning:
-1. Turn on the deepest reasoning mode your agent offers.
-2. Use a plan mode to structure the approach before editing.
-3. Run multiple critique rounds for thorough analysis.
-4. Use split-role sub-agents for diverse perspectives where the runtime supports them.
-
-## Build Troubleshooting
-
-If build fails:
-1. Use **build-error-resolver** agent
-2. Analyze error messages
-3. Fix incrementally
-4. Verify after each fix
+Read the failure, identify the narrowest relevant check, fix incrementally, and
+verify after each change. Use an available build-resolver role when helpful;
+otherwise perform the same procedure directly. Do not hide failures behind
+fallbacks or weaken a gate to make the build pass.

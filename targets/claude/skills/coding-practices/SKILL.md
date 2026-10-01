@@ -44,7 +44,7 @@ This skill is the catalog of that on-demand detail.
 - `.claude/rules-reference/performance.md` — Performance Optimization
 - `.claude/rules-reference/security.md` — Security Guidelines
 - `.claude/rules-reference/skill-management.md` — Discover, vet, and expose agent skills on demand with skillager, so the right skills are available per task without loading every skill into every chat.
-- `.claude/rules-reference/task-management.md` — Track multi-step agent work in a durable, dependency-aware task store; prefer the lightest non-invasive backend (SQLite + JSONL) and only add heavier sync when you actually need it.
+- `.claude/rules-reference/task-management.md` — Keep durable, dependency-aware work records in the repository's authoritative tracker; preserve its storage, handoff, and sync contracts.
 - `.claude/rules-reference/testing.md` — Testing Requirements
 
 ### go

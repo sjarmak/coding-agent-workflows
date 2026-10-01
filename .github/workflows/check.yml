@@ -17,3 +17,5 @@ jobs:
       - run: npm run check
       # release gate: rendered output must be free of paths, PII, internal jargon
       - run: npm run sanitize
+      - run: npm run validate
+      - run: npm test

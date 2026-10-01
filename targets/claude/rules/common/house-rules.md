@@ -6,9 +6,9 @@ autoload: claude
 # House Rules (always-on)
 
 The essential, always-loaded conventions. Detailed catalogs live in **on-demand
-skills** — don't inline them: code-review depth → `/review` + `code-reviewer`
+skills** — don't inline them: code-review depth → `code-review` + `code-reviewer`
 agent; slop/erosion catalog → `/slop-check`; language specifics →
-`<lang>-patterns` / `<lang>-review` skills and `rules/<lang>/`. The agent roster
+the bundled language rules; separately installed pattern skills are optional. The agent roster
 is already provided in session context — never duplicate it here.
 
 ## Collaboration & Autonomy
@@ -25,7 +25,7 @@ create|merge|edit|close|ready`, `gh issue create|edit|close|comment`, `gh
 release …`, Slack/email/LINE/Messenger/Discord replies, any post to an
   external service, `git push --force` / `branch -D` on shared refs.
 
-**Preview before execute** — when the user asks for an artifact she'll act on
+**Preview before execute** — when the user asks for an artifact they will act on
 (PR body, issue text, commit message, reply), produce it as text and STOP. Only
 call the publishing tool on an explicit publish verb ("send it", "open it",
 "file it", "push it", "post it", "ship it"). "What's the PR body?" → output
@@ -45,18 +45,14 @@ rhythm. Full catalog → `/no-ai-slop`.
 or DoS) in another project's tracker from inferred symptoms. A severe claim needs
 a panic/stack trace or a clean repro, not routine log noise (a broken pipe on
 flush is usually a disconnect; "context canceled" is usually a shutdown).
-Cross-repo credibility is a standing asset; protect it. Full rule → `/coding-practices`.
+Cross-repo credibility is a standing asset; protect it. Full rule → the Agent Collaboration section of the shared practices.
 
-**Bounded parallelism** — fan independent work out in one message rather than
-sequencing it, but keep **at most 3 agents live at once** and never let a
-subagent spawn its own subagents. Concurrency is the usage multiplier: a
-2026-09-05 audit burned a full weekly Codex allowance in 4h51m at 10-15
-concurrent threads, doing the same amount of model work that had previously
-taken 37 hours at 1-2. Every live agent re-sends its whole context on every
-turn, so the bill scales with agents x turns x context, not with tasks
-completed. Scale the review panel to the change: one reviewer for a routine
-diff, two (plus a cross-provider read) only for non-trivial or security-
-sensitive work. Review the landed change once; do not review per worker.
+**Bounded parallelism** — dispatch independent work within the runtime's limit.
+Default to at most three live agents, including the coordinator, and one
+delegation level unless configured otherwise. Scale review to the change:
+one reviewer for a routine diff; two independent perspectives for a complex or
+security-sensitive change when capacity permits. Review the combined change,
+then re-review only fixes that could affect the conclusion.
 
 **Receiving review** — evaluate technically; the reviewer can be wrong, the
 codebase is the authority. Per item: read → restate → verify against the code →
@@ -92,7 +88,7 @@ commands per criterion.
 - **No placeholder code** — no `throw "not implemented"`, no fake returns, no
   TODO standing in for in-scope work. **No commented-out history** — git holds
   it; delete removed code outright.
-- **No comments in code** (Stephanie, 2026-09-25: "never leave comments in the code", applied globally). Add no comment of any kind to code or config: no why-notes, docstrings, JSDoc, TODOs, dated change notes or commented-out code. Names, types and tests carry meaning; rationale goes in the commit message, PR body, bead or a doc. Exempt only what a tool reads or a configured linter requires (shebangs, build tags, encoding lines, lint/type pragmas, Rust `// SAFETY:` under clippy). Before every commit, list added comment lines with `git diff --cached -U0 -- . ':!*.md' | grep -E '^\+([[:space:]]*(#|//|/\*|\*|--|<!--)|.*[[:space:]](#|//)[[:space:]])' | grep -v '^+++'` and delete each one that is not exempt. No sweep (Stephanie, 2026-09-25, dec-rz6b (a)): existing comments on lines you did not change stay; a comment on a line you change or rewrite goes with that change.
+- **No comments in code**. Add no comment of any kind to code or config: no why-notes, docstrings, JSDoc, TODOs, dated change notes or commented-out code. Names, types and tests carry meaning; rationale goes in the commit message, PR body, bead or a doc. Exempt only what a tool reads or a configured linter requires (shebangs, build tags, encoding lines, lint/type pragmas, Rust `// SAFETY:` under clippy). Before every commit, list added comment lines with `git diff --cached -U0 -- . ':!*.md' | grep -E '^\+([[:space:]]*(#|//|/\*|\*|--|<!--)|.*[[:space:]](#|//)[[:space:]])' | grep -v '^+++'` and delete each one that is not exempt. No sweep: existing comments on lines you did not change stay; a comment on a line you change or rewrite goes with that change.
 - **Codebase ownership** — fix issues you discover (broken tests, build errors,
   stale refs, security) regardless of the current ticket's scope.
 
@@ -133,8 +129,7 @@ repos|code`) → primary/Context7 docs → Exa (only if the first two fall short
 - **Git**: conventional commit types (`feat|fix|refactor|docs|test|chore|perf|
 ci`). Every commit that is not purely mechanical (formatting, a dependency
   bump, generated files) carries a body line starting literally `Why:` that
-  states the author's reason for the change, so tools can find it with grep
-  (Stephanie, 2026-09-27, `dec-gwxz`). Attribution is disabled globally. For PRs, draft from the full diff
+  states the author's reason for the change, so tools can find it with grep. Follow the repository's attribution policy. For PRs, draft from the full diff
   (`git diff <base>...HEAD`), not just the last commit; include a test plan.
 
 ## Security (pre-commit)
@@ -147,10 +142,8 @@ continuing, rotate exposed secrets, sweep for similar.
 
 ## Performance & Model Tiering
 
-Route by cognitive load: planning, orchestration, architecture, and judge panels
-→ Opus class; main development and well-scoped execution → Sonnet class;
-mechanical/high-frequency → Haiku class. A bad plan costs more than the tokens
-saved producing it. Lower tiers compensate with explicit process (plan schemas,
-decision tables, verification gates) — prefer adding a gate over up-tiering.
-Full table → `~/.claude/rules-reference/performance.md`. Avoid the last 20% of the context
-window for large refactors and multi-file features.
+Route by cognitive load and measured quality: deep reasoning for unresolved
+planning and architecture, execution models for a resolved plan, and mechanical
+models for bounded operations with reliable checks. Use configured roles, not
+fixed provider or generation names. Full guidance → the Performance Optimization section of the shared practices.
+Preserve context headroom for verification and durable handoff.

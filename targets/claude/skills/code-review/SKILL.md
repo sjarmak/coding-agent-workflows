@@ -34,7 +34,7 @@ Map each property to affected functions, shared state, and tests. For cancellati
 - Missing error handling
 - console.log statements
 - TODO/FIXME comments
-- Missing JSDoc for public APIs
+- Public APIs whose names and types do not express their contract
 
 **AI Slop & Erosion (HIGH)** — see the `anti-slop` rule (`rules-reference/anti-slop.md`), weight toward code that extends existing modules:
 

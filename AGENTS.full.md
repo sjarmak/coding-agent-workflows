@@ -39,7 +39,7 @@ A pre-approved phase does NOT cover external artifacts inside it. "Continue thro
 
 ## Preview Before Execute
 
-When the user asks for an artifact she will act on (PR body, issue text, commit message, reply, handoff doc, comment): produce it as text and STOP. Do not call the publishing tool.
+When the user asks for an artifact they will act on (PR body, issue text, commit message, reply, handoff doc, comment): produce it as text and STOP. Do not call the publishing tool.
 
 Publishing verbs that authorize the tool call:
 
@@ -76,9 +76,7 @@ Credibility across repos is a standing asset. One confidently-filed issue that t
 
 Fan independent work out in a single message with multiple Agent tool calls rather than sequencing agents that don't depend on each other. Parallelism is still the default shape; what is not the default is unbounded parallelism.
 
-**The ceiling: at most 3 agents live at once, depth 1 only.** A subagent does not spawn its own subagents. Past that ceiling the wall-clock gain flattens and the token cost keeps compounding, because every live agent re-sends its entire context on every turn.
-
-**Why the ceiling exists.** A 2026-09-05 audit of a Codex account found a freshly redeemed weekly allowance consumed in 4 hours 51 minutes: 8,847 model responses at a mean 133K-token context, 1.18 billion billed tokens, of which only 22.4M were new content. The preceding week had done the *same* volume of model work (8,298 responses) spread over 37 hours. The difference was not workload. It was 10-15 concurrent threads instead of 1-2, produced by depth-2 subagent spawning. Reviewer subagents alone accounted for 34% of the week.
+**Default ceiling: at most 3 live agents including the coordinator, depth 1 only, subject to runtime limits.** A subagent does not spawn its own subagents. Past that ceiling the wall-clock gain flattens and the token cost keeps compounding, because every live agent re-sends its entire context on every turn.
 
 **Scale the review panel to the change, not to the worker count:**
 
@@ -176,11 +174,9 @@ BAD: agent 1, then agent 2, then agent 3, for work that has no dependency betwee
 When the host supports a single batched dispatch (e.g. multiple subagent calls
 in one turn), use it.
 
-**Bounded, though:** at most 3 agents live at once, and a subagent never spawns
-its own subagents. Depth-2 spawning is what turned a 4-slot default into 10-15
-live threads and burned a weekly allowance in under five hours. See
-`agent-collaboration.md` §Bounded Parallelism for the measurement and the
-review-panel sizing rule.
+**Bounded, though:** respect runtime capacity; default to at most three live
+agents including the coordinator and one delegation level. See
+[agent-collaboration.md](./agent-collaboration.md) for review-panel sizing.
 
 ## Multi-Perspective Analysis
 
@@ -470,8 +466,8 @@ Set expectations accordingly; these don't get "fixed," they get managed:
 - **Hallucinations / Non-Determinism / Black Box**: fabricated APIs, inconsistent
   runs, opaque reasoning. → verify against reality, never against memory.
 - **Excess Verbosity**: unnecessarily long output. → terseness is a practice, not
-  a nicety: cut fluff, keep technical substance. The `caveman` skill (Claude,
-  opt-in) is one concrete lever for this when token budget matters.
+  a nicety: cut fluff, keep technical substance. The optional `caveman` collection provides a requested interaction mode,
+  but clear ordinary prose is the default.
 - **Negative Bleedthrough**: earlier bad output contaminates later responses. → a
   fresh context beats a polluted one; prefer handoff over pushing through.
 
@@ -755,6 +751,151 @@ When creating PRs:
 > For the full development process (planning, TDD, code review) before git operations,
 > see [development-workflow.md](./development-workflow.md).
 
+# House Rules (always-on)
+
+The essential, always-loaded conventions. Detailed catalogs live in **on-demand
+skills** — don't inline them: code-review depth → `code-review` + `code-reviewer`
+agent; slop/erosion catalog → `/slop-check`; language specifics →
+the bundled language rules; separately installed pattern skills are optional. The agent roster
+is already provided in session context — never duplicate it here.
+
+## Collaboration & Autonomy
+
+**Autonomy boundary** — internal work is autonomous; external artifacts always
+need explicit per-action approval (even if a similar action was approved earlier
+in the session).
+
+- _Internal (proceed between sub-steps once a phase starts):_ tests, sweeps,
+  linters, builds, local CI, polling, multi-file edits in a worktree you own,
+  sub-agent dispatch, bead claims, worktree/branch creation.
+- _External (STOP and confirm per-action):_ `git push` (any form), `gh pr
+create|merge|edit|close|ready`, `gh issue create|edit|close|comment`, `gh
+release …`, Slack/email/LINE/Messenger/Discord replies, any post to an
+  external service, `git push --force` / `branch -D` on shared refs.
+
+**Preview before execute** — when the user asks for an artifact they will act on
+(PR body, issue text, commit message, reply), produce it as text and STOP. Only
+call the publishing tool on an explicit publish verb ("send it", "open it",
+"file it", "push it", "post it", "ship it"). "What's the PR body?" → output
+text, do NOT run `gh pr create`.
+
+**Public-facing prose** — every external artifact (PR body, issue title/body/
+comment, public reply, release notes, upstream maintainer comms) gets the de-slop
+pass before it is sent. ACTUALLY RUN the `no-ai-slop` skill and read the draft
+against it line by line; do NOT approximate the rules from memory (that is how the
+tells slip through). Hard bans in the sent artifact: no em dashes (use commas,
+semicolons, parentheses, or recast); no agreement-performance openers ("you're
+right", "great point", "good catch"); no "I hope this helps"; no flow-narration or
+list-itis; no hedging stacks; no honesty-signaling. Declarative, concrete, varied
+rhythm. Full catalog → `/no-ai-slop`.
+
+**Evidence gate for cross-repo claims** — never assert a bug (especially a crash
+or DoS) in another project's tracker from inferred symptoms. A severe claim needs
+a panic/stack trace or a clean repro, not routine log noise (a broken pipe on
+flush is usually a disconnect; "context canceled" is usually a shutdown).
+Cross-repo credibility is a standing asset; protect it. Full rule → the Agent Collaboration section of the shared practices.
+
+**Bounded parallelism** — dispatch independent work within the runtime's limit.
+Default to at most three live agents, including the coordinator, and one
+delegation level unless configured otherwise. Scale review to the change:
+one reviewer for a routine diff; two independent perspectives for a complex or
+security-sensitive change when capacity permits. Review the combined change,
+then re-review only fixes that could affect the conclusion.
+
+**Receiving review** — evaluate technically; the reviewer can be wrong, the
+codebase is the authority. Per item: read → restate → verify against the code →
+decide → respond → implement one at a time. Never open with "You're absolutely
+right!" before verifying. Push back with technical reasoning when the feedback
+is wrong for this codebase.
+
+**Output discipline** — no effort/time estimates in orchestrated work; no
+decision-framework preambles when the prompt contains a directive ("just do X");
+no trailing summaries of what you did; no upfront "I'll do A then B" narration.
+State results and decisions as they happen.
+
+**Tests ship with fixes** — the test lives in the same commit as the source
+change, not a follow-up.
+
+**Verifier role clamp** — when spawning a verification agent, open with: "You
+are a verification agent. You did NOT write this code. ACTIVELY TEST each
+acceptance criterion — do not just read." Then enumerate explicit verification
+commands per criterion.
+
+## Coding Standards
+
+- **Immutability** by default — return new objects, don't mutate in place.
+  Prefer **non-nullable** variables; introduce null only where absence is
+  semantically meaningful.
+- **Files**: many small, focused files over few large ones. 200–400 lines
+  typical, 800 max. No deep nesting (>4 levels). Functions <50 lines.
+- **Errors**: handle explicitly at every level; never silently swallow. Don't
+  mask failures with default values or bug-hiding timeouts. Timeouts are allowed
+  at trust boundaries (HTTP, DB, subprocess) but must propagate a real error.
+- **Input validation** at every system boundary; never trust external data
+  (API responses, user input, file content). Fail fast with clear messages.
+- **No placeholder code** — no `throw "not implemented"`, no fake returns, no
+  TODO standing in for in-scope work. **No commented-out history** — git holds
+  it; delete removed code outright.
+- **No comments in code**. Add no comment of any kind to code or config: no why-notes, docstrings, JSDoc, TODOs, dated change notes or commented-out code. Names, types and tests carry meaning; rationale goes in the commit message, PR body, bead or a doc. Exempt only what a tool reads or a configured linter requires (shebangs, build tags, encoding lines, lint/type pragmas, Rust `// SAFETY:` under clippy). Before every commit, list added comment lines with `git diff --cached -U0 -- . ':!*.md' | grep -E '^\+([[:space:]]*(#|//|/\*|\*|--|<!--)|.*[[:space:]](#|//)[[:space:]])' | grep -v '^+++'` and delete each one that is not exempt. No sweep: existing comments on lines you did not change stay; a comment on a line you change or rewrite goes with that change.
+- **Codebase ownership** — fix issues you discover (broken tests, build errors,
+  stale refs, security) regardless of the current ticket's scope.
+
+## Architecture
+
+SRP (split on reasons-to-change), DRY (rule of three — don't extract until the
+duplication is real), KISS, YAGNI, low coupling / high cohesion, layered
+dependencies pointing one direction. Run a first-principles check before major
+features touching the core domain.
+
+**Zero Framework Cognition (ZFC)** — in AI-orchestration code, the application
+layer is plumbing; delegate all _reasoning_ to models. _Allowed in code:_ IO,
+schema/structural validation, policy enforcement (budgets, limits, timeouts,
+sandboxing), mechanical transforms, state/lifecycle, deterministic math.
+_Forbidden (delegate to model):_ semantic classification, heuristic scoring with
+hardcoded thresholds, keyword/regex meaning-detection, planning/composition
+decisions, quality judgments beyond structural checks. Applies to AI-
+orchestration code, not CRUD/infra/hot paths.
+
+## Anti-Slop (extend cleanly)
+
+On any change that **extends existing code**: re-read the whole touched
+function/module (not just the diff hunk), ask "would I write this from scratch
+with today's requirements?", and prefer a net-negative diff that meets the
+requirement over a net-positive one. Full signature catalog → `/slop-check`.
+
+## Workflow
+
+- **Research & reuse before new code**: GitHub code search (`gh search
+repos|code`) → primary/Context7 docs → Exa (only if the first two fall short).
+  Check package registries; prefer porting a proven implementation over net-new.
+- **TDD**: write the failing test first (RED → GREEN → refactor); target 80%+
+  coverage (unit + integration + E2E for critical flows). Pure logic (parsers,
+  codecs, round-trips, arithmetic, invariants, state machines) also gets a
+  property test: Hegel for Rust/Go/C++/TS/Java/OCaml, Hypothesis for Python →
+  `property-testing` skill. Plan complex/refactor work first (`planner`); run
+  `code-reviewer` after writing code.
+- **Git**: conventional commit types (`feat|fix|refactor|docs|test|chore|perf|
+ci`). Every commit that is not purely mechanical (formatting, a dependency
+  bump, generated files) carries a body line starting literally `Why:` that
+  states the author's reason for the change, so tools can find it with grep. Follow the repository's attribution policy. For PRs, draft from the full diff
+  (`git diff <base>...HEAD`), not just the last commit; include a test plan.
+
+## Security (pre-commit)
+
+No hardcoded secrets (env vars / secret manager; validate presence at startup).
+Validate all inputs; parameterized queries (no SQL injection); sanitize HTML (no
+XSS); CSRF protection; verify authz; rate-limit endpoints; error messages don't
+leak sensitive data. On finding a security issue: stop, fix CRITICAL before
+continuing, rotate exposed secrets, sweep for similar.
+
+## Performance & Model Tiering
+
+Route by cognitive load and measured quality: deep reasoning for unresolved
+planning and architecture, execution models for a resolved plan, and mechanical
+models for bounded operations with reliable checks. Use configured roles, not
+fixed provider or generation names. Full guidance → the Performance Optimization section of the shared practices.
+Preserve context headroom for verification and durable handoff.
+
 # Common Patterns
 
 ## Skeleton Projects
@@ -847,91 +988,53 @@ the domain through that tool's lens.
 
 # Performance Optimization
 
-## Model Selection Strategy
+## Model selection
 
-This is the routing table of record; other rules reference it rather than
-restating the tiers. Route by cognitive load, not by task size. The tiers are
-roles. Model families name them here because the routing outlives any one
-generation's version numbers; map them onto your provider's equivalents.
+Route by the task's reasoning demands, measured quality, and available budget.
+Use configured model roles rather than hard-coded provider names or generations.
 
-**Opus class** (deepest reasoning):
-- Planning, orchestration, and decomposition
-- Architectural decisions and first-principles checks
-- Adoption review and judge panels
-- Research and analysis
+| Role | Typical work | Selection evidence |
+| --- | --- | --- |
+| Deep reasoning | Planning, architecture, ambiguous diagnosis, evaluation | Performance on representative decisions and failure cases |
+| Execution | Implementing a resolved plan, focused debugging | Correctness, recovery behavior, and cost on the project workload |
+| Mechanical | Bounded transforms and repetitive checks | Reliable adherence to explicit contracts and verification gates |
 
-**Sonnet class** (main execution):
-- Main development work
-- Executing a plan produced by a higher tier
-- Complex coding tasks carrying explicit process (schemas, checklists, gates)
+Do not assume the most expensive model is best for every task or that adding
+process compensates for a model that fails the acceptance criteria. Compare
+against the incumbent with matched tasks before changing a routing policy.
 
-**Haiku class** (mechanical, high-frequency):
-- Lightweight agents invoked often
-- Worker agents running well-bounded mechanical steps
+## Concurrency and context
 
-Planning and orchestration sit in the top tier: a bad plan costs more downstream
-than the tokens saved producing it, and a cheap orchestrator fans its mistakes
-out across every worker it dispatches. Push execution down instead. Lower tiers
-compensate with explicit process — prefer adding a verification gate over
-up-tiering.
+Parallel work consumes context and tool capacity as well as output tokens.
+Account for input, cached input, output, and tool costs using the provider's
+actual usage records; caching discounts and quota accounting vary.
 
-## Concurrency and Context Are the Bill
+- Respect the runtime's concurrency limit. Default to at most three live agents,
+  including the coordinator, and one delegation level unless configured otherwise.
+- Dispatch independent work only when its benefit justifies coordination cost.
+- Keep task context focused and preserve durable state before compaction.
+- Scale review to the change; do not repeat a full panel after every small fix.
 
-Usage scales with **agents x turns x context**, not with tasks completed. Every
-live agent re-sends its whole conversation on every turn, and cached input is
-metered at or near full rate, so a long-running agent parked at a large context
-costs the same each turn whether or not anything new happened.
+See [agent-collaboration.md](./agent-collaboration.md) for delegation and review
+contracts. Measure user-visible latency and cost before optimizing a workflow;
+use `perf-audit` for a bounded performance investigation.
 
-Measured on 2026-09-05: a weekly Codex allowance was consumed in 4h51m — 8,847
-model responses, mean context 133K tokens, 1.18B billed tokens, of which only
-22.4M were new content (98.4% was context re-read). The week before had run the
-same 8,000-odd responses over 37 hours. The delta was concurrency (10-15 live
-threads vs 1-2), not work done.
+## Context and reasoning budget
 
-The three levers, in order of effect:
+Leave context headroom for multi-file changes, complex debugging, and the final
+verification pass. Before a large task approaches its context limit, persist
+decisions, current evidence, and next steps in the repository's approved store.
 
-1. **Cap concurrency and depth.** At most 3 agents live at once; a subagent
-   never spawns its own subagents. Depth-2 spawning is what multiplies a 4-slot
-   default into 15 threads.
-2. **Cap context.** Compact well below the model's ceiling — the cost of one
-   compaction is repaid within a handful of turns at a 200K context.
-3. **Route effort down.** Subagents run at medium effort unless the task is
-   genuinely hard; reasoning tokens were a minor term (908K of 3.28M output) but
-   effort also drives turn count.
+Reserve extended reasoning for unresolved design and correctness questions.
+Use an explicit plan for complex changes; add independent critique when it can
+test a material assumption. Routine file edits do not need a panel.
 
-## Context Window Management
+## Build troubleshooting
 
-Avoid last 20% of context window for:
-- Large-scale refactoring
-- Feature implementation spanning multiple files
-- Debugging complex interactions
-
-Lower context sensitivity tasks:
-- Single-file edits
-- Independent utility creation
-- Documentation updates
-- Simple bug fixes
-
-## Deep Reasoning and Plan Mode
-
-Reserve extended-reasoning budget for the tasks that need it: architectural
-decisions, multi-file features, and debugging complex interactions. Most agents
-expose an extended-thinking or reasoning-effort control and a plan mode; consult
-your agent's settings for how to enable them and how much budget to allow.
-
-For complex tasks requiring deep reasoning:
-1. Turn on the deepest reasoning mode your agent offers.
-2. Use a plan mode to structure the approach before editing.
-3. Run multiple critique rounds for thorough analysis.
-4. Use split-role sub-agents for diverse perspectives where the runtime supports them.
-
-## Build Troubleshooting
-
-If build fails:
-1. Use **build-error-resolver** agent
-2. Analyze error messages
-3. Fix incrementally
-4. Verify after each fix
+Read the failure, identify the narrowest relevant check, fix incrementally, and
+verify after each change. Use an available build-resolver role when helpful;
+otherwise perform the same procedure directly. Do not hide failures behind
+fallbacks or weaken a gate to make the build pass.
 
 # Security Guidelines
 
@@ -990,7 +1093,26 @@ this bundle works to avoid (see [coding-practices discovery](./context-layering.
 discoverable, but inert until pulled). The fix is the same here as for rules: keep
 skills **searchable by metadata** and expose only the few a task actually needs.
 
-## skillager
+## Shared surface and local extensions
+
+Keep portable practices in the shared bundle, runtime mechanisms in their
+runtime adapter, and service commands or domain procedures in project-local
+skills. Optional interaction modes need not be exposed by default.
+
+The bundle's source catalog records each shipped skill's origin, collection,
+and required skills. Reconcile deliberate installed changes through that catalog
+and the source manifest; an installation directory is not the source of truth.
+Validate required skills and local resources before distributing a skill.
+
+When auditing freshness, distinguish installation, references, and actual
+invocations. Missing telemetry means usage is unknown. Retire a skill only when
+its contract is obsolete, replaced, or explicitly no longer wanted; record the
+replacement and ensure upgrades can remove only bundle-owned files.
+
+## skillager adapter
+
+The following is an optional discovery adapter. Use the installed version's
+help to confirm its commands; equivalent metadata-first tooling is acceptable.
 
 [skillager](https://pypi.org/project/skillager/) is a local CLI for discovering,
 reviewing, searching, and exposing agent skills without loading them all. Install it
@@ -1069,71 +1191,50 @@ never a background install.
 
 # Task Management
 
-Multi-step agent work needs a **durable work record** that survives a context
-window, a crashed session, or a handoff to another agent. Holding the plan only in
-the conversation loses it the moment the context compacts. A task store is the
-externalized memory of what is in flight, what is blocked, and what is done.
+Multi-step work needs a durable record that survives a restart, context
+compaction, or handoff. Use the repository's existing tracker and instructions.
+Do not introduce a second source of truth or migrate backends as a side effect
+of an implementation task.
 
-See [agent-collaboration.md](./agent-collaboration.md) for the autonomy rules around
-*claiming* tasks; this file is about the store those claims live in.
+## Required properties
 
-## What a task store must do
+- Persist acceptance criteria, dependencies, status, verification evidence, and
+  the next action outside the conversation.
+- Claim work through the tracker's concurrency mechanism before parallel edits.
+- Close work only when its acceptance criteria hold; distinguish implemented,
+  verified, committed, and published states.
+- Preserve failed attempts and blockers when they inform the next worker.
+- Use the repository's approved handoff and memory surfaces. Do not create
+  shared handoff files where concurrent writers can overwrite one another.
 
-- **Persist** tasks outside the conversation, in a form that survives restarts.
-- **Model dependencies** — task B is blocked by task A — so a "ready queue" (nothing
-  blocking it) can be computed rather than guessed.
-- **Track a lifecycle** — open → in-progress → done/closed — with one status per task.
-- **Stay diff-friendly** so the record lives in the repo and merges across agents and
-  branches without a central server.
+The record can live in an issue service, a local database, or another durable
+system. Storage and sync details belong to that system's adapter. A text export
+is not automatically the authoritative database or the transport protocol.
 
-This is mechanism, not policy (see [patterns.md](./patterns.md) §ZFC): state and
-lifecycle tracking belong in orchestration code. What goes *in* a task — its priority,
-its difficulty — is a judgment to delegate to a model, not hardcode.
+## Existing tracker first
 
-## beads
+Read the project instructions and the installed tracker's help before choosing
+commands. For Beads repositories, use `bd prime` for the installed workflow.
+Where the repository uses Dolt-backed Beads, the Dolt database is authoritative;
+JSONL is an export, not a normal import or sync mechanism. Older Beads versions
+and alternative implementations can have different contracts: do not transfer
+commands or storage assumptions between them.
 
-[beads](https://github.com/gastownhall/beads) (the `bd` CLI) is a dependency-aware
-issue tracker built for AI coding agents. Tasks are stored as **JSONL** — the
-git-friendly, mergeable source of truth — with a database alongside it for querying
-the dependency graph and computing the ready queue. It is the fullest option: rich
-dependency modelling, a ready-work queue, and an optional **Dolt** backend (a
-git-for-data SQL database) for versioned, multiplayer, syncable task history across
-machines.
+For repositories using hosted issues, keep implementation status there and use
+ADRs only for architectural decisions. For a repository without a tracker,
+choose the smallest durable mechanism that meets its collaboration and recovery
+requirements when task tracking is in scope. No backend is a universal default.
 
-That power has a cost. The Dolt backend pulls in a database dependency, and some
-setups auto-install git hooks to keep the store synced. Both are fine when you need
-cross-machine sync or a full audit trail of the task graph — and unnecessary weight
-when you don't.
+## Authority and recovery
 
-## beads_rust — the non-invasive default
+Local tracking operations follow the repository's autonomy rules. Remote issue
+writes and sync follow its publication rules; creating a local task does not
+authorize a push. On resumption, reconcile the tracker with actual repository
+state and verification artifacts before deciding what remains.
 
-For most projects, reach for the lighter, more self-contained option first.
-[beads_rust](https://github.com/Dicklesworthstone/beads_rust) is a Rust
-reimplementation that deliberately **freezes the architecture at SQLite + JSONL**: no Dolt dependency, no automatic git-hook installation, no
-background daemon. It keeps the parts that earn their weight — the JSONL source of
-truth and the dependency-aware ready queue — and drops the parts that reach into your
-environment.
-
-The non-invasive properties that make it a safe default:
-
-- **SQLite + JSONL only** — one local file plus a mergeable text record, nothing to run.
-- **No Dolt** — no external data-versioning database to install or operate.
-- **No hook installs** — it does not modify your git hooks; nothing changes about your
-  repo's behaviour just by adopting it.
-
-## Choosing
-
-Default to the lighter SQLite + JSONL setup (beads_rust). It is enough for a single
-agent or a small team sharing a branch, and it touches nothing it doesn't own — which
-is exactly what you want from a tool you're adding to an existing repo. This follows
-[architecture.md](./architecture.md) §KISS/§YAGNI: take the simplest store that solves
-the problem, and add the Dolt-backed full beads only when a concrete need appears —
-multi-machine sync, or a versioned history of the task graph. Adopting the heavy
-backend first is speculative weight.
-
-Whichever you pick, the durable, dependency-aware, diff-friendly work record is the
-point. The backend is an implementation detail you should be able to change without
-rewriting how the agent plans its work.
+Task priority and decomposition are reasoning decisions. Persistence, claims,
+dependencies, and state transitions are mechanisms; keep that distinction in
+orchestration code.
 
 # Testing Requirements
 
@@ -1225,7 +1326,7 @@ live in the `property-testing` skill.
 
 - **tdd-guide** - Use PROACTIVELY for new features, enforces write-tests-first
 
-Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/` in each target.
+Language-specific rules (Go, Python, TypeScript, Rust) live under `.agents/rules/<lang>/` for AGENTS-only installs and `$CODEX_HOME/rules/<lang>/` for Codex.
 
 ## Agent Roles
 
@@ -1260,8 +1361,8 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 - **premortem**: Prospective failure narratives. Independent agents each write a story from a future where the project failed for a different root cause, synthesized into a risk registry with severity ratings and mitigations.
 - **bisect**: Binary search for root cause: define a search space and a pass/fail oracle, then halve the space each step until the culprit commit, config key, or dependency is isolated. Works across git history, configuration, dependencies, or code modules.
 - **scaffold**: Build-order planning via competing sequencing strategies. Independent agents each propose a different build order for a chosen design, synthesized into a recommended plan with milestones, dependencies, and risks.
-- **codebase-onboarding**: Analyze an unfamiliar codebase and generate a structured onboarding guide with architecture map, key entry points, conventions, and a starter CLAUDE.md. Use when joining a new project or setting up Claude Code for the first time in a repo.
-- **architecture-decision-records**: Capture architectural decisions made during Claude Code sessions as structured ADRs. Auto-detects decision moments, records context, alternatives considered, and rationale. Maintains an ADR log so future developers understand why the codebase is shaped the way it is.
+- **codebase-onboarding**: Analyze an unfamiliar codebase and generate a structured onboarding guide with architecture map, key entry points, conventions, and a starter project instruction file. Use when joining a new project or setting up agent guidance in a repo.
+- **architecture-decision-records**: Capture architectural decisions made during coding sessions as structured ADRs. Auto-detects decision moments, records context, alternatives considered, and rationale. Maintains an ADR log so future developers understand why the codebase is shaped the way it is.
 - **security-review**: Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist and patterns.
 - **tdd-workflow**: Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ coverage including unit, integration, and E2E tests.
 - **slop-check**: LLM-judge slop & erosion scan of a diff, mirroring SlopCodeBench. Scores code on Erosion (verbosity, dead branches, redundant structure accumulated under iterative change) and Verbosity (unnecessary complexity), then reports per-category findings weighted toward code that EXTENDS existing modules. Use after iteratively extending existing code, before opening a PR on a non-greenfield change, when a module has grown across several requirement changes, or when the user says "slop check", "check for erosion", "is this over-engineered". Complements the review skill (correctness + reuse) — this lens is specifically the accumulated-cruft axis. Scans code, not prose; for AI-writing patterns in prose or docs use no-ai-slop.
@@ -1269,18 +1370,25 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `rules/<lang>/
 - **failure-mode-capture**: Record a "don't do X here, it breaks Y" lesson into AGENTS.md so an agent doesn't repeat a mistake. Dedupes against CLAUDE.md/instincts before writing, promotes generalizing lessons out of memory, and keeps AGENTS.md under budget. Use after a bug, regression, or near-miss, or when the user says "capture this" / "make sure we don't do that again".
 - **systems-thinking**: Analyze a software system, AI pipeline, or research direction by surfacing its underlying structure — invariants, hidden abstractions, weak assumptions, and the single highest-leverage direction — rather than optimizing local implementations. Use when asked to step back and think about a system's design at a conceptual level, find leverage points, evaluate a research direction for compounding impact, or decide where to invest for the long term. NOT for reviewing a specific repo's architecture (use repo-architecture-review) or local code cleanup.
 - **repo-architecture-review**: Review a repository for long-term architectural leverage rather than code quality — system structure, module boundaries, dependency graph, coupling, and drift. Produces a ranked set of highest-ROI improvements with evidence, effort, and risk. Use when asked to review the architecture, assess a codebase's structure/design, find where complexity is concentrated, or decide what to refactor next. NOT for style, naming, formatting, or line-level bugs (use a code-review skill for those).
-- **agent-eval-design**: Design rigorous evaluations and benchmarks for AI agents, developer tools, retrieval systems, and repository-scale automation. Covers task selection, contamination control, metric choice tied to engineering decisions, and statistical validity. Use when asked to design an eval/benchmark, critique an existing benchmark, choose metrics for an agent or RAG system, or decide whether a measured improvement is real. NOT for running an existing performance-benchmark suite or a per-feature acceptance checklist, or one-off model spot-checks.
+- **agent-eval-design**: Design or critique evals and benchmarks for AI agents, dev tools, RAG, and repo-scale automation: task selection, contamination, metrics, statistical validity. Use to choose metrics or judge whether an improvement is real.
 - **regex-vs-llm-structured-text**: Decision framework for choosing between regex and LLM when parsing structured text — start with regex, add LLM only for low-confidence edge cases. Use when parsing quizzes, forms, invoices, or documents with repeating structure and cost matters.
-- **grill-me**: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree one at a time. Use for ambiguous or complex collaborative specs before any code is written.
+- **grill-me**: Stress-test an ambiguous or complex plan until its implementation decisions are shared and explicit. Use before coding when unresolved trade-offs materially affect the design.
 - **e2e-testing**: Thin methodology for end-to-end tests of critical user journeys — define journeys by risk, use semantic locators and condition-based waits, quarantine flaky tests with a tracked reason, and capture artifacts on failure. Use when adding or stabilizing E2E coverage; the e2e-runner agent applies it in depth.
 - **dashboard**: Generate an HTML dashboard of project status and recent outputs, scoped to what the user asks about. Use when the user asks for a dashboard or project status, asks what is blocking a release, what needs attention, or where work was left off, or wants a visual read on a repo instead of scrolling terminal output. Renders a self-contained page to .dashboard/index.html, plus a rollup mode across several repos.
-- **handoff-doc**: Write a handoff document to a handoff directory so a new agent session can be pointed at the file, read it, and delete it. Use when nearing context limits or starting fresh while preserving context. Triggers on: handoff doc, file handoff, write handoff, new session, continue in new thread.
+- **handoff-doc**: Write a handoff document using the repository's durable task or handoff store so a new agent session can continue work. Use when nearing context limits or starting fresh while preserving context.
 - **ruling-capture**: Capture a standing decision, policy, or correction a user gives mid-session ("always do X", "never do Y", "from now on, Z") into a durable, searchable document instead of losing it to the transcript. Writes the full ruling to the topic-owning document, leaves a one-line pointer in the main instructions file, and ships a heuristic checker for rulings that were inlined or documents nothing points at. Use when the user issues a standing directive, overrules an approach, or says "remember this" / "make that the rule".
 - **working-set-snapshot**: Preserve curated session state across context compaction. The agent maintains a short working-set file (doing / decided / blocked / next); a hook fires at the pre-compaction boundary, blocks a bounded number of times until the file exists, snapshots it with a content hash and cheap boundary facts, then warns if the file is stale or unchanged across three boundaries. Use when a session is long enough to compact, when state keeps getting lost across compaction, or when the user says "write the working set" / "set up the compaction hook".
 - **formal-methods**: Find bugs and verify behavioral properties with TLA+, Lean, and executable models. Use for concurrency, lifecycle, or critical core-logic audits, explicit formal verification requests, and counterexample-driven regression testing.
 - **click-path-audit**: Trace every user-facing button/touchpoint through its full state change sequence to find bugs where functions individually work but cancel each other out, produce wrong final state, or leave the UI in an inconsistent state. Use when: systematic debugging found no bugs but users report broken buttons, or after any major refactor touching shared state stores.
+- **property-testing**: Write and review property-based tests for pure logic with Hegel (Rust, Go, C++, TypeScript, Java, OCaml) or Hypothesis (Python). Covers when a property test is required, the property catalog, verified package pins, seed replay, the failing-example database, CI behaviour, and pinning a shrunk failure as a regression test. Use when adding or reviewing tests for parsers, codecs, round-trips, arithmetic, ordering, dedup or state machines, or when a property test fails and must be reproduced.
+- **no-ai-slop**: Edit drafts into sharper, more human writing while preserving the writer's personal voice, or detect AI-slop patterns without rewriting. Use when the user wants a draft clearer, more direct, more opinionated, or less AI-sounding, or asks whether writing reads as AI.
+- **code-hygiene**: Periodic code-hygiene audit of a repository or subsystem: low-value or implementation-coupled tests, test-only production seams, dead code, placeholders, commented-out history, swallowed errors, stale references, and oversized units. Read-only by default; produces an evidence ledger, then fixes one coherent batch at a time. Use for scheduled code audits, \"hygiene pass\", \"prune the tests\", \"find dead code\", or before a subsystem refactor. Not for reviewing a single diff (-> code-review, slop-check) or architecture ROI (-> repo-architecture-review).
+- **perf-audit**: Measurement-first performance audit and speed-up loop for a repository: pick a user-visible journey, build a deterministic benchmark that predicts wall-clock time, find the bottleneck, ship risk-sized fixes behind a ratchet so wins do not decay. Use during code audits, for \"make X faster\", \"why is this slow\", slow CLI/order/query/page, or before optimizing anything. Pairs with code-hygiene in the periodic audit. Not for one-off micro-benchmarks of a diff or capacity planning.
+- **browser-qa**: Test live web interfaces with browser automation for smoke failures, interactions, visual regressions, responsive behavior, and accessibility. Use after frontend changes or deployments, during UI review, and before shipping critical user journeys.
+- **agent-harness-traceability**: Capture, replay, summarize, and compare agent harness runs with immutable evidence, explicit telemetry provenance, paired statistics, and regression gates. Use for eval runners and reports, including hosted evaluations and custom harness comparisons; use agent-eval-design for designing a benchmark from scratch.
+- **reliability-pass**: Six bounded protocols that test a coding-agent system and leave an artifact: authority boundary, recovery fault-injection, trace review, eval comparison. Use when asked whether a system, recovery path, or permission boundary actually holds.
 
-Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.
+Full skill procedures and resources are installed at `.agents/skills/<name>/SKILL.md` for AGENTS-only installs or `$CODEX_HOME/skills/<name>/SKILL.md` for Codex; Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.
 
 ## Workflows
 

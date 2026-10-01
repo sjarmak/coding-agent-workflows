@@ -56,11 +56,9 @@ BAD: agent 1, then agent 2, then agent 3, for work that has no dependency betwee
 When the host supports a single batched dispatch (e.g. multiple subagent calls
 in one turn), use it.
 
-**Bounded, though:** at most 3 agents live at once, and a subagent never spawns
-its own subagents. Depth-2 spawning is what turned a 4-slot default into 10-15
-live threads and burned a weekly allowance in under five hours. See
-`agent-collaboration.md` §Bounded Parallelism for the measurement and the
-review-panel sizing rule.
+**Bounded, though:** respect runtime capacity; default to at most three live
+agents including the coordinator and one delegation level. See
+[agent-collaboration.md](./agent-collaboration.md) for review-panel sizing.
 
 ## Multi-Perspective Analysis
 

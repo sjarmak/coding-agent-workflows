@@ -24,10 +24,71 @@ note() { printf '  %s\n' "$1"; }
 # "AGENTS.md and AGENTS.md are the same file".
 cp_unless_same() {
   local src=$1 dst=$2
+  if has_symlink_ancestor "$dst"; then
+    echo "refusing to install: destination is or contains a symlink ($dst)" >&2
+    return 1
+  fi
   if [ -e "$dst" ] && [ "$src" -ef "$dst" ]; then
     note "$dst is this repo's own file; left as is."
     return 0
   fi
+  cp "$src" "$dst"
+}
+
+has_symlink_ancestor() {
+  local input=$1 current rest part
+  case "$input" in
+    /*) current=/; rest=${input#/} ;;
+    *) current=; rest=$input ;;
+  esac
+  IFS=/ read -ra path_parts <<< "$rest"
+  for part in "${path_parts[@]}"; do
+    [ -n "$part" ] || continue
+    [ "$part" = . ] && continue
+    [ "$part" = .. ] && return 0
+    if [ "$current" = / ]; then current="/$part"; elif [ -n "$current" ]; then current="$current/$part"; else current="$part"; fi
+    [ -L "$current" ] && return 0
+  done
+  return 1
+}
+
+valid_relative_path() {
+  case "$1" in
+    ''|/*|*..*|*//* ) return 1 ;;
+  esac
+}
+
+safe_copy_tree() {
+  local src=$1 dst=$2 prefix=${3:-}
+  has_symlink_ancestor "$dst" && return 0
+  mkdir -p "$dst"
+  while IFS= read -r rel; do
+    local target="$dst/$rel" parent part current
+    parent=$(dirname "$target")
+    current="$dst"
+    IFS=/ read -ra parts <<< "${rel%/*}"
+    for part in "${parts[@]}"; do
+      [ -n "$part" ] || continue
+      current="$current/$part"
+      if [ -L "$current" ]; then
+        target=""
+        break
+      fi
+    done
+    [ -n "$target" ] || continue
+    [ -L "$target" ] && continue
+    mkdir -p "$parent"
+    cp "$src/$rel" "$target"
+    [ -n "$prefix" ] && installed+=("$prefix/$rel")
+  done < <(cd "$src" && find -P . -type f | sed 's|^./||' | sort)
+  return 0
+}
+
+safe_copy_file() {
+  local src=$1 dst=$2
+  has_symlink_ancestor "$dst" && return 0
+  [ -L "$dst" ] && return 0
+  mkdir -p "$(dirname "$dst")"
   cp "$src" "$dst"
 }
 
@@ -37,7 +98,15 @@ case "$AGENT" in
     target="$DEST/.claude"
     src="$REPO/targets/claude"
     manifest="$target/.coding-agent-workflows-manifest"
+    if has_symlink_ancestor "$target"; then
+      echo "refusing to install: Claude destination is or contains a symlink ($target)" >&2
+      exit 1
+    fi
     mkdir -p "$target"
+    if has_symlink_ancestor "$manifest"; then
+      echo "refusing to install: Claude ownership manifest is or contains a symlink ($manifest)" >&2
+      exit 1
+    fi
 
     # Files this install writes (relative paths), and the prior install's list.
     # Portable array fill (no mapfile) so this runs under stock macOS bash too.
@@ -61,13 +130,20 @@ case "$AGENT" in
     # so a user-level install (./install.sh claude ~) never silently clobbers
     # hand-authored config in an existing ~/.claude.
     backup="$target/.coding-agent-workflows-backup/$(date +%Y%m%d-%H%M%S)"
+    if has_symlink_ancestor "$backup"; then
+      echo "refusing to install: Claude backup path is or contains a symlink ($backup)" >&2
+      exit 1
+    fi
     saved=0
     for f in "${files[@]}"; do
+      has_symlink_ancestor "$target/$f" && continue
       [ -e "$target/$f" ] || continue
       contains "$f" ${prev[@]+"${prev[@]}"} && continue
       cmp -s "$src/$f" "$target/$f" && continue
-      mkdir -p "$backup/$(dirname "$f")"
-      cp "$target/$f" "$backup/$f"
+      backup_file="$backup/$f"
+      has_symlink_ancestor "$backup_file" && { echo "refusing to install: Claude backup path is or contains a symlink ($backup_file)" >&2; exit 1; }
+      mkdir -p "$(dirname "$backup_file")"
+      cp "$target/$f" "$backup_file"
       saved=$((saved + 1))
     done
 
@@ -93,8 +169,7 @@ case "$AGENT" in
     installed=()
     for f in "${files[@]}"; do
       under_skipped "$f" && continue
-      # a symlinked file would be written through to its target; replace the link
-      [ -L "$target/$f" ] && rm -f "$target/$f"
+      has_symlink_ancestor "$target/$f" && continue
       mkdir -p "$target/$(dirname "$f")"
       cp "$src/$f" "$target/$f"
       installed+=("$f")
@@ -105,6 +180,8 @@ case "$AGENT" in
     if [ "$mode" = upgrade ]; then
       for f in ${prev[@]+"${prev[@]}"}; do
         contains "$f" ${installed[@]+"${installed[@]}"} && continue
+        valid_relative_path "$f" || continue
+        has_symlink_ancestor "$target/$f" && continue
         rm -f "$target/$f" && pruned=$((pruned + 1))
       done
     fi
@@ -126,6 +203,10 @@ case "$AGENT" in
   remove)
     target="$DEST/.claude"
     manifest="$target/.coding-agent-workflows-manifest"
+    if has_symlink_ancestor "$manifest"; then
+      echo "refusing to remove: ownership manifest is or contains a symlink ($manifest)" >&2
+      exit 1
+    fi
     if [ ! -f "$manifest" ]; then
       echo "No bundle manifest at $manifest — nothing to remove." >&2
       echo "(remove only undoes a prior './install.sh claude' into this dest.)" >&2
@@ -134,6 +215,8 @@ case "$AGENT" in
     removed=0
     while IFS= read -r f; do
       [ -n "$f" ] || continue
+      valid_relative_path "$f" || continue
+      has_symlink_ancestor "$target/$f" && continue
       [ -e "$target/$f" ] && rm -f "$target/$f" && removed=$((removed + 1))
     done < "$manifest"
     rm -f "$manifest"
@@ -143,35 +226,110 @@ case "$AGENT" in
     note "Your non-bundle .claude contents are left in place."
     note "Any collision backups remain under .claude/.coding-agent-workflows-backup/."
     ;;
-  codex)
+  codex|codex-upgrade)
     cp_unless_same "$REPO/AGENTS.md" "$DEST/AGENTS.md"
     cp_unless_same "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
     codex_home="${CODEX_HOME:-$HOME/.codex}"
+    if has_symlink_ancestor "$codex_home"; then
+      echo "refusing to install: CODEX_HOME is or contains a symlink ($codex_home)" >&2
+      exit 1
+    fi
     mkdir -p "$codex_home"
-    for kind in agents prompts skills; do
-      mkdir -p "$codex_home/$kind"
-      for entry in "$REPO/targets/codex/$kind"/*; do
-        name=$(basename "$entry")
-        if [ -L "$codex_home/$kind/$name" ]; then
-          note "$codex_home/$kind/$name is a symlink; left untouched."
-          continue
+    codex_manifest="$codex_home/.coding-agent-workflows-manifest"
+    if has_symlink_ancestor "$codex_manifest"; then
+      echo "refusing to install: Codex ownership manifest is or contains a symlink ($codex_manifest)" >&2
+      exit 1
+    fi
+    valid_owned_path() {
+      case "$1" in
+        agents/*|prompts/*|skills/*|rules/*) ;;
+        *) return 1 ;;
+      esac
+      case "$1" in
+        /*|*..*|*//* ) return 1 ;;
+      esac
+    }
+    prev=()
+    if [ -f "$codex_manifest" ]; then
+      while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        if ! valid_owned_path "$f"; then
+          echo "refusing to install: invalid Codex ownership path '$f'" >&2
+          exit 1
         fi
-        cp -r "$entry" "$codex_home/$kind/"
-      done
+        prev+=("$f")
+      done < "$codex_manifest"
+    fi
+    contains() { local x=$1; shift; local e; for e in "$@"; do [ "$e" = "$x" ] && return 0; done; return 1; }
+    files=(); while IFS= read -r f; do files+=("$f"); done < <(cd "$REPO/targets/codex" && find -P agents prompts skills rules -type f | sort)
+    backup="$codex_home/.coding-agent-workflows-backup/$(date +%Y%m%d-%H%M%S)"
+    if has_symlink_ancestor "$backup"; then
+      echo "refusing to install: Codex backup path is or contains a symlink ($backup)" >&2
+      exit 1
+    fi
+    saved=0
+    for f in "${files[@]}"; do
+      [ -e "$codex_home/$f" ] || continue
+      has_symlink_ancestor "$codex_home/$f" && continue
+      contains "$f" ${prev[@]+"${prev[@]}"} && continue
+      cmp -s "$REPO/targets/codex/$f" "$codex_home/$f" && continue
+      backup_file="$backup/$f"
+      has_symlink_ancestor "$backup_file" && { echo "refusing to install: Codex backup path is or contains a symlink ($backup_file)" >&2; exit 1; }
+      mkdir -p "$(dirname "$backup_file")"
+      cp -L "$codex_home/$f" "$backup_file"
+      saved=$((saved + 1))
     done
-    if [ -e "$codex_home/config.toml" ]; then
+    installed=()
+    for kind in agents prompts skills rules; do
+      safe_copy_tree "$REPO/targets/codex/$kind" "$codex_home/$kind" "$kind"
+    done
+    if [ "$AGENT" = codex ]; then
+      for f in "${prev[@]}"; do
+        has_symlink_ancestor "$codex_home/$f" && continue
+        contains "$f" ${installed[@]+"${installed[@]}"} || installed+=("$f")
+      done
+    fi
+    pruned=0
+    if [ "$AGENT" = codex-upgrade ]; then
+      for f in ${prev[@]+"${prev[@]}"}; do
+        contains "$f" ${installed[@]+"${installed[@]}"} && continue
+        valid_owned_path "$f" || continue
+        prune_target="$codex_home/$f"
+        has_symlink_ancestor "$prune_target" && continue
+        [ -f "$prune_target" ] && rm -f "$prune_target" && pruned=$((pruned + 1))
+      done
+    fi
+    printf '%s\n' ${installed[@]+"${installed[@]}"} > "$codex_manifest"
+    if [ -L "$codex_home/config.toml" ]; then
+      note "$codex_home/config.toml is a symlink; left untouched."
+    elif [ -e "$codex_home/config.toml" ]; then
+      config_backup="$codex_home/config.toml.from-coding-agent-workflows"
+      if has_symlink_ancestor "$config_backup"; then
+        echo "refusing to install: Codex config backup path is or contains a symlink ($config_backup)" >&2
+        exit 1
+      fi
       cp "$REPO/targets/codex/config.toml" "$codex_home/config.toml.from-coding-agent-workflows"
       note "$codex_home/config.toml already exists; wrote ours as config.toml.from-coding-agent-workflows, merge manually."
     else
       cp "$REPO/targets/codex/config.toml" "$codex_home/config.toml"
     fi
-    echo "Installed AGENTS.md + AGENTS.full.md → $DEST   and Codex agents/prompts/skills → $codex_home"
+    echo "Installed AGENTS.md + AGENTS.full.md → $DEST   and Codex agents/prompts/skills/rules → $codex_home"
+    [ "$saved" -gt 0 ] && note "Backed up $saved pre-existing file(s) before overwrite → $backup"
+    [ "$pruned" -gt 0 ] && note "Pruned $pruned file(s) the bundle no longer ships."
     note "Codex reads AGENTS.md automatically from your project root."
     ;;
   agents)
     cp_unless_same "$REPO/AGENTS.md" "$DEST/AGENTS.md"
     cp_unless_same "$REPO/AGENTS.full.md" "$DEST/AGENTS.full.md"
-    echo "Installed AGENTS.md (thin index) + AGENTS.full.md → $DEST"
+    while IFS= read -r skill; do
+      [ -n "$skill" ] || continue
+      safe_copy_tree "$REPO/targets/codex/skills/$skill" "$DEST/.agents/skills/$skill"
+    done < "$REPO/targets/codex/universal-skills.list"
+    while IFS= read -r rule; do
+      [ -n "$rule" ] || continue
+      safe_copy_file "$REPO/targets/codex/rules/$rule" "$DEST/.agents/rules/$rule"
+    done < "$REPO/targets/codex/universal-rules.list"
+    echo "Installed AGENTS.md (thin index) + AGENTS.full.md + .agents/skills + .agents/rules → $DEST"
     note "Any AGENTS.md-aware agent (Amp, Aider, Gemini CLI, …) auto-loads the index;"
     note "it reads sections of AGENTS.full.md on demand, keeping loaded context small."
     note "For an agent that can only ever read one file, copy AGENTS.full.md as its AGENTS.md."
@@ -238,7 +396,8 @@ case "$AGENT" in
     echo "  upgrade → re-install into <dest>/.claude and prune files dropped since last install" >&2
     echo "  remove  → delete exactly what a prior claude install placed in <dest>/.claude" >&2
     echo "  codex   → AGENTS.md + AGENTS.full.md in <dest> + config into CODEX_HOME (default: ~/.codex)" >&2
-    echo "  agents  → AGENTS.md (thin index) + AGENTS.full.md in <dest>" >&2
+    echo "  codex-upgrade → update Codex files and prune files previously owned by this bundle" >&2
+    echo "  agents  → AGENTS.md + AGENTS.full.md + .agents/skills + .agents/rules in <dest>" >&2
     echo "  init    → thin, project-specific AGENTS.md template in <dest> (filled by project-init)" >&2
     echo "  fleet   → machine-level conformance scanner + bootstrap hooks (~/.claude/fleet)" >&2
     exit 1

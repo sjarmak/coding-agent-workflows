@@ -1,6 +1,6 @@
 ---
 name: "architecture-decision-records"
-description: "Capture architectural decisions made during Claude Code sessions as structured ADRs. Auto-detects decision moments, records context, alternatives considered, and rationale. Maintains an ADR log so future developers understand why the codebase is shaped the way it is."
+description: "Capture architectural decisions made during coding sessions as structured ADRs. Auto-detects decision moments, records context, alternatives considered, and rationale. Maintains an ADR log so future developers understand why the codebase is shaped the way it is."
 ---
 
 # Architecture Decision Records
@@ -72,13 +72,13 @@ What becomes easier or more difficult to do because of this change?
 
 When a decision moment is detected:
 
-1. **Initialize (first time only)**: if `docs/adr/` does not exist, ask the user for confirmation before creating the directory, a `README.md` seeded with the index table header (see ADR Index Format below), and a blank `template.md` for manual use. Do not create files without explicit consent.
+1. **Initialize (first time only)**: if `docs/adr/` does not exist, create the directory, a `README.md` seeded with the index table header (see ADR Index Format below), and a blank `template.md` when the user's request authorizes writing the ADR. Otherwise draft the proposed files and wait for authorization.
 2. **Identify the decision**: extract the core architectural choice being made
 3. **Gather context**: what problem prompted this? What constraints exist?
 4. **Document alternatives**: what other options were considered? Why were they rejected?
 5. **State consequences**: what are the trade-offs? What becomes easier/harder?
 6. **Assign a number**: scan existing ADRs in `docs/adr/` and increment
-7. **Confirm and write**: present the draft ADR to the user for review. Only write to `docs/adr/NNNN-decision-title.md` after explicit approval. If the user declines, discard the draft without writing any files.
+7. **Write when authorized**: write to `docs/adr/NNNN-decision-title.md` when the request authorizes the documentation change; otherwise present the draft and wait.
 8. **Update the index**: append to `docs/adr/README.md`
 
 ### Reading Existing ADRs
@@ -124,7 +124,7 @@ Watch for these patterns in conversation that indicate an architectural decision
 - "The trade-off is worth it because..."
 - "Record this as an ADR"
 
-**Implicit signals** (suggest recording an ADR, do not auto-create without user confirmation)
+**Implicit signals** (suggest recording an ADR; create only when the documentation change is authorized)
 - Comparing two frameworks or libraries and reaching a conclusion
 - Making a database schema design choice with stated rationale
 - Choosing between architectural patterns (monolith vs microservices, REST vs GraphQL)

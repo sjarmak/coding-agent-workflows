@@ -91,7 +91,7 @@ Fix: What to change
 
 ## Reference
 
-For detailed Python patterns, security examples, and code samples, see skill: `python-patterns`.
+For detailed Python patterns, security examples, and code samples, use `python-patterns` if separately installed; otherwise follow the bundled Python rules.
 
 ---
 

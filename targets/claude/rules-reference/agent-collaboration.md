@@ -29,7 +29,7 @@ A pre-approved phase does NOT cover external artifacts inside it. "Continue thro
 
 ## Preview Before Execute
 
-When the user asks for an artifact she will act on (PR body, issue text, commit message, reply, handoff doc, comment): produce it as text and STOP. Do not call the publishing tool.
+When the user asks for an artifact they will act on (PR body, issue text, commit message, reply, handoff doc, comment): produce it as text and STOP. Do not call the publishing tool.
 
 Publishing verbs that authorize the tool call:
 
@@ -66,9 +66,7 @@ Credibility across repos is a standing asset. One confidently-filed issue that t
 
 Fan independent work out in a single message with multiple Agent tool calls rather than sequencing agents that don't depend on each other. Parallelism is still the default shape; what is not the default is unbounded parallelism.
 
-**The ceiling: at most 3 agents live at once, depth 1 only.** A subagent does not spawn its own subagents. Past that ceiling the wall-clock gain flattens and the token cost keeps compounding, because every live agent re-sends its entire context on every turn.
-
-**Why the ceiling exists.** A 2026-09-05 audit of a Codex account found a freshly redeemed weekly allowance consumed in 4 hours 51 minutes: 8,847 model responses at a mean 133K-token context, 1.18 billion billed tokens, of which only 22.4M were new content. The preceding week had done the *same* volume of model work (8,298 responses) spread over 37 hours. The difference was not workload. It was 10-15 concurrent threads instead of 1-2, produced by depth-2 subagent spawning. Reviewer subagents alone accounted for 34% of the week.
+**Default ceiling: at most 3 live agents including the coordinator, depth 1 only, subject to runtime limits.** A subagent does not spawn its own subagents. Past that ceiling the wall-clock gain flattens and the token cost keeps compounding, because every live agent re-sends its entire context on every turn.
 
 **Scale the review panel to the change, not to the worker count:**
 

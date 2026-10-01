@@ -19,3 +19,7 @@ External patterns referenced/incorporated:
   SlopCodeBench code-erosion rubric (source/rules/common/anti-slop.md,
     source/skills/slop-check/): https://www.scbench.ai
     https://github.com/SprocketLab/slop-code-bench
+
+The no-ai-slop skill and its evaluation rubric retain their MIT license:
+  Copyright (c) 2026 Peter Yang
+  See source/skills/no-ai-slop/LICENSE.

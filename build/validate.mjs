@@ -28,6 +28,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'source');
 const manifest = JSON.parse(fs.readFileSync(path.join(SRC, 'manifest.json'), 'utf8'));
+const catalogPath = path.join(SRC, 'catalog.json');
 
 // minimal frontmatter parse (same shape as render.mjs)
 function parse(md) {
@@ -52,6 +53,91 @@ const errors = [];
 const warnings = [];
 const err = (where, msg) => errors.push(`${where}: ${msg}`);
 const warn = (where, msg) => warnings.push(`${where}: ${msg}`);
+
+const validScopes = new Set(['universal', 'claude', 'codex']);
+for (const section of ['rules', 'agents', 'skills', 'workflows', 'templates']) {
+  for (const [name, scope] of Object.entries(manifest[section] || {})) {
+    if (!name.startsWith('$') && !validScopes.has(scope)) err(`manifest ${section}.${name}`, `invalid scope '${scope}'`);
+  }
+}
+
+if (!fs.existsSync(catalogPath)) {
+  err('source/catalog.json', 'required skill catalog is missing');
+} else {
+  let catalog;
+  try {
+    catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+  } catch (e) {
+    err('source/catalog.json', `invalid JSON: ${e.message}`);
+    catalog = null;
+  }
+  if (catalog) {
+    if (catalog.version !== 1) err('source/catalog.json', "version must be 1");
+    if (!catalog.skills || typeof catalog.skills !== 'object' || Array.isArray(catalog.skills)) {
+      err('source/catalog.json', 'skills must be an object');
+    } else {
+      const manifestSkills = Object.keys(manifest.skills).filter(name => !name.startsWith('$'));
+      for (const name of manifestSkills) {
+        const record = catalog.skills[name];
+        if (!record || typeof record !== 'object' || Array.isArray(record)) {
+          err(`catalog skill ${name}`, 'missing record');
+          continue;
+        }
+        if (typeof record.origin !== 'string' || !record.origin) err(`catalog skill ${name}`, 'origin must be a non-empty string');
+        if (!['core', 'engineering', 'agent-systems', 'runtime', 'optional'].includes(record.collection)) err(`catalog skill ${name}`, `invalid collection '${record.collection}'`);
+        if (!Array.isArray(record.requires) || record.requires.some(dep => typeof dep !== 'string' || !dep)) err(`catalog skill ${name}`, 'requires must be an array of non-empty skill names');
+        for (const dep of Array.isArray(record.requires) ? record.requires : []) {
+          if (!catalog.skills[dep]) err(`catalog skill ${name}`, `requires missing skill '${dep}'`);
+          if (!manifest.skills[dep] || manifest.skills[dep].startsWith('$')) err(`catalog skill ${name}`, `requires unshipped skill '${dep}'`);
+          const ownerScope = manifest.skills[name];
+          const dependencyScope = manifest.skills[dep];
+          const compatible = ownerScope === 'universal'
+            ? dependencyScope === 'universal'
+            : ownerScope === 'claude'
+              ? dependencyScope === 'universal' || dependencyScope === 'claude'
+              : ownerScope === 'codex'
+                ? dependencyScope === 'universal' || dependencyScope === 'codex'
+                : false;
+          if (dependencyScope && !compatible) err(`catalog skill ${name}`, `requires '${dep}' (${dependencyScope}), incompatible with ${ownerScope}`);
+        }
+      }
+      for (const name of Object.keys(catalog.skills)) {
+        if (name.startsWith('$')) continue;
+        if (!manifest.skills[name]) err(`catalog skill ${name}`, 'record has no manifest target');
+      }
+    }
+    const optional = catalog.optional;
+    if (optional !== undefined && (typeof optional !== 'object' || Array.isArray(optional))) {
+      err('source/catalog.json', 'optional must be an object');
+    } else if (optional) {
+      for (const [name, record] of Object.entries(optional)) {
+        if (!record || typeof record !== 'object' || Array.isArray(record)) { err(`catalog optional ${name}`, 'missing record'); continue; }
+        if (manifest.skills[name]) err(`catalog optional ${name}`, 'optional skill must not be in the default manifest');
+        if (typeof record.path !== 'string' || !record.path) err(`catalog optional ${name}`, 'path must be a non-empty string');
+        else if (!fs.existsSync(path.join(SRC, '..', record.path, 'SKILL.md'))) err(`catalog optional ${name}`, 'path has no SKILL.md');
+        if (typeof record.origin !== 'string' || !record.origin) err(`catalog optional ${name}`, 'origin must be a non-empty string');
+        if (!['core', 'engineering', 'agent-systems', 'runtime', 'optional'].includes(record.collection)) err(`catalog optional ${name}`, `invalid collection '${record.collection}'`);
+        if (!Array.isArray(record.requires) || record.requires.some(dep => typeof dep !== 'string' || !dep)) err(`catalog optional ${name}`, 'requires must be an array of non-empty skill names');
+        for (const dep of Array.isArray(record.requires) ? record.requires : []) {
+          if (!catalog.skills?.[dep] && !optional?.[dep]) err(`catalog optional ${name}`, `requires missing skill '${dep}'`);
+          if (manifest.skills[dep] && manifest.skills[dep] !== 'universal') err(`catalog optional ${name}`, `requires '${dep}' (${manifest.skills[dep]}), incompatible with optional skills`);
+        }
+      }
+    }
+    if (!catalog.rule_dependencies || typeof catalog.rule_dependencies !== 'object' || Array.isArray(catalog.rule_dependencies)) {
+      err('source/catalog.json', 'rule_dependencies must be an object');
+    } else {
+      for (const [rule, deps] of Object.entries(catalog.rule_dependencies)) {
+        if (!fs.existsSync(path.join(SRC, 'rules', rule))) err(`rule dependency ${rule}`, 'rule file does not exist');
+        if (!Array.isArray(deps)) { err(`rule dependency ${rule}`, 'dependencies must be an array'); continue; }
+        for (const dep of deps) {
+          if (!catalog.skills?.[dep] && !catalog.optional?.[dep]) err(`rule dependency ${rule}`, `missing skill '${dep}'`);
+          if (!manifest.skills[dep] || manifest.skills[dep].startsWith('$')) err(`rule dependency ${rule}`, `unshipped skill '${dep}'`);
+        }
+      }
+    }
+  }
+}
 
 // 1 + 2 — skills load and carry no slash-command idioms
 for (const [name, scope] of Object.entries(manifest.skills)) {
@@ -120,7 +206,7 @@ for (const [name, scope] of Object.entries(manifest.agents)) {
 // 5 — every universal skill is natively discoverable by Codex. Prompts remain
 // an additional explicit invocation surface, not a substitute for skills.
 for (const [name, scope] of Object.entries(manifest.skills)) {
-  if (name.startsWith('$') || scope !== 'universal') continue;
+  if (name.startsWith('$') || (scope !== 'universal' && scope !== 'codex')) continue;
   const p = path.join(ROOT, 'targets', 'codex', 'skills', name, 'SKILL.md');
   if (!fs.existsSync(p)) {
     err(`skill ${name}`, 'universal skill missing from targets/codex/skills');

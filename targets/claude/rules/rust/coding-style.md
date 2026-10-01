@@ -158,5 +158,3 @@ src/
 - **.gitignore essentials**: `target/`, `**/*.rs.bk`, `Cargo.lock` **only if this is a library** (binaries should commit it), `.env`
 
 ## References
-
-See skill: `rust-patterns` for comprehensive Rust idioms and patterns.

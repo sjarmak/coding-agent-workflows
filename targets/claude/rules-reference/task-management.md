@@ -1,70 +1,49 @@
 ---
-summary: Track multi-step agent work in a durable, dependency-aware task store; prefer the lightest non-invasive backend (SQLite + JSONL) and only add heavier sync when you actually need it.
+summary: Keep durable, dependency-aware work records in the repository's authoritative tracker; preserve its storage, handoff, and sync contracts.
 ---
 # Task Management
 
-Multi-step agent work needs a **durable work record** that survives a context
-window, a crashed session, or a handoff to another agent. Holding the plan only in
-the conversation loses it the moment the context compacts. A task store is the
-externalized memory of what is in flight, what is blocked, and what is done.
+Multi-step work needs a durable record that survives a restart, context
+compaction, or handoff. Use the repository's existing tracker and instructions.
+Do not introduce a second source of truth or migrate backends as a side effect
+of an implementation task.
 
-See [agent-collaboration.md](./agent-collaboration.md) for the autonomy rules around
-*claiming* tasks; this file is about the store those claims live in.
+## Required properties
 
-## What a task store must do
+- Persist acceptance criteria, dependencies, status, verification evidence, and
+  the next action outside the conversation.
+- Claim work through the tracker's concurrency mechanism before parallel edits.
+- Close work only when its acceptance criteria hold; distinguish implemented,
+  verified, committed, and published states.
+- Preserve failed attempts and blockers when they inform the next worker.
+- Use the repository's approved handoff and memory surfaces. Do not create
+  shared handoff files where concurrent writers can overwrite one another.
 
-- **Persist** tasks outside the conversation, in a form that survives restarts.
-- **Model dependencies** — task B is blocked by task A — so a "ready queue" (nothing
-  blocking it) can be computed rather than guessed.
-- **Track a lifecycle** — open → in-progress → done/closed — with one status per task.
-- **Stay diff-friendly** so the record lives in the repo and merges across agents and
-  branches without a central server.
+The record can live in an issue service, a local database, or another durable
+system. Storage and sync details belong to that system's adapter. A text export
+is not automatically the authoritative database or the transport protocol.
 
-This is mechanism, not policy (see [patterns.md](./patterns.md) §ZFC): state and
-lifecycle tracking belong in orchestration code. What goes *in* a task — its priority,
-its difficulty — is a judgment to delegate to a model, not hardcode.
+## Existing tracker first
 
-## beads
+Read the project instructions and the installed tracker's help before choosing
+commands. For Beads repositories, use `bd prime` for the installed workflow.
+Where the repository uses Dolt-backed Beads, the Dolt database is authoritative;
+JSONL is an export, not a normal import or sync mechanism. Older Beads versions
+and alternative implementations can have different contracts: do not transfer
+commands or storage assumptions between them.
 
-[beads](https://github.com/gastownhall/beads) (the `bd` CLI) is a dependency-aware
-issue tracker built for AI coding agents. Tasks are stored as **JSONL** — the
-git-friendly, mergeable source of truth — with a database alongside it for querying
-the dependency graph and computing the ready queue. It is the fullest option: rich
-dependency modelling, a ready-work queue, and an optional **Dolt** backend (a
-git-for-data SQL database) for versioned, multiplayer, syncable task history across
-machines.
+For repositories using hosted issues, keep implementation status there and use
+ADRs only for architectural decisions. For a repository without a tracker,
+choose the smallest durable mechanism that meets its collaboration and recovery
+requirements when task tracking is in scope. No backend is a universal default.
 
-That power has a cost. The Dolt backend pulls in a database dependency, and some
-setups auto-install git hooks to keep the store synced. Both are fine when you need
-cross-machine sync or a full audit trail of the task graph — and unnecessary weight
-when you don't.
+## Authority and recovery
 
-## beads_rust — the non-invasive default
+Local tracking operations follow the repository's autonomy rules. Remote issue
+writes and sync follow its publication rules; creating a local task does not
+authorize a push. On resumption, reconcile the tracker with actual repository
+state and verification artifacts before deciding what remains.
 
-For most projects, reach for the lighter, more self-contained option first.
-[beads_rust](https://github.com/Dicklesworthstone/beads_rust) is a Rust
-reimplementation that deliberately **freezes the architecture at SQLite + JSONL**: no Dolt dependency, no automatic git-hook installation, no
-background daemon. It keeps the parts that earn their weight — the JSONL source of
-truth and the dependency-aware ready queue — and drops the parts that reach into your
-environment.
-
-The non-invasive properties that make it a safe default:
-
-- **SQLite + JSONL only** — one local file plus a mergeable text record, nothing to run.
-- **No Dolt** — no external data-versioning database to install or operate.
-- **No hook installs** — it does not modify your git hooks; nothing changes about your
-  repo's behaviour just by adopting it.
-
-## Choosing
-
-Default to the lighter SQLite + JSONL setup (beads_rust). It is enough for a single
-agent or a small team sharing a branch, and it touches nothing it doesn't own — which
-is exactly what you want from a tool you're adding to an existing repo. This follows
-[architecture.md](./architecture.md) §KISS/§YAGNI: take the simplest store that solves
-the problem, and add the Dolt-backed full beads only when a concrete need appears —
-multi-machine sync, or a versioned history of the task graph. Adopting the heavy
-backend first is speculative weight.
-
-Whichever you pick, the durable, dependency-aware, diff-friendly work record is the
-point. The backend is an implementation detail you should be able to change without
-rewriting how the agent plans its work.
+Task priority and decomposition are reasoning decisions. Persistence, claims,
+dependencies, and state transitions are mechanisms; keep that distinction in
+orchestration code.

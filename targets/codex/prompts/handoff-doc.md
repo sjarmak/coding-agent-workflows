@@ -1,8 +1,7 @@
-# Handoff Doc: File-Based Context Continuation
+# Handoff Doc: Durable Context Continuation
 
-Write a handoff document to a handoff directory instead of pasting a prompt. The
-next session gets a one-line pointer, reads the document, and deletes it once the
-context is absorbed.
+Record continuation context in the repository's durable handoff store. The
+next session gets a pointer, reads the document, and follows that store's lifecycle.
 
 Use this when:
 
@@ -16,19 +15,19 @@ Why a file instead of a pasted prompt:
 - Survives clipboard churn between clearing the session and starting the new one
 - Holds more context than is comfortable to paste
 - The pointer is short and stable, so it works from a script, a cron job, or another agent
-- Deletion by the reader is the signal that the handoff was consumed
+- The repository's lifecycle records when a handoff has been consumed
 
 ## The Job
 
 1. Get the user's goal for the next session
 2. Extract relevant context from the current conversation
 3. Identify important files that were worked on
-4. Write the handoff document to the handoff directory
+4. Write the handoff to the configured store or its documented file adapter
 5. Show the user the short pointer prompt for the new session
 
 ## Step 1: Get the User's Goal
 
-If the user did not provide a goal with the command, ask:
+Use the active task as the goal when it is clear. If no goal can be recovered, ask:
 
 ```
 What do you want to continue working on in the new session?
@@ -80,11 +79,11 @@ edited or created during the session, or referenced as important for the task.
 
 ### Directory
 
-Default: `$HOME/.agent-handoffs/`, overridable with `HANDOFF_DIR`. On Claude Code,
-`$HOME/.claude/handoffs/` is the conventional location and is equally fine. Create
-it if missing. Use a project-local `.claude/handoffs/` only if the user asks or the
-repo already has that directory, and if you do, confirm it is gitignored before
-writing.
+Use the repository's documented durable task or handoff location first. Use a user-level fallback only when the user or repository workflow specifies one. Do not assume a hidden home-directory location or deletion-on-read lifecycle.
+
+For a tracker-backed store, write the context into its handoff field or linked
+record and return that durable identifier. The following filename, shell commands,
+and template apply only when the repository uses a file-based adapter.
 
 ### Filename
 
@@ -93,7 +92,7 @@ the goal (`auth-error-handling`, `clickhouse-migration`). Timestamp first so
 listings sort chronologically.
 
 ```bash
-HANDOFF_DIR="${HANDOFF_DIR:-$HOME/.agent-handoffs}"
+: "${HANDOFF_DIR:?Set HANDOFF_DIR to the repository-approved handoff directory}"
 mkdir -p "$HANDOFF_DIR"
 HANDOFF_FILE="$HANDOFF_DIR/handoff-$(date +%Y%m%d-%H%M%S)-<slug>.md"
 ```
@@ -117,15 +116,9 @@ by the shell:
 cat > "$HANDOFF_FILE" << 'HANDOFF_EOF'
 # Handoff: <short title>
 
-Read this document in full, then delete it:
-
-    rm <absolute path to this file>
-
-Delete it only after you have absorbed the context below and are ready to work.
-The deletion is the signal that this handoff was consumed: do not leave it behind,
-and do not re-read it later. If anything here contradicts what you find in the
-code, the code wins; this document was written at the timestamp below and may have
-gone stale.
+Read this document in full and verify its claims against current repository state.
+Follow the repository's handoff lifecycle after consumption; retain this record
+unless that policy explicitly calls for archiving or deletion.
 
 ## Session metadata
 - Written: <ISO timestamp>
@@ -159,8 +152,8 @@ HANDOFF_EOF
 
 Rules for the document:
 
-- The delete instruction goes at the very top, with the file's own absolute path
-  written out literally. The next agent may be handed the path with no other context.
+- Put the durable record identifier and repository lifecycle instruction at the
+  top. The next agent may be handed the pointer with no other context.
 - On an agent that resolves `@path` mentions, prefix the Key files entries with `@`
   so they resolve when the next agent reads the document.
 - Never include secrets, tokens, or credentials.
@@ -176,7 +169,7 @@ Handoff written to <dir>/handoff-20260901-143022-auth-error-handling.md
 Clear the session (or start a new one in this directory), then paste:
 
 Read <dir>/handoff-20260901-143022-auth-error-handling.md, follow the
-instructions in it, and delete the file once you have absorbed it.
+instructions in it, and follow the repository's handoff lifecycle.
 ```
 
 Also summarize in one or two sentences what the handoff covers, so the user can
@@ -192,26 +185,17 @@ document itself is never copied; that is the point of this variant.
 2. Open the files listed under Key files as needed for the actual task
 3. Verify anything load-bearing against the current code. The document is a claim
    about a past state, not ground truth.
-4. Delete the file with `rm <path>`
-5. Confirm to the user what was picked up, and that the handoff file was removed
+4. Mark the handoff consumed using the repository's lifecycle, if defined
+5. Confirm what was picked up and report any mismatch with the current state
 
-Do not delete the file before reading it, and do not delete it if reading fails
-partway. Say so instead, so the context is not lost.
+If reading fails partway, preserve the record and report the failure.
 
 ## Housekeeping
 
-Handoffs are short-lived; a pile of them means some were never consumed.
-
-```bash
-ls -lt "${HANDOFF_DIR:-$HOME/.agent-handoffs}"/*.md 2>/dev/null
-find "${HANDOFF_DIR:-$HOME/.agent-handoffs}" -name 'handoff-*.md' -mtime +14 -print
-```
-
-Prune stale ones (older than 14 days) when the directory gets noisy, and tell the
-user which files you are about to remove before removing them. If the user wants a
-record of past handoffs instead, have the reading side move the file to an
-`archive/` subdirectory rather than deleting it. Deletion is the default; the
-archive is opt-in.
+Use the repository's retention policy. Do not infer that an old handoff is safe
+to delete from its age alone. Preserve unresolved work and durable decisions;
+archive or remove consumed file records only when the configured lifecycle calls
+for it. Never delete tracker records to tidy a directory.
 
 ## Quick Reference
 
