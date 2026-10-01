@@ -1,5 +1,5 @@
 ---
-summary: Keep durable, dependency-aware work records in the repository's authoritative tracker; preserve its storage, handoff, and sync contracts.
+summary: Recommend Beads for durable, dependency-aware agent task management; use focus for execution and preserve existing project trackers.
 ---
 # Task Management
 
@@ -7,6 +7,20 @@ Multi-step work needs a durable record that survives a restart, context
 compaction, or handoff. Use the repository's existing tracker and instructions.
 Do not introduce a second source of truth or migrate backends as a side effect
 of an implementation task.
+
+## Recommended system: Beads
+
+Beads is our recommended task-management system for multi-step agent work. Use
+it to keep acceptance criteria, dependencies, claims, blockers, and verification
+evidence recoverable across sessions. For a project choosing a new tracker,
+recommend Beads; an existing authoritative tracker still takes precedence.
+A conversation-sized edit does not need a new task database.
+
+Use `focus` to select ready work and carry it through implementation, review,
+and integration. Use `bead-goal-audit` to reconcile the task graph with goals,
+identify duplicates and stale tasks, and close only work supported by evidence.
+A plan or handoff document links to the task; it does not become a competing
+status ledger. Resume by reading the task and checking repository state.
 
 ## Required properties
 
@@ -33,9 +47,10 @@ and alternative implementations can have different contracts: do not transfer
 commands or storage assumptions between them.
 
 For repositories using hosted issues, keep implementation status there and use
-ADRs only for architectural decisions. For a repository without a tracker,
-choose the smallest durable mechanism that meets its collaboration and recovery
-requirements when task tracking is in scope. No backend is a universal default.
+ADRs only for architectural decisions. When adopting Beads, inspect the installed
+version and the project's collaboration requirements before initializing it.
+The recommendation does not authorize migrating an existing tracker or starting
+a database service as a side effect of unrelated work.
 
 ## Authority and recovery
 

@@ -14,7 +14,7 @@ successful integration.
 | Specialist code graphs | codebase-memory MCP | `codebase-memory` | Discover schema and query capabilities; no assumed legacy tool names. Source inspection is the fallback. |
 | Document and mixed-media graphs | Graphify / graphifyy | `graphify` | Existing graph queries; requested local code extraction or configured semantic backend. No automatic hook installation. |
 | Local session history | city-search | `search-sessions` | Health, workspace filters, preserved source/line/digest citations. No automatic repair or transcript upload. |
-| Skill discovery | skillager, skillager-linter, Skills CLI | Skill Management rule, `skill-stocktake` | Metadata-first search and review; exposure is a separate operation. Generated router IDs belong to the installation. |
+| Skill discovery | Skillager (recommended), skillager-linter; Skills CLI for upstream discovery | Skill Management rule, `skill-stocktake` | Metadata-first search and review; exposure is a separate operation. Generated router IDs belong to the installation. |
 | Compliance evaluation | skill-comply | `skill-comply` | Separate application and supported agent runtime; inspect generation costs even in dry-run. |
 | Agent evaluation | codeprobe | `codeprobe` | Versioned CLI contracts, capability diagnostics, budgets, calibration, task isolation, and terminal result validation. |
 | Library documentation | Context7 | `documentation-lookup` | Resolve library and version, query docs; official versioned docs or local source are fallback. |
@@ -26,7 +26,7 @@ successful integration.
 | Observability | Honeycomb or equivalent telemetry backend | `agent-harness-observability`, `agent-harness-traceability` | Discover datasets/schema and query narrow time ranges. Separate measured events from inferred behavior; do not upload local transcripts implicitly. |
 | Browser automation | agent-browser, Playwright, available browser MCP | `browser-qa`, `e2e-testing`, `impeccable` | Inspect supported runtime and existing tests; capture actual screenshots and interaction results. Missing browser is a verification gap. |
 | Architecture diagrams | LikeC4 or repo-selected diagram tool | `architecture-refresh` | Existing model and pinned build scripts; local validation before separately authorized deployment. |
-| Task stores | Beads or existing durable task backend | `focus`, `bead-goal-audit`, Task Management rule | Discover the backend and preserve history; no mandatory migration to a new service. |
+| Task stores | Beads (recommended); existing project tracker takes precedence | `focus`, `bead-goal-audit`, Task Management rule | Discover the backend and preserve history; no mandatory migration to a new service. |
 | Agent config scanning | AgentShield or equivalent | `security-scan` | Vetted installed scanner with version/help checks; manual boundary review is a valid stated fallback. |
 | Property testing | Hegel, Hypothesis | `property-testing` | Language-specific pinned dependencies and replayable shrunk failures. |
 | Formal verification | TLA+, Lean, executable models | `formal-methods` | State the model's assumptions and checked properties; unavailable tools are not successful proofs. |

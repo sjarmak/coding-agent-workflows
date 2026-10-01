@@ -177,10 +177,21 @@ it is separate from prose editing and is not a default engineering practice.
 
 ## Companion tools
 
-The `skill-management` rule describes metadata-first discovery and selective
-exposure, with skillager as one available adapter. The `task-management` rule
-honors the consuming repository's authoritative tracker and backend. Neither
-installing this bundle nor creating a handoff migrates a project's task store.
+This bundle is opinionated about the workflow, while adapting execution to the
+host and respecting explicit project choices. Its recommendations are indexed in
+[Recommended Workflow](./source/rules/common/recommended-workflow.md):
+
+- **Beads** for durable, dependency-aware tasks; **focus** for tracked execution.
+- **Skillager** for discovering, reviewing, and selectively exposing shared skills.
+- **Codegraph through code-search** for substantial indexed code investigations.
+- **Impeccable** for frontend design and critique, followed by **browser-qa** for
+  verification of the working interface.
+- Evidence-producing tests and independent review before declaring completion;
+  durable task state and thin context files across handoffs.
+
+These are recommendations for adoption, not automatic installation or migration.
+External tool prerequisites and fallbacks are in
+[Tool integrations](./docs/tool-integrations.md).
 
 ## CI and architecture page
 

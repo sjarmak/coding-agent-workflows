@@ -25,9 +25,10 @@ Each is a section (matched by heading) in `AGENTS.full.md`:
 - **House Rules (always-on)** (`common/house-rules.md`) — Always-on essentials — autonomy boundary, output discipline, coding/architecture/security standards, ZFC, anti-slop trigger. Detailed catalogs are in rules-reference/ (on-demand).
 - **Common Patterns** (`common/patterns.md`)
 - **Performance Optimization** (`common/performance.md`)
+- **Recommended Workflow** (`common/recommended-workflow.md`) — Our recommended workflow: Beads and focus for durable execution, Skillager for selective skills, Codegraph for code investigation, Impeccable for UI, and evidence-backed review and handoff.
 - **Security Guidelines** (`common/security.md`)
 - **Skill Management** (`common/skill-management.md`) — Discover, vet, and expose agent skills on demand with skillager, so the right skills are available per task without loading every skill into every chat.
-- **Task Management** (`common/task-management.md`) — Keep durable, dependency-aware work records in the repository's authoritative tracker; preserve its storage, handoff, and sync contracts.
+- **Task Management** (`common/task-management.md`) — Recommend Beads for durable, dependency-aware agent task management; use focus for execution and preserve existing project trackers.
 - **Testing Requirements** (`common/testing.md`)
 
 Language-specific rules (Go, Python, TypeScript, Rust) live under `.agents/rules/<lang>/` for AGENTS-only installs and `$CODEX_HOME/rules/<lang>/` for Codex.
@@ -172,7 +173,7 @@ Full skill procedures and resources are installed at `.agents/skills/<name>/SKIL
 
 Multi-step procedures, each a full section in `AGENTS.full.md`:
 
-- **implement-review** — One agent implements a task, then reviews its own work behind a hard verification gate before finalizing. (§ "Workflow: Implement + Self-Review")
+- **implement-review** — Implement a tracked task, simplify it, independently verify acceptance criteria, and close only after integration requirements hold. (§ "Workflow: Implement + Verified Review")
 - **research** — Diverge across independent angles, converge to a synthesis, then pre-mortem the chosen direction before committing. (§ "Workflow: Research")
 - **brainstorm-loop** — Generate many shape-distinct ideas, pre-mortem the frontrunners, then converge on one. (§ "Workflow: Brainstorm Loop")
 - **decompose** — Break a large piece of work into independently-shippable, reviewable units with explicit dependencies. (§ "Workflow: Decompose")

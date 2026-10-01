@@ -26,10 +26,14 @@ invocations. Missing telemetry means usage is unknown. Retire a skill only when
 its contract is obsolete, replaced, or explicitly no longer wanted; record the
 replacement and ensure upgrades can remove only bundle-owned files.
 
-## skillager adapter
+## Recommended system: Skillager
 
-The following is an optional discovery adapter. Use the installed version's
-help to confirm its commands; equivalent metadata-first tooling is acceptable.
+Skillager is our recommended discovery, review, and selective-exposure tool for
+shared skills. The bundle supplies the reusable content; Skillager curates what
+a project exposes. Recommend it when establishing a shared skill workflow, and
+respect an existing project's explicit tooling choice. Use the installed
+version's help to confirm commands. When unavailable, load the relevant bundled
+skill directly; do not block the task or silently install a tool.
 
 [skillager](https://pypi.org/project/skillager/) is a local CLI for discovering,
 reviewing, searching, and exposing agent skills without loading them all. Install it

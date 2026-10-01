@@ -2107,9 +2107,10 @@
         "surface-audit:tool-capabilities"
       ],
       "targets": [
-        "docs/tool-integrations.md"
+        "docs/tool-integrations.md",
+        "source/rules/common/skill-management.md"
       ],
-      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+      "reason": "Recommended shared-skill discovery, review, and exposure tool; executable and local approval state configured separately."
     },
     "skillager-linter": {
       "disposition": "external",
@@ -2303,9 +2304,10 @@
       ],
       "targets": [
         "docs/tool-integrations.md",
-        "source/skills/bead-goal-audit/SKILL.md"
+        "source/skills/bead-goal-audit/SKILL.md",
+        "source/rules/common/task-management.md"
       ],
-      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+      "reason": "Recommended durable task system for new agent workflows; CLI and backend configured separately. Preserve an existing authoritative tracker."
     },
     "agentshield": {
       "disposition": "external",

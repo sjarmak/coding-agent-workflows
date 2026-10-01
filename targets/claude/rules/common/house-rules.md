@@ -117,6 +117,10 @@ requirement over a net-positive one. Full signature catalog → `/slop-check`.
 
 ## Workflow
 
+Use **Recommended Workflow** for our preferred toolchain: Beads + `focus`,
+Skillager, Codegraph through `code-search`, and Impeccable + `browser-qa`.
+Existing project decisions take precedence; recommendations do not install tools.
+
 - **Research & reuse before new code**: GitHub code search (`gh search
 repos|code`) → primary/Context7 docs → Exa (only if the first two fall short).
   Check package registries; prefer porting a proven implementation over net-new.

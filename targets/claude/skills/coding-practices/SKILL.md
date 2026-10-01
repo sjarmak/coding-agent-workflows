@@ -42,9 +42,10 @@ This skill is the catalog of that on-demand detail.
 - `.claude/rules-reference/hooks.md` — Hooks
 - `.claude/rules-reference/patterns.md` — Common Patterns
 - `.claude/rules-reference/performance.md` — Performance Optimization
+- `.claude/rules-reference/recommended-workflow.md` — Our recommended workflow: Beads and focus for durable execution, Skillager for selective skills, Codegraph for code investigation, Impeccable for UI, and evidence-backed review and handoff.
 - `.claude/rules-reference/security.md` — Security Guidelines
 - `.claude/rules-reference/skill-management.md` — Discover, vet, and expose agent skills on demand with skillager, so the right skills are available per task without loading every skill into every chat.
-- `.claude/rules-reference/task-management.md` — Keep durable, dependency-aware work records in the repository's authoritative tracker; preserve its storage, handoff, and sync contracts.
+- `.claude/rules-reference/task-management.md` — Recommend Beads for durable, dependency-aware agent task management; use focus for execution and preserve existing project trackers.
 - `.claude/rules-reference/testing.md` — Testing Requirements
 
 ### go

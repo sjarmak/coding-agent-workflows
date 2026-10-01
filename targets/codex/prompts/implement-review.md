@@ -1,99 +1,70 @@
-# Workflow: Implement + Self-Review
+# Workflow: Implement + Verified Review
 
-The default per-task loop. A single agent implements a change via `focus`, then
-runs `simplify` and `code-review` as a **hard verification gate** before
-finalizing. The gate checks that the work actually fulfills what was asked, not
-just that the code is stylistically clean.
-
-This is a runtime-neutral spec. It originated as an orchestration *formula* run
-by worker agents; the runtime-specific task-tracker and retry calls have been
-replaced with neutral equivalents so any orchestrator (a Claude Code session, a
-Codex run, an Amp thread, or a shell loop) can drive it.
+The default per-task loop separates implementation from the decision that the
+work is complete. Use `focus` for execution, `simplify` for unnecessary
+complexity, and an independent reviewer for the acceptance gate. Follow the
+project's task store and runtime capabilities.
 
 ## Inputs
 
 | Input | Source | Description |
-|-------|--------|-------------|
-| `task` | caller | The unit of work: a tracker ID, an issue, or a written description. |
-| `base_ref` | caller | Base git ref for diff comparison. Default: `main`. |
-| `test_command` | project | Command to verify the work. Empty = skip. |
+| --- | --- | --- |
+| `task` | caller | Tracker ID or written description with acceptance criteria. |
+| `base_ref` | project | Agreed comparison base for the complete change. |
+| `test_command` | project | Existing verification command; if absent, determine appropriate checks from the repository and task. |
 
-## Steps
+## 1. Establish acceptance and ownership
 
-The steps form a DAG; each lists what it depends on. An orchestrator runs them
-in dependency order and stops at the gate if it rejects.
+Read the task, dependencies, prior attempts, and project instructions. Confirm
+what must hold before closure and where the change must land. Claim tracked
+work before editing. Use Beads when choosing a new durable tracker; preserve an
+existing authoritative tracker.
 
-### 1. load-context
+## 2. Implement and verify
 
-Understand the work before touching code. Read the task's description,
-acceptance criteria, and any linked context. If a prior attempt was rejected,
-read the rejection reason and target the specific issue it called out.
+Run `focus` with `--no-close` so the outer gate owns closure. Reuse the review
+and verification evidence produced there rather than launching a duplicate
+panel. Add regression tests with fixes and property tests for relevant pure
+logic. Execute the project's checks and exercise changed behavior.
 
-**Exit:** you can state what "done" looks like for this task.
+An empty test command is not permission to skip verification. For documentation
+or configuration, use appropriate render, link, schema, or structural checks.
+Record unavailable checks as gaps and resolve gaps that block acceptance.
 
-### 2. focus  (needs: load-context)
+## 3. Simplify the integrated change
 
-Run the `focus` skill on the task: plan the implementation, execute the plan
-step by step, verify against acceptance criteria. Follow the skill's workflow;
-don't override it. If your context fills up, commit progress and hand off to a
-fresh session rather than degrading.
+Run `simplify` on the complete diff. Remove unnecessary structure without
+changing required behavior. Re-run affected checks after edits. Keep tests with
+their fixes; a separate simplification commit is useful only when it improves
+reviewability.
 
-**Exit:** `focus` has completed its plan → execute → verify cycle.
+## 4. Independent acceptance gate
 
-### 3. run-tests  (needs: focus)
+Use the `code-reviewer` role and `code-review` procedure. The reviewer did not
+write the change: give it the task, comparison base, current working-tree state,
+acceptance criteria, and explicit commands to run. Include uncommitted changes
+in the review when present. Apply the Agent Collaboration review-panel size;
+one coordinated review of the integrated result is the default.
 
-Run `test_command`. If it's empty, skip. If tests fail: read the output, fix
-the implementation, commit the fix, re-run. **Do not proceed until tests pass.**
+The reviewer must check actual behavior and artifacts, not the implementer's
+summary. Skipped tests, unwired functions, and documentation that contradicts
+the implementation do not satisfy acceptance. Reject missing requirements,
+blocking correctness or security findings, and missing verification evidence.
 
-**Exit:** tests pass, or no test command is configured.
+Evaluate each finding against the code. Fix valid findings, re-run affected
+checks, and re-review the changed portion. Record unresolved blockers in the
+task. A fresh-session retry is useful when context is exhausted or attempts
+repeat; it is not required for every ordinary review fix.
 
-### 4. simplify  (needs: run-tests)
+If independent review is unavailable, perform an explicit diff-versus-criteria
+self-review and record that limitation. Do not describe it as independent
+verification. If the project requires an independent gate, keep the task open
+until that gate is met.
 
-Run the `simplify` skill on the diff to remove unnecessary complexity, dead
-paths, and over-engineering. Commit simplifications as a **separate** commit so
-they're visible in review.
+## 5. Integrate and close
 
-**Exit:** simplifications applied + committed, or explicitly rejected with a reason.
-
-### 5. review: THE GATE  (needs: simplify)
-
-Review your own work as a hard verification gate, in two parts:
-
-1. **Run `code-review` on the diff** (`git diff {base_ref}...HEAD`).
-2. **Verify the diff against the task.** Re-read the acceptance criteria, then
-   check the actual diff, not what you *remember* implementing. A test that was
-   added but skipped/xfail'd does not count. A function stubbed but not wired
-   into the public API does not count. A doc that doesn't match the code does
-   not count.
-
-**Reject if ANY of these hold:**
-- An acceptance criterion is not actually implemented in the diff.
-- `code-review` flagged a blocking issue (correctness, security, data-loss).
-- Tests that should exist are missing.
-- The implementation diverges from the task without justification.
-
-**On reject:** record a specific, actionable rejection reason on the task and
-hand it back to the queue (or to a fresh session). Do **not** patch it in this
-same session; the reject-then-fresh-retry loop is deliberate: a clean context
-re-reads the rejection reason at step 1 and tries again. This is what keeps a
-single agent from rationalizing its own half-done work.
-
-**On pass:** proceed to finalize.
-
-**Exit:** rejection recorded + handed back, OR an explicit pass decision.
-
-### 6. finalize  (needs: review)
-
-Commit any remaining changes. Record a summary on the task (what was done, key
-decisions, files changed, "self-reviewed with simplify + code-review,
-acceptance criteria verified"). Mark the task complete.
-
-**Exit:** work committed, task closed.
-
-## Why the gate is separate from implementation
-
-The agent that wrote the code is the worst judge of whether it's done; it
-remembers intent, not the diff. Forcing an explicit diff-vs-criteria check, with
-reject authority, catches the most common agentic failure mode: confidently
-reporting "done" on work that compiles but doesn't satisfy the ask. The
-reject-then-fresh-context-retry loop is the cheap, reliable fix.
+Commit the verified change and integrate it into the required branch. Record
+commands and results, review findings and disposition, commit identity, and any
+remaining limitations. Distinguish local verification from publication; push or
+publish when authorized. Close only when the task's acceptance and integration
+requirements hold. An implementation report alone does not close the task.

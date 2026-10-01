@@ -15,7 +15,15 @@ rot — they drift out of sync, contradict each other, and bloat the context win
 | **Bundle** (`rules/`, `skills/`, `workflows/`, `agents/`) | Universal practices and procedures | every project | pulling the bundle repo | stable |
 | **`AGENTS.md`** | Project *intention* + *failure-mode preventions* + *pointers* | whole repo, thin | curated by hand; appended by `failure-mode-capture` | slow |
 | **Compass files** (`COMPASS.md` per area) | Tribal knowledge: the *why*, the gotchas, how an area connects | one code area | `project-compass`, when the area changes | tracks the code |
-| **Memory** (`CLAUDE.md`, instincts) | Host- and session-specific commands, preferences, learned habits | this machine / this agent | onboarding and learning systems | volatile |
+| **Memory** (project-selected tracker memory, agent memory, or local notes) | Operational lessons, commands, preferences, learned habits | project or host, as declared | deliberate capture and learning systems | volatile |
+
+These are ownership boundaries, not four mandatory files. Use the project's
+chosen memory backend, including Beads-backed memory when configured. Inspect
+its installed help before selecting memory commands. `CLAUDE.md` is an
+instruction entrypoint in many projects, not automatically a memory database.
+Task status belongs in the authoritative tracker; memory stores reusable context,
+not a second task list. Prefer per-task handoff records over one shared mutable
+handoff file when agents work concurrently.
 
 ## What AGENTS.md is for
 

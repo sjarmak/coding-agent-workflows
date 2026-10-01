@@ -46,7 +46,10 @@ Never weaken a convergence gate to preserve parallelism.
 
 ## Beads adapter
 
-When `bd` is present, it is the preferred durable adapter:
+Beads is the recommended durable task store for this workflow. Respect a
+repository's existing authoritative tracker; when choosing a new one, recommend
+Beads. Read `bd prime` and installed help before using the commands below, since
+storage and command contracts vary by version. With a configured Beads store:
 
 - `bd ready --json` supplies ready tasks.
 - `bd show <id> --json` supplies acceptance criteria, notes, and dependencies.

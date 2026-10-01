@@ -432,7 +432,7 @@ the *how*. Where a pattern is already implemented here, it's cross-referenced.
 - **Borrow Behaviors / Reverse Direction**: adapt proven patterns from existing
   code; ask the agent to explain code back to validate understanding. → `codebase-onboarding`.
 - **Point the Target / Contextual Prompts / Check Alignment**: specify precisely
-  what "done" means and verify outputs against project standards. → acceptance-criteria checks in `implement-review` step 5.
+  what "done" means and verify outputs against project standards. → the independent acceptance gate in `implement-review`.
 
 ## Anti-patterns to actively prevent
 
@@ -447,7 +447,7 @@ catch one.
 - **Perfect Recall Fallacy**: assuming the agent remembers prior sessions; it doesn't
   without an explicit durable record. *(Mitigated by `focus`'s handoff contract.)*
 - **Sunk Cost**: continuing a flawed approach because of prior investment. *(The
-  reject → fresh-context-retry loop in `implement-review` is the deliberate counter.)*
+  independent rejection gate in `implement-review` forces reassessment; repeated failures can warrant a fresh-context retry.)*
 - **Answer Injection**: feeding the agent a predetermined answer, defeating independent analysis.
 - **Distracted Agent**: scattered instructions that derail focus.
 - **Obsess Over Rules**: fixating on guidelines while losing the actual goal.
@@ -583,7 +583,15 @@ rot — they drift out of sync, contradict each other, and bloat the context win
 | **Bundle** (`rules/`, `skills/`, `workflows/`, `agents/`) | Universal practices and procedures | every project | pulling the bundle repo | stable |
 | **`AGENTS.md`** | Project *intention* + *failure-mode preventions* + *pointers* | whole repo, thin | curated by hand; appended by `failure-mode-capture` | slow |
 | **Compass files** (`COMPASS.md` per area) | Tribal knowledge: the *why*, the gotchas, how an area connects | one code area | `project-compass`, when the area changes | tracks the code |
-| **Memory** (`CLAUDE.md`, instincts) | Host- and session-specific commands, preferences, learned habits | this machine / this agent | onboarding and learning systems | volatile |
+| **Memory** (project-selected tracker memory, agent memory, or local notes) | Operational lessons, commands, preferences, learned habits | project or host, as declared | deliberate capture and learning systems | volatile |
+
+These are ownership boundaries, not four mandatory files. Use the project's
+chosen memory backend, including Beads-backed memory when configured. Inspect
+its installed help before selecting memory commands. `CLAUDE.md` is an
+instruction entrypoint in many projects, not automatically a memory database.
+Task status belongs in the authoritative tracker; memory stores reusable context,
+not a second task list. Prefer per-task handoff records over one shared mutable
+handoff file when agents work concurrently.
 
 ## What AGENTS.md is for
 
@@ -698,7 +706,9 @@ condensed always-available rule.
 
 > This file extends [common/git-workflow.md](./git-workflow.md) with the full feature development process that happens before git operations.
 
-The Feature Implementation Workflow describes the development pipeline: research, planning, TDD, code review, and then committing to git.
+Use the Recommended Workflow for tool choices. The implementation loop is
+understand, define acceptance criteria, claim tracked work, implement, verify,
+review, and integrate. Scale planning to the uncertainty and size of the task.
 
 ## Feature Implementation Workflow
 
@@ -711,13 +721,14 @@ The Feature Implementation Workflow describes the development pipeline: research
    - Prefer adopting or porting a proven approach over writing net-new code when it meets the requirement.
 
 1. **Plan First**
-   - Use **planner** agent to create implementation plan
-   - Generate planning docs before coding: PRD, architecture, system_design, tech_doc, task_list
-   - Identify dependencies and risks
-   - Break down into phases
+   - Use **planner** for complex features and refactors; resolve a small task inline
+   - Resolve acceptance criteria, dependencies, and risks before implementation
+   - Record multi-step work in Beads, our recommended tracker, or the project's existing authoritative tracker; use `focus` for ready-task execution
+   - Write only the design documents needed to resolve uncertainty; a small task does not need a PRD and several redundant plans
+   - Claim work before editing; give independent workers explicit ownership and respect the Agent Collaboration concurrency bound
 
 2. **TDD Approach**
-   - Use **tdd-guide** agent
+   - Use **tdd-guide** for substantive behavior changes
    - Write tests first (RED)
    - Implement to pass tests (GREEN)
    - Refactor (IMPROVE)
@@ -727,9 +738,13 @@ The Feature Implementation Workflow describes the development pipeline: research
    - Use **code-reviewer** agent immediately after writing code
    - Address CRITICAL and HIGH issues
    - Fix MEDIUM issues when possible
+   - Give the reviewer acceptance criteria and runnable verification commands; evaluate findings against the actual code
+   - Check the integrated result, including real browser interactions for frontend changes; use `impeccable` for design and `browser-qa` for verification
 
 4. **Commit & Push**
-   - Detailed commit messages
+   - Update the task with verification evidence and remaining blockers; distinguish implemented, verified, committed, and published states
+   - Close tracked work only after its acceptance and integration requirements hold
+   - Publish when authorized; detailed commit messages
    - Follow conventional commits format
    - See [git-workflow.md](./git-workflow.md) for commit message format and PR process
 
@@ -871,6 +886,10 @@ with today's requirements?", and prefer a net-negative diff that meets the
 requirement over a net-positive one. Full signature catalog → `/slop-check`.
 
 ## Workflow
+
+Use **Recommended Workflow** for our preferred toolchain: Beads + `focus`,
+Skillager, Codegraph through `code-search`, and Impeccable + `browser-qa`.
+Existing project decisions take precedence; recommendations do not install tools.
 
 - **Research & reuse before new code**: GitHub code search (`gh search
 repos|code`) → primary/Context7 docs → Exa (only if the first two fall short).
@@ -1043,6 +1062,58 @@ verify after each change. Use an available build-resolver role when helpful;
 otherwise perform the same procedure directly. Do not hide failures behind
 fallbacks or weaken a gate to make the build pass.
 
+# Recommended Workflow
+
+This is a curated operating workflow, not a neutral catalog of interchangeable
+tools. Recommend these defaults when a project is choosing how to work. Honor
+explicit user and project decisions; adopting a recommendation is separate from
+installing software, enabling a service, or migrating existing state.
+
+## Choose the next action
+
+| Situation | Recommended path | Detailed contract |
+| --- | --- | --- |
+| Multi-step work that must survive a session | Beads records acceptance criteria, dependencies, claims, and evidence; `focus` carries ready tasks through integration | Task Management; `focus` |
+| Find or expose reusable procedures | Skillager searches reviewed metadata; expose a router or stub and load only the selected skill | Skill Management |
+| Understand a cross-file behavior or change impact | Delegate to `code-search`, using Codegraph for indexed code with explicit repository scope | Code Knowledge Graphs; `code-graph` |
+| Resolve an uncertain design | `planner` or `architect`; use `brainstorm`, `premortem`, or `grill-me` when the specific uncertainty warrants it | Development Workflow |
+| Design or improve a frontend | Impeccable for design and critique; `browser-qa` to exercise the rendered result | `impeccable`; `browser-qa` |
+| Implement a resolved task | Behavioral tests, focused implementation, simplification, and independent review; parallelize independent work within the configured bound | Development Workflow; Agent Collaboration |
+| Resume or hand off | Read the durable task and verify actual repository state; preserve unresolved decisions and the next action | Task Management; Context Layering; `handoff-doc` |
+
+Codegraph is the first choice for ordinary indexed code navigation. Use
+codebase-memory for specialist graph capabilities and Graphify for document or
+mixed-media relationships. Without a usable index, use `rg` and targeted reads.
+Do not spend the task setting up an index merely to answer a question.
+
+## Close the loop
+
+A plan becomes acceptance criteria and executable work, not a collection of
+mandatory documents. Keep the task record authoritative for status. Independent
+workers get clear ownership and isolated worktrees when required; the coordinator
+integrates their changes and checks the combined result. Reviewers must run
+checks against acceptance criteria, not merely endorse a diff.
+
+Verification matches the behavior being changed: regression and property tests
+for logic, actual browser interactions for UI, and builds or structural checks
+for generated artifacts. Tests ship with fixes. Use `simplify` and `slop-check`
+to catch unnecessary structure in code; use `no-ai-slop` for prose. Do not claim
+an unavailable check passed or close a task on an implementation report alone.
+Publication follows the user's authorization and repository workflow.
+
+## Keep the shared layer useful
+
+The bundle owns transferable practices. Project instructions own local intent,
+constraints, and pointers; area maps own architectural context; task records own
+work status. Capture reusable corrections with `ruling-capture` or
+`failure-mode-capture` in the layer that owns them. Keep personal paths, internal
+service commands, customer details, and domain-specific procedures local.
+
+A shipped capability is not automatically a recommended default. Conditional
+research, media, and service adapters remain available when the task calls for
+them. During audits, check both coverage and whether the default workflow still
+matches deliberate working practice; installation counts alone prove neither.
+
 # Security Guidelines
 
 ## Mandatory Security Checks
@@ -1116,10 +1187,14 @@ invocations. Missing telemetry means usage is unknown. Retire a skill only when
 its contract is obsolete, replaced, or explicitly no longer wanted; record the
 replacement and ensure upgrades can remove only bundle-owned files.
 
-## skillager adapter
+## Recommended system: Skillager
 
-The following is an optional discovery adapter. Use the installed version's
-help to confirm its commands; equivalent metadata-first tooling is acceptable.
+Skillager is our recommended discovery, review, and selective-exposure tool for
+shared skills. The bundle supplies the reusable content; Skillager curates what
+a project exposes. Recommend it when establishing a shared skill workflow, and
+respect an existing project's explicit tooling choice. Use the installed
+version's help to confirm commands. When unavailable, load the relevant bundled
+skill directly; do not block the task or silently install a tool.
 
 [skillager](https://pypi.org/project/skillager/) is a local CLI for discovering,
 reviewing, searching, and exposing agent skills without loading them all. Install it
@@ -1213,6 +1288,20 @@ compaction, or handoff. Use the repository's existing tracker and instructions.
 Do not introduce a second source of truth or migrate backends as a side effect
 of an implementation task.
 
+## Recommended system: Beads
+
+Beads is our recommended task-management system for multi-step agent work. Use
+it to keep acceptance criteria, dependencies, claims, blockers, and verification
+evidence recoverable across sessions. For a project choosing a new tracker,
+recommend Beads; an existing authoritative tracker still takes precedence.
+A conversation-sized edit does not need a new task database.
+
+Use `focus` to select ready work and carry it through implementation, review,
+and integration. Use `bead-goal-audit` to reconcile the task graph with goals,
+identify duplicates and stale tasks, and close only work supported by evidence.
+A plan or handoff document links to the task; it does not become a competing
+status ledger. Resume by reading the task and checking repository state.
+
 ## Required properties
 
 - Persist acceptance criteria, dependencies, status, verification evidence, and
@@ -1238,9 +1327,10 @@ and alternative implementations can have different contracts: do not transfer
 commands or storage assumptions between them.
 
 For repositories using hosted issues, keep implementation status there and use
-ADRs only for architectural decisions. For a repository without a tracker,
-choose the smallest durable mechanism that meets its collaboration and recovery
-requirements when task tracking is in scope. No backend is a universal default.
+ADRs only for architectural decisions. When adopting Beads, inspect the installed
+version and the project's collaboration requirements before initializing it.
+The recommendation does not authorize migrating an existing tracker or starting
+a database service as a side effect of unrelated work.
 
 ## Authority and recovery
 
@@ -1485,105 +1575,76 @@ Full skill procedures and resources are installed at `.agents/skills/<name>/SKIL
 
 The codified multi-step procedures. Each is a runtime-neutral step DAG.
 
-# Workflow: Implement + Self-Review
+# Workflow: Implement + Verified Review
 
-The default per-task loop. A single agent implements a change via `focus`, then
-runs `simplify` and `code-review` as a **hard verification gate** before
-finalizing. The gate checks that the work actually fulfills what was asked, not
-just that the code is stylistically clean.
-
-This is a runtime-neutral spec. It originated as an orchestration *formula* run
-by worker agents; the runtime-specific task-tracker and retry calls have been
-replaced with neutral equivalents so any orchestrator (a Claude Code session, a
-Codex run, an Amp thread, or a shell loop) can drive it.
+The default per-task loop separates implementation from the decision that the
+work is complete. Use `focus` for execution, `simplify` for unnecessary
+complexity, and an independent reviewer for the acceptance gate. Follow the
+project's task store and runtime capabilities.
 
 ## Inputs
 
 | Input | Source | Description |
-|-------|--------|-------------|
-| `task` | caller | The unit of work: a tracker ID, an issue, or a written description. |
-| `base_ref` | caller | Base git ref for diff comparison. Default: `main`. |
-| `test_command` | project | Command to verify the work. Empty = skip. |
+| --- | --- | --- |
+| `task` | caller | Tracker ID or written description with acceptance criteria. |
+| `base_ref` | project | Agreed comparison base for the complete change. |
+| `test_command` | project | Existing verification command; if absent, determine appropriate checks from the repository and task. |
 
-## Steps
+## 1. Establish acceptance and ownership
 
-The steps form a DAG; each lists what it depends on. An orchestrator runs them
-in dependency order and stops at the gate if it rejects.
+Read the task, dependencies, prior attempts, and project instructions. Confirm
+what must hold before closure and where the change must land. Claim tracked
+work before editing. Use Beads when choosing a new durable tracker; preserve an
+existing authoritative tracker.
 
-### 1. load-context
+## 2. Implement and verify
 
-Understand the work before touching code. Read the task's description,
-acceptance criteria, and any linked context. If a prior attempt was rejected,
-read the rejection reason and target the specific issue it called out.
+Run `focus` with `--no-close` so the outer gate owns closure. Reuse the review
+and verification evidence produced there rather than launching a duplicate
+panel. Add regression tests with fixes and property tests for relevant pure
+logic. Execute the project's checks and exercise changed behavior.
 
-**Exit:** you can state what "done" looks like for this task.
+An empty test command is not permission to skip verification. For documentation
+or configuration, use appropriate render, link, schema, or structural checks.
+Record unavailable checks as gaps and resolve gaps that block acceptance.
 
-### 2. focus  (needs: load-context)
+## 3. Simplify the integrated change
 
-Run the `focus` skill on the task: plan the implementation, execute the plan
-step by step, verify against acceptance criteria. Follow the skill's workflow;
-don't override it. If your context fills up, commit progress and hand off to a
-fresh session rather than degrading.
+Run `simplify` on the complete diff. Remove unnecessary structure without
+changing required behavior. Re-run affected checks after edits. Keep tests with
+their fixes; a separate simplification commit is useful only when it improves
+reviewability.
 
-**Exit:** `focus` has completed its plan → execute → verify cycle.
+## 4. Independent acceptance gate
 
-### 3. run-tests  (needs: focus)
+Use the `code-reviewer` role and `code-review` procedure. The reviewer did not
+write the change: give it the task, comparison base, current working-tree state,
+acceptance criteria, and explicit commands to run. Include uncommitted changes
+in the review when present. Apply the Agent Collaboration review-panel size;
+one coordinated review of the integrated result is the default.
 
-Run `test_command`. If it's empty, skip. If tests fail: read the output, fix
-the implementation, commit the fix, re-run. **Do not proceed until tests pass.**
+The reviewer must check actual behavior and artifacts, not the implementer's
+summary. Skipped tests, unwired functions, and documentation that contradicts
+the implementation do not satisfy acceptance. Reject missing requirements,
+blocking correctness or security findings, and missing verification evidence.
 
-**Exit:** tests pass, or no test command is configured.
+Evaluate each finding against the code. Fix valid findings, re-run affected
+checks, and re-review the changed portion. Record unresolved blockers in the
+task. A fresh-session retry is useful when context is exhausted or attempts
+repeat; it is not required for every ordinary review fix.
 
-### 4. simplify  (needs: run-tests)
+If independent review is unavailable, perform an explicit diff-versus-criteria
+self-review and record that limitation. Do not describe it as independent
+verification. If the project requires an independent gate, keep the task open
+until that gate is met.
 
-Run the `simplify` skill on the diff to remove unnecessary complexity, dead
-paths, and over-engineering. Commit simplifications as a **separate** commit so
-they're visible in review.
+## 5. Integrate and close
 
-**Exit:** simplifications applied + committed, or explicitly rejected with a reason.
-
-### 5. review: THE GATE  (needs: simplify)
-
-Review your own work as a hard verification gate, in two parts:
-
-1. **Run `code-review` on the diff** (`git diff {base_ref}...HEAD`).
-2. **Verify the diff against the task.** Re-read the acceptance criteria, then
-   check the actual diff, not what you *remember* implementing. A test that was
-   added but skipped/xfail'd does not count. A function stubbed but not wired
-   into the public API does not count. A doc that doesn't match the code does
-   not count.
-
-**Reject if ANY of these hold:**
-- An acceptance criterion is not actually implemented in the diff.
-- `code-review` flagged a blocking issue (correctness, security, data-loss).
-- Tests that should exist are missing.
-- The implementation diverges from the task without justification.
-
-**On reject:** record a specific, actionable rejection reason on the task and
-hand it back to the queue (or to a fresh session). Do **not** patch it in this
-same session; the reject-then-fresh-retry loop is deliberate: a clean context
-re-reads the rejection reason at step 1 and tries again. This is what keeps a
-single agent from rationalizing its own half-done work.
-
-**On pass:** proceed to finalize.
-
-**Exit:** rejection recorded + handed back, OR an explicit pass decision.
-
-### 6. finalize  (needs: review)
-
-Commit any remaining changes. Record a summary on the task (what was done, key
-decisions, files changed, "self-reviewed with simplify + code-review,
-acceptance criteria verified"). Mark the task complete.
-
-**Exit:** work committed, task closed.
-
-## Why the gate is separate from implementation
-
-The agent that wrote the code is the worst judge of whether it's done; it
-remembers intent, not the diff. Forcing an explicit diff-vs-criteria check, with
-reject authority, catches the most common agentic failure mode: confidently
-reporting "done" on work that compiles but doesn't satisfy the ask. The
-reject-then-fresh-context-retry loop is the cheap, reliable fix.
+Commit the verified change and integrate it into the required branch. Record
+commands and results, review findings and disposition, commit identity, and any
+remaining limitations. Distinguish local verification from publication; push or
+publish when authorized. Close only when the task's acceptance and integration
+requirements hold. An implementation report alone does not close the task.
 
 ---
 

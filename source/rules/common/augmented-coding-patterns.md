@@ -26,7 +26,7 @@ the *how*. Where a pattern is already implemented here, it's cross-referenced.
 - **Borrow Behaviors / Reverse Direction**: adapt proven patterns from existing
   code; ask the agent to explain code back to validate understanding. → `codebase-onboarding`.
 - **Point the Target / Contextual Prompts / Check Alignment**: specify precisely
-  what "done" means and verify outputs against project standards. → acceptance-criteria checks in `implement-review` step 5.
+  what "done" means and verify outputs against project standards. → the independent acceptance gate in `implement-review`.
 
 ## Anti-patterns to actively prevent
 
@@ -41,7 +41,7 @@ catch one.
 - **Perfect Recall Fallacy**: assuming the agent remembers prior sessions; it doesn't
   without an explicit durable record. *(Mitigated by `focus`'s handoff contract.)*
 - **Sunk Cost**: continuing a flawed approach because of prior investment. *(The
-  reject → fresh-context-retry loop in `implement-review` is the deliberate counter.)*
+  independent rejection gate in `implement-review` forces reassessment; repeated failures can warrant a fresh-context retry.)*
 - **Answer Injection**: feeding the agent a predetermined answer, defeating independent analysis.
 - **Distracted Agent**: scattered instructions that derail focus.
 - **Obsess Over Rules**: fixating on guidelines while losing the actual goal.
