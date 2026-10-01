@@ -50,6 +50,12 @@ test('agents install includes native skills and language rules', () => {
     const result = run(dir, 'install.sh', ['agents', destination]);
     assert.equal(result.status, 0, `${result.stderr}\n${result.stdout}`);
     assert.ok(fs.existsSync(path.join(destination, '.agents/skills/focus/SKILL.md')));
+    for (const resource of ['impeccable/scripts/load-context.mjs', 'impeccable/reference/craft.md', 'impeccable/LICENSE', 'graphify/SKILL.md', 'code-graph/SKILL.md', 'tufte-chart/scripts/render_line_svg.py']) {
+      assert.deepEqual(
+        fs.readFileSync(path.join(destination, '.agents/skills', resource)),
+        fs.readFileSync(path.join(dir, resource.endsWith('/SKILL.md') ? 'targets/codex/skills' : 'source/skills', resource)),
+      );
+    }
     assert.ok(fs.existsSync(path.join(destination, '.agents/rules/python/testing.md')));
     assert.equal(fs.existsSync(path.join(destination, '.agents/skills/ultracode')), false);
     const linkedAgents = path.join(dir, 'linked-agents');
@@ -216,4 +222,37 @@ test('validation rejects invalid generic manifest scopes', () => {
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+
+test('renderer excludes Python runtime caches from distributed resources', () => {
+  const dir = fixture();
+  try {
+    const cache = path.join(dir, 'source/skills/impeccable/__pycache__');
+    fs.mkdirSync(cache, { recursive: true });
+    fs.writeFileSync(path.join(cache, 'runtime.pyc'), 'local cache');
+    fs.mkdirSync(path.join(dir, 'source/skills/impeccable/.pytest_cache'));
+    fs.writeFileSync(path.join(dir, 'source/skills/impeccable/.coverage'), 'local coverage');
+    const rendered = run(dir, 'build/render.mjs');
+    assert.equal(rendered.status, 0, rendered.stderr);
+    for (const target of ['claude', 'codex']) {
+      for (const artifact of ['__pycache__', '.pytest_cache', '.coverage']) {
+        assert.equal(fs.existsSync(path.join(dir, 'targets', target, 'skills/impeccable', artifact)), false, artifact);
+      }
+    }
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('staleness check preserves binary assets when restoring stale output', () => {
+  const dir = fixture();
+  try {
+    const source = path.join(dir, 'source/skills/impeccable/test-font.woff');
+    const original = Buffer.from([0, 255, 128, 65]);
+    fs.writeFileSync(source, original);
+    assert.equal(run(dir, 'build/render.mjs').status, 0);
+    fs.writeFileSync(source, Buffer.from([1, 254, 129, 66]));
+    const checked = run(dir, 'build/check.mjs');
+    assert.notEqual(checked.status, 0);
+    assert.deepEqual(fs.readFileSync(path.join(dir, 'targets/codex/skills/impeccable/test-font.woff')), original);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

@@ -105,3 +105,13 @@ customize them, and it keeps mutating commands (`expose`, `review approve`) user
 rather than auto-applied — delegate them to the agent only deliberately, via the
 read-only allowlists it ships. Discovery, vetting, and exposure are explicit acts,
 never a background install.
+
+## Coverage audit
+
+`source/surface-inventory.json` records a named disposition and concrete artifact
+for each audited capability. Reconcile native installs, hidden collections,
+project-local skills, runtime plugins, and tools; checking only the manifest
+cannot find skills it already omitted. `npm run validate` checks the inventory
+against shipped skills and target files. Installation is evidence of availability,
+not invocation. Keep external tools and provider-managed plugins explicit, with
+setup and fallback guidance, rather than copying credentials or private runtimes.

@@ -36,4 +36,4 @@ class CreateUserRequest:
 
 ## Reference
 
-Optional extension, when separately installed: `python-patterns` for comprehensive patterns including decorators, concurrency, and package organization.
+Use the bundled skill when needed: `python-patterns` for comprehensive patterns including decorators, concurrency, and package organization.

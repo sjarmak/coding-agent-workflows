@@ -49,4 +49,4 @@ class Point(NamedTuple):
 
 ## Reference
 
-Optional extension, when separately installed: `python-patterns` for comprehensive Python idioms and patterns.
+Use the bundled skill when needed: `python-patterns` for comprehensive Python idioms and patterns.

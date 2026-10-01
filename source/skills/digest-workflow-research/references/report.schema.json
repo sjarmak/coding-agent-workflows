@@ -1,0 +1,154 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 600
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_url": {
+            "type": "string",
+            "pattern": "^https?://[^\\s]+$",
+            "maxLength": 2048
+          },
+          "disposition": {
+            "type": "string",
+            "enum": [
+              "recommend",
+              "watch",
+              "already-covered",
+              "skip",
+              "unverified"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 900
+          }
+        },
+        "required": [
+          "item_url",
+          "disposition",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "local_evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "proposed_application": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "experiment": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1800
+          },
+          "success_criterion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "novelty": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "source_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^https?://[^\\s]+$",
+              "maxLength": 2048
+            },
+            "maxItems": 6,
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "scope",
+          "local_evidence",
+          "claim",
+          "limitation",
+          "proposed_application",
+          "experiment",
+          "success_criterion",
+          "novelty",
+          "source_urls"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 3
+    },
+    "watch": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "maxItems": 20
+    },
+    "source_corrections": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "maxItems": 20
+    }
+  },
+  "required": [
+    "summary",
+    "coverage",
+    "findings",
+    "watch",
+    "source_corrections"
+  ],
+  "additionalProperties": false
+}

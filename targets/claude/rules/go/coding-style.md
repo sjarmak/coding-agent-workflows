@@ -39,4 +39,4 @@ if err != nil {
 
 ## Reference
 
-Optional extension, when separately installed: `golang-patterns` for comprehensive Go idioms and patterns.
+Use the bundled skill when needed: `golang-patterns` for comprehensive Go idioms and patterns.

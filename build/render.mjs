@@ -47,7 +47,10 @@ function parse(md) {
 const rmrf = p => fs.rmSync(p, { recursive: true, force: true });
 const mkdirp = p => fs.mkdirSync(p, { recursive: true });
 const write = (p, s) => { mkdirp(path.dirname(p)); fs.writeFileSync(p, s); };
-const copyDir = (a, b) => fs.cpSync(a, b, { recursive: true });
+const copyDir = (a, b) => fs.cpSync(a, b, {
+  recursive: true,
+  filter: source => !['__pycache__', '.pytest_cache', '.coverage'].includes(path.basename(source)) && !source.endsWith('.pyc'),
+});
 const readSkill = name => parse(fs.readFileSync(path.join(SRC, 'skills', name, 'SKILL.md'), 'utf8'));
 const readWorkflow = name => parse(fs.readFileSync(path.join(SRC, 'workflows', `${name}.md`), 'utf8'));
 

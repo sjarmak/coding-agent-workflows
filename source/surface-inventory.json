@@ -1,0 +1,2480 @@
+{
+  "version": 1,
+  "audited_at": "2026-10-01",
+  "scope": "192 distinct installed and collection skills, plus provider-managed capabilities and newly added adapters. Files and configuration establish availability, not invocation frequency.",
+  "skills": {
+    "acceptance-loop": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "agent-eval": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/agent-eval-design/SKILL.md",
+        "source/skills/agent-harness-traceability/SKILL.md"
+      ],
+      "reason": "Agent comparison design and evidence contracts replace an unbundled standalone CLI example."
+    },
+    "agent-eval-design": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/agent-eval-design/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "agent-harness-design": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/agent-harness-design/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "agent-harness-observability": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/agent-harness-observability/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "agent-harness-traceability": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/agent-harness-traceability/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "agent-memory-systems": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/agent-memory-systems/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "agent-systems-architecture": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/agent-systems-architecture/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "ai-regression-testing": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/ai-regression-testing/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "api-design": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/api-design/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "arch-review-loop": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/arch-review-loop/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "architecture-decision-records": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/architecture-decision-records/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "architecture-refresh": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/architecture-refresh/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "article-writing": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/article-writing/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "assess-codebase": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "backend-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/backend-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "bead-goal-audit": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/bead-goal-audit/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "benchmark": {
+      "disposition": "covered",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/perf-audit/SKILL.md"
+      ],
+      "reason": "Measurement-first benchmarking and regression budgets are maintained in perf-audit."
+    },
+    "bisect": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/bisect/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "brainstorm": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/brainstorm/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "bro": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/bro/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "browser-qa": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/browser-qa/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "bun-runtime": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/bun-runtime/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "caveman": {
+      "disposition": "optional",
+      "origins": [
+        "bundle:previous-default"
+      ],
+      "targets": [
+        "optional/skills/caveman/SKILL.md"
+      ],
+      "reason": "Explicitly requested terse interaction mode remains available outside default discovery."
+    },
+    "claude-api": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/claude-api/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "click-path-audit": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/click-path-audit/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "clickhouse-io": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/clickhouse-io/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "code-graph": {
+      "disposition": "bundled",
+      "origins": [
+        "surface-audit:integration"
+      ],
+      "targets": [
+        "source/skills/code-graph/SKILL.md"
+      ],
+      "reason": "Portable adapter added to expose and scope an audited tool capability."
+    },
+    "code-hygiene": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/code-hygiene/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "code-review": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/code-review/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "codebase-memory": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codebase-memory/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "codebase-onboarding": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/codebase-onboarding/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "codeprobe": {
+      "disposition": "bundled",
+      "origins": [
+        "surface-audit:integration"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Portable adapter added to expose and scope an audited tool capability."
+    },
+    "codeprobe-calibrate": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md",
+        "source/skills/codeprobe/references/codeprobe-calibrate.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "codeprobe-check-infra": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md",
+        "source/skills/codeprobe/references/codeprobe-check-infra.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "codeprobe-interpret": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md",
+        "source/skills/codeprobe/references/codeprobe-interpret.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "codeprobe-mine": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md",
+        "source/skills/codeprobe/references/codeprobe-mine.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "codeprobe-run": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md",
+        "source/skills/codeprobe/references/codeprobe-run.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "coding-practices": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/coding-practices/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "coding-standards": {
+      "disposition": "covered",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/rules/common/coding-style.md",
+        "source/rules/typescript/coding-style.md"
+      ],
+      "reason": "Common and TypeScript standards belong in rules rather than a duplicate skill."
+    },
+    "content-engine": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/content-engine/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "content-hash-cache-pattern": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/content-hash-cache-pattern/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "context-budget": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/context-budget/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "continuous-agent-loop": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/continuous-agent-loop/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "continuous-learning-v2": {
+      "disposition": "external",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/failure-mode-capture/SKILL.md",
+        "source/skills/rules-distill/SKILL.md"
+      ],
+      "reason": "Automatic session-observation hooks remain an optional upstream application; deliberate portable learning capture is bundled without claiming hook equivalence."
+    },
+    "converge": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/converge/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "cost-aware-llm-pipeline": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/cost-aware-llm-pipeline/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "create-pet": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "crosspost": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/crosspost/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "dashboard": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:agents"
+      ],
+      "targets": [
+        "source/skills/dashboard/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "database-migrations": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/database-migrations/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "de-slopify": {
+      "disposition": "covered",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/no-ai-slop/SKILL.md"
+      ],
+      "reason": "Voice-preserving editing replaces the older blanket punctuation-removal checklist."
+    },
+    "deep-research": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/deep-research/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "deployment-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/deployment-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "design-system": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/design-system/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "diagnosing-bugs": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/diagnosing-bugs/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "digest-workflow-research": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/digest-workflow-research/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "distill": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/distill/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "diverge": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/diverge/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "django-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/django-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "django-security": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/django-security/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "django-tdd": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/django-tdd/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "django-verification": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/django-verification/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "docker-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/docker-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "documentation-lookup": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/documentation-lookup/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "domain-modeling": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/domain-modeling/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "e2e-testing": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/e2e-testing/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "eval-harness": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/agent-eval-design/SKILL.md",
+        "source/skills/ai-regression-testing/SKILL.md"
+      ],
+      "reason": "Study design and behavioral regression procedures retain the useful evaluation contract."
+    },
+    "experiment": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "factory-reliability": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/factory-reliability/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "failure-mode-capture": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/failure-mode-capture/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "fal-ai-media": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/fal-ai-media/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "find-skills": {
+      "disposition": "covered",
+      "origins": [
+        "installed:agents"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Discovery, review, and installation routing live in the Skill Management rule; upstream installers remain external."
+    },
+    "focus": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/focus/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "formal-methods": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/formal-methods/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "frontend-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/frontend-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "frontend-slides": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/frontend-slides/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "gascity-blast-radius": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-check": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-dashboard-pr-start": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-dashboard-review-pr": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-dashboard-ship": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-handoff-write": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-issue-write": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-overnight-pipeline": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-pr-start": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-queue": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-review-incoming-pr": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-ship": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gascity-triage": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-agents": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-build-verify": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-change-workflow": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-city": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-config-system": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-dashboard": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-debugging": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-dispatch": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-doctrine": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-dolt-ops": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-events-payloads": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-flows": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-generated-artifacts": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-mail": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-meow-work-model": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-orientation": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-reconciler-lifecycle": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-release-ci-ops": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-rigs": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-runtime-providers": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-test-authoring": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "gc-work": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "goal": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/grill-me/SKILL.md",
+        "source/skills/ultracode/SKILL.md",
+        "source/rules/common/task-management.md"
+      ],
+      "reason": "Goal alignment, durable tracking, and Codex execution are explicit separate procedures; goal creation still requires a user request."
+    },
+    "golang-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/golang-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "golang-testing": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/golang-testing/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "google-docs": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "google-drive": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "google-drive-comments": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "google-sheets": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "google-slides": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "graphify": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/graphify/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "grill-me": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/grill-me/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "grill-with-docs": {
+      "disposition": "covered",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/grill-me/SKILL.md",
+        "source/skills/domain-modeling/SKILL.md",
+        "source/skills/architecture-decision-records/SKILL.md"
+      ],
+      "reason": "Interview, domain glossary, and ADR capture are composed from maintained procedures."
+    },
+    "grilling": {
+      "disposition": "covered",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/grill-me/SKILL.md"
+      ],
+      "reason": "The design-tree interview is maintained as grill-me without a second overlapping trigger."
+    },
+    "handoff-doc": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/handoff-doc/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "ian-xiaohei-illustrations": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Personal account, vault, artistic identity, or deployment policy must remain with its owning project."
+    },
+    "imagegen": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "impeccable": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:agents"
+      ],
+      "targets": [
+        "source/skills/impeccable/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "integration-test": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "interpret": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "iterative-retrieval": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/iterative-retrieval/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "maintain-space": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "manage-schedules": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "mcp-server-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/mcp-server-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "mine-tasks": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "nextjs-turbopack": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/nextjs-turbopack/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "no-ai-slop": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/no-ai-slop/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "nuxt4-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/nuxt4-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "obsidian-vault": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Personal account, vault, artistic identity, or deployment policy must remain with its owning project."
+    },
+    "omni-ai-eval": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Named service and model operations depend on project-specific semantic contracts and credentials."
+    },
+    "omni-ai-optimizer": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Named service and model operations depend on project-specific semantic contracts and credentials."
+    },
+    "omni-model-explorer": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Named service and model operations depend on project-specific semantic contracts and credentials."
+    },
+    "omni-query": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Named service and model operations depend on project-specific semantic contracts and credentials."
+    },
+    "openai-docs": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "organize-space": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "perf-audit": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/perf-audit/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "pets": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "plugin-management": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "postgres-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/postgres-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "premortem": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/premortem/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "probe": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "product-lens": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/product-lens/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "project-compass": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/project-compass/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "prompt-optimizer": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/prompt-optimizer/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "property-testing": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/property-testing/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "prototype": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/prototype/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "psyche-hydration-science-check": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Task-specific scientific datasets, grading criteria, and release procedures belong with the task repository."
+    },
+    "python-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/python-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "python-testing": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/python-testing/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "pytorch-patterns": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/pytorch-patterns/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "ratings": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "regex-vs-llm-structured-text": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/regex-vs-llm-structured-text/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "reliability-pass": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/reliability-pass/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "repo-architecture-review": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/repo-architecture-review/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "research": {
+      "disposition": "covered",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/deep-research/SKILL.md"
+      ],
+      "reason": "Primary-source research and cited artifact guidance are maintained in deep-research."
+    },
+    "research-project": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/research-project/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "review": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/review/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "review-pr": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Project-specific orchestration, roles, storage, or publishing contracts are not portable; generic review, task tracking, and reliability procedures are bundled separately."
+    },
+    "rules-distill": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/rules-distill/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "ruling-capture": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/ruling-capture/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "run-durable-research": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/run-durable-research/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "run-eval": {
+      "disposition": "covered",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
+    },
+    "scaffold": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/scaffold/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "scientific-software-engineering": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/scientific-software-engineering/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "scix-mcp": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/scix-mcp/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "search-first": {
+      "disposition": "covered",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/rules/common/development-workflow.md",
+        "source/skills/documentation-lookup/SKILL.md"
+      ],
+      "reason": "Research-before-implementation is an always-on workflow rule with version-aware documentation lookup."
+    },
+    "search-sessions": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/search-sessions/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "security-review": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/security-review/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "security-scan": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/security-scan/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "sg-public-ds": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [],
+      "reason": "Personal account, vault, artistic identity, or deployment policy must remain with its owning project."
+    },
+    "show-me": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:agents"
+      ],
+      "targets": [
+        "source/skills/show-me/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "simplify": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/simplify/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "skill-comply": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/skill-comply/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "skill-creator": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "skill-installer": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "skill-stocktake": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/skill-stocktake/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "skillager-audit": {
+      "disposition": "external",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Generated router IDs and reviewed-content hashes are installation-specific; regenerate through the configured skillager adapter."
+    },
+    "skillager-codeprobe": {
+      "disposition": "external",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Generated router IDs and reviewed-content hashes are installation-specific; regenerate through the configured skillager adapter."
+    },
+    "skillager-dev-patterns": {
+      "disposition": "external",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Generated router IDs and reviewed-content hashes are installation-specific; regenerate through the configured skillager adapter."
+    },
+    "skillager-research": {
+      "disposition": "external",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Generated router IDs and reviewed-content hashes are installation-specific; regenerate through the configured skillager adapter."
+    },
+    "skillager-router-2ebdf13bf3": {
+      "disposition": "external",
+      "origins": [
+        "installed:agents"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Generated router IDs and reviewed-content hashes are installation-specific; regenerate through the configured skillager adapter."
+    },
+    "skillager-router-48a552d433": {
+      "disposition": "external",
+      "origins": [
+        "installed:agents"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Generated router IDs and reviewed-content hashes are installation-specific; regenerate through the configured skillager adapter."
+    },
+    "skillager-router-e72ccc4b2d": {
+      "disposition": "external",
+      "origins": [
+        "installed:agents"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Generated router IDs and reviewed-content hashes are installation-specific; regenerate through the configured skillager adapter."
+    },
+    "skillager-router-ed12f5d496": {
+      "disposition": "external",
+      "origins": [
+        "installed:agents"
+      ],
+      "targets": [
+        "source/rules/common/skill-management.md",
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Generated router IDs and reviewed-content hashes are installation-specific; regenerate through the configured skillager adapter."
+    },
+    "slop-check": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/slop-check/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "strategic-compact": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/strategic-compact/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "systems-thinking": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/systems-thinking/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "tb-science-pr-check": {
+      "disposition": "project-local",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [],
+      "reason": "Task-specific scientific datasets, grading criteria, and release procedures belong with the task repository."
+    },
+    "tdd-workflow": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/tdd-workflow/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "theory-of-mind-agents": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/theory-of-mind-agents/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "tufte-chart": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/tufte-chart/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "tufte-critique": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/tufte-critique/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "ultracode": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/ultracode/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "update-pet": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "verification-loop": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:codex"
+      ],
+      "targets": [
+        "source/skills/verification-loop/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "video-editing": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/video-editing/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "videodb": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/videodb/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "wayfinder": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/wayfinder/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "working-set-snapshot": {
+      "disposition": "bundled",
+      "origins": [
+        "installed:claude"
+      ],
+      "targets": [
+        "source/skills/working-set-snapshot/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "write-page": {
+      "disposition": "external",
+      "origins": [
+        "runtime:provider-managed"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
+    },
+    "writing-for-agents": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:projects"
+      ],
+      "targets": [
+        "source/skills/writing-for-agents/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    },
+    "x-api": {
+      "disposition": "bundled",
+      "origins": [
+        "collection:hidden"
+      ],
+      "targets": [
+        "source/skills/x-api/SKILL.md"
+      ],
+      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+    }
+  },
+  "tools": {
+    "codegraph": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/code-graph/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "codebase-memory-mcp": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/codebase-memory/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "graphify": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/graphify/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "city-search": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/search-sessions/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "skillager": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "skillager-linter": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "skills-cli": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "skill-comply": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/skill-comply/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "codeprobe": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/codeprobe/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "context7": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/documentation-lookup/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "openaiDeveloperDocs": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/documentation-lookup/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "web-search": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/deep-research/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "exa": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/deep-research/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "firecrawl": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/deep-research/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "scix": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/scix-mcp/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "code-intelligence-digest": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/digest-workflow-research/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "temporal-research": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/run-durable-research/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "honeycomb": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/agent-harness-observability/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "agent-browser": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/browser-qa/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "playwright": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/browser-qa/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "browser-mcp": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/browser-qa/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "likec4": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/architecture-refresh/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "beads": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/bead-goal-audit/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "agentshield": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/security-scan/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "hegel": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/property-testing/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "hypothesis": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/property-testing/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "tla-plus": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/formal-methods/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "lean": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/formal-methods/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "anthropic-api": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/claude-api/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "fal-ai": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/fal-ai-media/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "ffmpeg": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/video-editing/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "remotion": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/video-editing/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "videodb": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/videodb/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "x-api": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md",
+        "source/skills/x-api/SKILL.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "host-image-generation": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "google-drive-plugin": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "pages-plugin": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "work-pets-plugin": {
+      "disposition": "external",
+      "origins": [
+        "surface-audit:tool-capabilities"
+      ],
+      "targets": [
+        "docs/tool-integrations.md"
+      ],
+      "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
+    },
+    "omniGasCity": {
+      "disposition": "project-local",
+      "origins": [
+        "configured:mcp"
+      ],
+      "targets": [],
+      "reason": "Project-specific MCP contract and credentials are excluded from the portable bundle."
+    }
+  }
+}

@@ -29,3 +29,10 @@ warnings. Current full source returned for a changed file is usable; if omitted,
 read the flagged file directly. Its indexed edges and prior line numbers may
 still be stale. Reuse previously returned source only when present in your own
 context. Cite current evidence and explain any remaining coverage limits.
+
+## Discoverable procedures
+
+Use **code-graph** for the navigation and setup contract, **codebase-memory** for
+schema-aware specialist queries, and **graphify** for document and mixed-media
+graphs. These skills declare external tool prerequisites; distributing a skill
+does not install a server, create an index, or authorize corpus uploads.

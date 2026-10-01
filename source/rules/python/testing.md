@@ -42,4 +42,4 @@ def test_database_connection():
 
 ## Reference
 
-Optional extension, when separately installed: `python-testing` for detailed pytest patterns and fixtures.
+Use the bundled skill when needed: `python-testing` for detailed pytest patterns and fixtures.

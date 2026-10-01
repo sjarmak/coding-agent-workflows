@@ -221,6 +221,453 @@
       "origin": "Adapted from the installed ultracode skill, reviewed 2026-10-01",
       "collection": "runtime",
       "requires": []
+    },
+    "agent-memory-systems": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "agent-systems-architecture": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "ai-regression-testing": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "api-design": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "arch-review-loop": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "architecture-refresh": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "code-graph"
+      ]
+    },
+    "article-writing": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "backend-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "bead-goal-audit": {
+      "origin": "user; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "bro": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "bun-runtime": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "claude-api": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "clickhouse-io": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "code-graph": {
+      "origin": "Adapted from installed skill collection; surface audit 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "codebase-memory",
+        "graphify"
+      ]
+    },
+    "codebase-memory": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "code-graph"
+      ]
+    },
+    "codeprobe": {
+      "origin": "Adapted from installed skill collection; surface audit 2026-10-01",
+      "collection": "agent-systems",
+      "requires": [
+        "agent-eval-design",
+        "agent-harness-traceability"
+      ]
+    },
+    "content-engine": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "content-hash-cache-pattern": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "context-budget": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "continuous-agent-loop": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "cost-aware-llm-pipeline": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "crosspost": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "content-engine"
+      ]
+    },
+    "database-migrations": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "deep-research": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "run-durable-research",
+        "digest-workflow-research"
+      ]
+    },
+    "deployment-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "design-system": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "diagnosing-bugs": {
+      "origin": "github.com/mattpocock/skills skills/engineering/diagnosing-bugs @ 74ca5fe; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "digest-workflow-research": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "django-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "django-security": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "django-tdd": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "django-verification": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "docker-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "documentation-lookup": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "domain-modeling": {
+      "origin": "github.com/mattpocock/skills skills/engineering/domain-modeling @ 74ca5fe; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "fal-ai-media": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "frontend-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "frontend-slides": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "golang-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "golang-testing": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "graphify": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "impeccable": {
+      "origin": "Impeccable installed skill snapshot; Apache-2.0; see bundled NOTICE.md and LICENSE",
+      "collection": "engineering",
+      "requires": [
+        "browser-qa"
+      ]
+    },
+    "iterative-retrieval": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "mcp-server-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "nextjs-turbopack": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "nuxt4-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "postgres-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "product-lens": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "prompt-optimizer": {
+      "origin": "community; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "prototype": {
+      "origin": "github.com/mattpocock/skills skills/engineering/prototype @ 74ca5fe; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "python-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "python-testing": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "pytorch-patterns": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "rules-distill": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "run-durable-research": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "deep-research"
+      ]
+    },
+    "scientific-software-engineering": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "scix-mcp": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "search-sessions": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "security-scan": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "security-review"
+      ]
+    },
+    "show-me": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "skill-comply": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": [
+        "agent-eval-design",
+        "agent-harness-traceability"
+      ]
+    },
+    "skill-stocktake": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "strategic-compact": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "working-set-snapshot",
+        "handoff-doc"
+      ]
+    },
+    "theory-of-mind-agents": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "tufte-chart": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "tufte-critique"
+      ]
+    },
+    "tufte-critique": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "tufte-chart"
+      ]
+    },
+    "video-editing": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "videodb": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "wayfinder": {
+      "origin": "github.com/mattpocock/skills skills/engineering/wayfinder @ 74ca5fe; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "writing-for-agents": {
+      "origin": "github.com/mattpocock/skills skills/productivity/writing-for-agents @ 74ca5fe; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "x-api": {
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "agent-harness-design": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": [
+        "agent-harness-observability"
+      ]
+    },
+    "agent-harness-observability": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "factory-reliability": {
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
     }
   },
   "rule_dependencies": {
@@ -240,10 +687,12 @@
       "perf-audit"
     ],
     "go/testing.md": [
-      "property-testing"
+      "property-testing",
+      "golang-testing"
     ],
     "python/testing.md": [
-      "property-testing"
+      "property-testing",
+      "python-testing"
     ],
     "typescript/testing.md": [
       "property-testing"
@@ -257,6 +706,26 @@
     ],
     "rust/security.md": [
       "security-review"
+    ],
+    "common/code-graph.md": [
+      "code-graph",
+      "codebase-memory",
+      "graphify"
+    ],
+    "go/coding-style.md": [
+      "golang-patterns"
+    ],
+    "go/patterns.md": [
+      "golang-patterns"
+    ],
+    "python/coding-style.md": [
+      "python-patterns"
+    ],
+    "python/patterns.md": [
+      "python-patterns"
+    ],
+    "python/security.md": [
+      "django-security"
     ]
   },
   "optional": {

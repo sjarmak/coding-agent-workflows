@@ -7,10 +7,10 @@
   "license": "MIT",
   "scripts": {
     "build": "node build/render.mjs",
-    "test": "node --test build/*.test.mjs && node scripts/fleet/fleet-scan.test.mjs && node source/skills/dashboard/allowlist.test.mjs && node source/skills/dashboard/render.test.mjs && node source/skills/focus/focus-contract.test.mjs && bash source/skills/working-set-snapshot/working-set-snapshot.test.sh && bash source/skills/ruling-capture/check-rulings-durability.test.sh",
+    "test": "node --test build/*.test.mjs && node scripts/fleet/fleet-scan.test.mjs && node source/skills/dashboard/allowlist.test.mjs && node source/skills/dashboard/render.test.mjs && node source/skills/focus/focus-contract.test.mjs && bash source/skills/working-set-snapshot/working-set-snapshot.test.sh && bash source/skills/ruling-capture/check-rulings-durability.test.sh && python3 -B -m unittest discover -s source/skills/tufte-chart/tests && python3 -B -m unittest discover -s source/skills/videodb/scripts -p \"test_*.py\" && bash source/skills/skill-stocktake/tests/test-scanners.sh",
     "check": "node build/check.mjs",
     "sanitize": "node build/sanitize.mjs",
-    "validate": "node build/validate.mjs",
+    "validate": "node build/validate.mjs && node build/surface-audit.mjs",
     "release": "npm run build && npm run sanitize && npm run validate"
   }
 }

@@ -18,7 +18,7 @@ function snapshot() {
     if (!fs.existsSync(p)) return;
     const st = fs.statSync(p);
     if (st.isDirectory()) for (const e of fs.readdirSync(p)) add(path.join(p, e));
-    else out[path.relative(ROOT, p)] = fs.readFileSync(p, 'utf8');
+    else out[path.relative(ROOT, p)] = fs.readFileSync(p);
   };
   add(path.join(ROOT, 'AGENTS.md'));
   add(path.join(ROOT, 'AGENTS.full.md'));
@@ -31,14 +31,14 @@ execSync('node build/render.mjs', { cwd: ROOT, stdio: 'ignore' });
 const after = snapshot();
 
 const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
-const stale = [...keys].filter(k => before[k] !== after[k]);
+const stale = [...keys].filter(k => !before[k] || !after[k] || !before[k].equals(after[k]));
 
 if (stale.length) {
   // put the committed output back so the failed check leaves no rendered changes
   for (const k of keys) {
     const p = path.join(ROOT, k);
     if (before[k] === undefined) fs.rmSync(p, { force: true });
-    else if (before[k] !== after[k]) fs.writeFileSync(p, before[k]);
+    else if (!after[k] || !before[k].equals(after[k])) fs.writeFileSync(p, before[k]);
   }
   console.error('STALE generated output: run `npm run build` and commit:');
   for (const k of stale) console.error('  ' + k);

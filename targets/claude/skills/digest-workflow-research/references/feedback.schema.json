@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "finding_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "disposition": {
+      "type": "string",
+      "enum": [
+        "explore",
+        "try",
+        "adopt",
+        "dismiss",
+        "defer",
+        "outcome"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000
+    },
+    "task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2000
+      },
+      "maxItems": 20
+    },
+    "recorded_at": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    }
+  },
+  "required": [
+    "run_id",
+    "finding_id",
+    "disposition",
+    "reason",
+    "task_id",
+    "evidence",
+    "recorded_at"
+  ],
+  "additionalProperties": false
+}

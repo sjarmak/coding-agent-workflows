@@ -27,4 +27,4 @@ api_key = os.environ["OPENAI_API_KEY"]  # Raises KeyError if missing
 
 ## Reference
 
-Optional extension, when separately installed: `django-security` for Django-specific security guidelines (if applicable).
+Use the bundled skill when needed: `django-security` for Django-specific security guidelines (if applicable).

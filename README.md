@@ -106,6 +106,28 @@ and resources, preserve attribution, declare dependencies, and remove local
 paths and work-specific examples. Update the catalog and render all targets.
 Do not bulk-copy the entire installed environment into the shared core.
 
+## Audited capabilities
+
+The [surface inventory](source/surface-inventory.json) accounts for every named
+skill found in the 2026-10-01 cross-project audit, including hidden collections,
+plus runtime-managed plugins and tool integrations. Each entry has a disposition,
+a reason, and a concrete coverage target. `npm run validate` rejects missing
+shipped-skill records and broken coverage targets. This is a reviewed snapshot,
+not live usage telemetry; future audits must reconcile newly installed skills too.
+
+The bundle includes **impeccable** with its scripts and design references,
+**code-graph** alongside the Codegraph rule and code-search role, **graphify**,
+specialist graph queries, session search, documentation lookup, codeprobe,
+framework patterns, visual explanation and Tufte charts, and research procedures.
+Overlapping names map to maintained procedures rather than duplicate instructions.
+Project-specific service commands and private deployment contracts remain local.
+
+[Tool integrations](docs/tool-integrations.md) explains prerequisites and fallbacks.
+External CLIs, MCP servers, paid providers, and provider-owned plugins are explicit
+dependencies: installing the bundle does not install or enable those services.
+Load skill bodies on demand; the larger catalog is not a direction to run every
+procedure or add every tool to a project.
+
 ## Workflows
 
 The [code-search specialist](docs/code-search.md) handles substantial code

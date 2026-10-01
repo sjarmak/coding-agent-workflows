@@ -8,7 +8,7 @@ autoload: claude
 The essential, always-loaded conventions. Detailed catalogs live in **on-demand
 skills** — don't inline them: code-review depth → `code-review` + `code-reviewer`
 agent; slop/erosion catalog → `/slop-check`; language specifics →
-the bundled language rules; separately installed pattern skills are optional. The agent roster
+the bundled language rules; load bundled pattern skills only when relevant. The agent roster
 is already provided in session context — never duplicate it here.
 
 ## Collaboration & Autonomy

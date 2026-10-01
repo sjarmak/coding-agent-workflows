@@ -35,4 +35,4 @@ skill for the API and `common/testing.md` for when a property test is required.
 
 ## Reference
 
-Optional extension, when separately installed: `golang-testing` for detailed Go testing patterns and helpers.
+Use the bundled skill when needed: `golang-testing` for detailed Go testing patterns and helpers.

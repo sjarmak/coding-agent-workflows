@@ -42,4 +42,4 @@ func NewUserService(repo UserRepository, logger Logger) *UserService {
 
 ## Reference
 
-Optional extension, when separately installed: `golang-patterns` for comprehensive Go patterns including concurrency, error handling, and package organization.
+Use the bundled skill when needed: `golang-patterns` for comprehensive Go patterns including concurrency, error handling, and package organization.

@@ -503,6 +503,13 @@ read the flagged file directly. Its indexed edges and prior line numbers may
 still be stale. Reuse previously returned source only when present in your own
 context. Cite current evidence and explain any remaining coverage limits.
 
+## Discoverable procedures
+
+Use **code-graph** for the navigation and setup contract, **codebase-memory** for
+schema-aware specialist queries, and **graphify** for document and mixed-media
+graphs. These skills declare external tool prerequisites; distributing a skill
+does not install a server, create an index, or authorize corpus uploads.
+
 # Coding Style
 
 > For DRY, SRP, KISS, YAGNI, layering, placeholder-code, and first-principles rules, see [architecture.md](./architecture.md).
@@ -756,7 +763,7 @@ When creating PRs:
 The essential, always-loaded conventions. Detailed catalogs live in **on-demand
 skills** — don't inline them: code-review depth → `code-review` + `code-reviewer`
 agent; slop/erosion catalog → `/slop-check`; language specifics →
-the bundled language rules; separately installed pattern skills are optional. The agent roster
+the bundled language rules; load bundled pattern skills only when relevant. The agent roster
 is already provided in session context — never duplicate it here.
 
 ## Collaboration & Autonomy
@@ -1189,6 +1196,16 @@ rather than auto-applied — delegate them to the agent only deliberately, via t
 read-only allowlists it ships. Discovery, vetting, and exposure are explicit acts,
 never a background install.
 
+## Coverage audit
+
+`source/surface-inventory.json` records a named disposition and concrete artifact
+for each audited capability. Reconcile native installs, hidden collections,
+project-local skills, runtime plugins, and tools; checking only the manifest
+cannot find skills it already omitted. `npm run validate` checks the inventory
+against shipped skills and target files. Installation is evidence of availability,
+not invocation. Keep external tools and provider-managed plugins explicit, with
+setup and fallback guidance, rather than copying credentials or private runtimes.
+
 # Task Management
 
 Multi-step work needs a durable record that survives a restart, context
@@ -1387,6 +1404,80 @@ Language-specific rules (Go, Python, TypeScript, Rust) live under `.agents/rules
 - **browser-qa**: Test live web interfaces with browser automation for smoke failures, interactions, visual regressions, responsive behavior, and accessibility. Use after frontend changes or deployments, during UI review, and before shipping critical user journeys.
 - **agent-harness-traceability**: Capture, replay, summarize, and compare agent harness runs with immutable evidence, explicit telemetry provenance, paired statistics, and regression gates. Use for eval runners and reports, including hosted evaluations and custom harness comparisons; use agent-eval-design for designing a benchmark from scratch.
 - **reliability-pass**: Six bounded protocols that test a coding-agent system and leave an artifact: authority boundary, recovery fault-injection, trace review, eval comparison. Use when asked whether a system, recovery path, or permission boundary actually holds.
+- **agent-memory-systems**: Conceptual models for agent memory — episodic/semantic/procedural stores, retrieval, consolidation, forgetting, compression, indexing, persistence, and context management. Use when designing or reviewing memory architectures for agents, deciding what to store and how to retrieve it, or evaluating whether memory actually improves agent behavior. NOT for generic database schema design or session context compaction mechanics.
+- **agent-systems-architecture**: Conceptual architecture for agent systems — planning, execution, orchestration, verification, recovery, lifecycle, communication, scheduling, and composability. Use when designing or reviewing agent orchestrators, multi-agent pipelines, or background-agent systems. The questions are about roles, state, and control flow, not code style, prompt wording, framework APIs, or measuring agent performance.
+- **ai-regression-testing**: Regression testing strategies for AI-assisted development. Sandbox-mode API testing without database dependencies, automated bug-check workflows, and patterns to catch AI blind spots where the same model writes and reviews code.
+- **api-design**: REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting for production APIs.
+- **arch-review-loop**: Recurring architecture-review loop for one repo with full provenance — loads prior state from the repository's tracker and last report, runs repo-architecture-review, deduplicates findings by fingerprint, records only new findings, closes resolved ones with reasons, and writes a dated ledger report. Use on a cadence per repo or to re-run an architecture review without re-reporting known findings. NOT for one-off architecture reviews or fleet-wide guardrail scans.
+- **architecture-refresh**: Audit architecture diagrams against current source, repair model drift, and validate existing LikeC4 or equivalent architecture publishing workflows.
+- **article-writing**: Write articles, guides, blog posts, tutorials, newsletter issues, and other long-form content in a distinctive voice derived from supplied examples or brand guidance. Use when the user wants polished written content longer than a paragraph, especially when voice consistency, structure, and credibility matter.
+- **backend-patterns**: Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes.
+- **bead-goal-audit**: Audit a durable task store against project goals, identify duplicates and stale or orphaned work, and propose evidence-backed closures or merges.
+- **bro**: Re-explain the previous assistant message in a much simpler way — for when the reply made you go 'bro what'. Use /bro to get a plain-language version of the last answer.
+- **bun-runtime**: Bun as runtime, package manager, bundler, and test runner. When to choose Bun vs Node, migration notes, and Vercel support.
+- **claude-api**: Anthropic Claude API patterns for Python and TypeScript. Covers Messages API, streaming, tool use, vision, extended thinking, batches, prompt caching, and Claude Agent SDK. Use when building applications with the Claude API or Anthropic SDKs.
+- **clickhouse-io**: ClickHouse database patterns, query optimization, analytics, and data engineering best practices for high-performance analytical workloads.
+- **code-graph**: Navigate indexed code, trace callers and impact, and select Codegraph, specialist graph queries, or document graphs with explicit freshness and source evidence.
+- **codebase-memory**: Use specialist code graph capabilities for schema-aware queries, cross-service paths, degree analysis, architecture, ADRs, and runtime traces when an available graph provider supports them.
+- **codeprobe**: Assess repositories, mine and validate evaluation tasks, calibrate curators, run isolated agent comparisons, and interpret results through the installed codeprobe CLI.
+- **content-engine**: Create platform-native content systems for X, LinkedIn, TikTok, YouTube, newsletters, and repurposed multi-platform campaigns. Use when the user wants social posts, threads, scripts, content calendars, or one source asset adapted cleanly across platforms.
+- **content-hash-cache-pattern**: Cache expensive file processing results using SHA-256 content hashes — path-independent, auto-invalidating, with service layer separation.
+- **context-budget**: Audits an agent host's context window consumption across agents, skills, tools, and rules. Identifies bloat, redundant components, and produces prioritized token-savings recommendations.
+- **continuous-agent-loop**: Patterns for continuous autonomous agent loops with quality gates, evals, and recovery controls.
+- **cost-aware-llm-pipeline**: Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, retry logic, and prompt caching.
+- **crosspost**: Multi-platform content distribution across X, LinkedIn, Threads, and Bluesky. Adapts content to each platform and prepares explicit publishing payloads. Use when the user wants to distribute content across social platforms.
+- **database-migrations**: Database migration best practices for schema changes, data migrations, rollbacks, and zero-downtime deployments across PostgreSQL, MySQL, and common ORMs (Prisma, Drizzle, Kysely, Django, TypeORM, golang-migrate).
+- **deep-research**: Investigate a question across primary sources, track evidence and disagreement, and produce a cited decision-oriented report with explicit coverage limits.
+- **deployment-patterns**: Deployment workflows, CI/CD pipeline patterns, Docker containerization, health checks, rollback strategies, and production readiness checklists for web applications.
+- **design-system**: Generate or audit a product's visual system, including design tokens, typography, spacing, components, responsive behavior, accessibility, and visual consistency. Use when starting or redesigning a UI, reviewing styling changes, or diagnosing inconsistent visual design.
+- **diagnosing-bugs**: Diagnosis loop for hard bugs and performance regressions. Use when the user says \"diagnose\"/\"debug this\", or reports something broken/throwing/failing/slow.
+- **digest-workflow-research**: Research published digests for evidence-backed improvements to personal workflows and active projects. Use for digest follow-up, research-to-practice recommendations, and scheduled opportunity reviews.
+- **django-patterns**: Django architecture patterns, REST API design with DRF, ORM best practices, caching, signals, middleware, and production-grade Django apps.
+- **django-security**: Django security best practices, authentication, authorization, CSRF protection, SQL injection prevention, XSS prevention, and secure deployment configurations.
+- **django-tdd**: Django testing strategies with pytest-django, TDD methodology, factory_boy, mocking, coverage, and testing Django REST Framework APIs.
+- **django-verification**: Verification loop for Django projects: migrations, linting, tests with coverage, security scans, and deployment readiness checks before release or PR.
+- **docker-patterns**: Docker and Docker Compose patterns for local development, container security, networking, volume strategies, and multi-service orchestration.
+- **documentation-lookup**: Resolve version-specific library, framework, and API behavior from installed dependencies and primary documentation, using Context7 or provider docs tools when available.
+- **domain-modeling**: Build and sharpen a project's domain model. Use when discussing codebase terminology, writing or editing a CONTEXT.md, or recording or editing an ADR.
+- **fal-ai-media**: Unified media generation via fal.ai MCP — image, video, and audio. Covers text-to-image (Nano Banana), text/image-to-video (Seedance, Kling, Veo 3), text-to-speech (CSM-1B), and video-to-audio (ThinkSound). Use when the user wants to generate images, videos, or audio with AI.
+- **frontend-patterns**: Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices.
+- **frontend-slides**: Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual exploration rather than abstract choices.
+- **golang-patterns**: Idiomatic Go patterns, best practices, and conventions for building robust, efficient, and maintainable Go applications.
+- **golang-testing**: Go testing patterns including table-driven tests, subtests, benchmarks, fuzzing, and test coverage. Follows TDD methodology with idiomatic Go practices.
+- **graphify**: Query or build persistent graphs across code, documents, papers, and media with Graphify; use existing graphify-out artifacts for relationship questions and explicit extraction for graph creation.
+- **impeccable**: Design, critique, audit, or polish a frontend UI (sites, dashboards, components, forms): hierarchy, accessibility, typography, color, motion, UX copy, design tokens, bolder or quieter visuals. Not for backend-only or non-UI tasks.
+- **iterative-retrieval**: Pattern for progressively refining context retrieval to solve the subagent context problem
+- **mcp-server-patterns**: Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs Streamable HTTP. Use Context7 or official MCP docs for latest API.
+- **nextjs-turbopack**: Next.js 16+ and Turbopack — incremental bundling, FS caching, dev speed, and when to use Turbopack vs webpack.
+- **nuxt4-patterns**: Nuxt 4 app patterns for hydration safety, performance, route rules, lazy loading, and SSR-safe data fetching with useFetch and useAsyncData.
+- **postgres-patterns**: PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based on Supabase best practices.
+- **product-lens**: Evaluate product direction, user pain, feature scope, user journeys, launch readiness, and prioritization. Use before building a feature, turning a vague idea into a spec, reviewing product strategy, auditing onboarding, or choosing among competing features.
+- **prompt-optimizer**: Analyze raw prompts, identify intent and gaps, match available components (skills/commands/agents/hooks), and output a ready-to-paste optimized prompt. Advisory role only — never executes the task itself. TRIGGER when: user says \"optimize prompt\", \"improve my prompt\", \"how to write a prompt for\", \"help me prompt\", \"rewrite this prompt\", or explicitly asks to enhance prompt quality. Also triggers on Chinese equivalents: \"优化prompt\", \"改进prompt\", \"怎么写prompt\", \"帮我优化这个指令\". DO NOT TRIGGER when: user wants the task executed directly, or says \"just do it\" / \"直接做\". DO NOT TRIGGER when user says \"优化代码\", \"优化性能\", \"optimize performance\", \"optimize this code\" — those are refactoring/performance tasks, not prompt optimization.
+- **prototype**: Build a throwaway prototype to answer a design question. Use when the user wants to sanity-check whether a state model or logic feels right, or explore what a UI should look like.
+- **python-patterns**: Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python applications.
+- **python-testing**: Python testing strategies using pytest, TDD methodology, fixtures, mocking, parametrization, and coverage requirements.
+- **pytorch-patterns**: PyTorch deep learning patterns and best practices for building robust, efficient, and reproducible training pipelines, model architectures, and data loading.
+- **rules-distill**: Scan skills to extract cross-cutting principles and distill them into rules — append, revise, or create new rule files
+- **run-durable-research**: Start, inspect, and retrieve long-lived research through a configured durable workflow service, preserving run identity and cited artifacts across agent restarts.
+- **scientific-software-engineering**: Engineering standards for scientific software and research infrastructure — provenance, reproducibility, FAIR data, metadata/ontologies, numerical correctness, and long-lived APIs. Use when building or reviewing scientific pipelines, dataset management, scientific metadata systems, citation infrastructure, or any code whose outputs feed published research. NOT for generic web/app development, agent orchestration, or eval design.
+- **scix-mcp**: Research scientific literature with an available SciX or ADS-compatible scholarly provider, including full-text evidence, citation traversal, and provenance.
+- **search-sessions**: Search preserved Claude and Codex conversations locally for debugging history, prior solutions, and decision context.
+- **security-scan**: Audit agent configuration, hooks, tool permissions, and MCP integrations for credential exposure, unsafe execution, and instruction-boundary failures.
+- **show-me**: Help the user understand the current topic visually with concise diagrams, code-shape sketches, and focused HTML artifacts.
+- **skill-comply**: Evaluate whether agents follow skills, rules, or role instructions using varied prompts, recorded tool traces, and independently reviewed behavioral specifications.
+- **skill-stocktake**: Use when auditing installed skills and commands for quality. Supports Quick Scan for changed skills and Full Stocktake modes with sequential evaluation.
+- **strategic-compact**: Prepare durable working state and choose a logical boundary for context compaction during long, multi-phase agent sessions.
+- **theory-of-mind-agents**: Conceptual foundations for Theory of Mind in AI agents — belief modeling, user models, intent inference, recursive reasoning, planning under uncertainty about people, preference learning, and explainable personalization. Use when designing or reviewing systems that model users' beliefs, goals, and preferences, deciding how an agent should resolve ambiguity about intent, or evaluating personalization. NOT for cognitive-science exposition, generic UX copy, or agent memory storage mechanics.
+- **tufte-chart**: Render a real, publication-ready data graphic (SVG or HTML) that obeys Tufte's principles — minimal ink, range-frame axes, direct labels, honest proportions. Use when someone wants to design, build, create, draw, plot, or visualize a chart or graph the Tufte way, or to rebuild a chart after a critique found problems. This is the skill that outputs an actual chart file. Not for critiquing an existing graphic (`tufte-critique`).
+- **tufte-critique**: Critique a chart or dashboard against a Tufte (VDQI) rubric: score it, name chartjunk, compute the lie factor, give prioritized fixes. Use when asked if a graphic is good, misleading, or cluttered. Not for making charts (tufte-chart).
+- **video-editing**: AI-assisted video editing workflows for cutting, structuring, and augmenting real footage. Covers the full pipeline from raw capture through FFmpeg, Remotion, ElevenLabs, fal.ai, and final polish in Descript or CapCut. Use when the user wants to edit video, cut footage, create vlogs, or build video content.
+- **videodb**: See, Understand, Act on video and audio. See- ingest from local files, URLs, RTSP/live feeds, or live record desktop; return realtime context and playable stream links. Understand- extract frames, build visual/semantic/temporal indexes, and search moments with timestamps and auto-clips. Act- transcode and normalize (codec, fps, resolution, aspect ratio), perform timeline edits (subtitles, text/image overlays, branding, audio overlays, dubbing, translation), generate media assets (image, audio, video), and create real time alerts for events from live streams or desktop capture.
+- **wayfinder**: Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on your issue tracker, and resolve them one at a time until the way to the destination is clear.
+- **writing-for-agents**: Writing documents for agents. Use when creating or editing skills or modifying agent instruction files.
+- **x-api**: X/Twitter API integration for posting tweets, threads, reading timelines, search, and analytics. Covers OAuth auth patterns, rate limits, and platform-native content posting. Use when the user wants to interact with X programmatically.
+- **agent-harness-design**: Design or review agent harnesses: loop contracts, tool boundaries, run scope, delegation, compaction, and prompt caching.
+- **agent-harness-observability**: Design or audit agent harness observability: events, streaming recovery, metrics, tracing, usage accounting, and privacy.
+- **factory-reliability**: Review reliability boundaries in distributed agent systems: duplicate effects, stale writers, lost events, retry storms, and recovery.
 
 Full skill procedures and resources are installed at `.agents/skills/<name>/SKILL.md` for AGENTS-only installs or `$CODEX_HOME/skills/<name>/SKILL.md` for Codex; Claude-only skills (`review`, `diverge`, `converge`, `research-project`) use the Skill/subagent mechanism and ship in `targets/claude/skills/` only.
 
