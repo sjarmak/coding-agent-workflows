@@ -29,7 +29,9 @@ owns implementation and user decisions.
 
 ## Find the evidence
 
-1. Discover the tools actually available. For indexed code, start with Codegraph's
+1. Discover the tools actually available. A deferred tool cannot be called until
+   it is loaded; in Claude Code, if `codegraph_explore` appears only in the deferred-tool list, load it first with ToolSearch query `select:mcp__codegraph__codegraph_explore`.
+   For indexed code, start with Codegraph's
    `codegraph_explore`, passing the absolute repository path as `projectPath`.
    Ask one focused question or name the symbols spanning the flow. Start with a
    bounded result, usually the default file limit, and obey the tool's call budget.
