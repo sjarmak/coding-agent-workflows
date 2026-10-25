@@ -33,24 +33,24 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "agent-harness-design": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "installed:claude"
       ],
       "targets": [
-        "source/skills/agent-harness-design/SKILL.md"
+        "optional/skills/agent-harness-design/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "agent-harness-observability": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "installed:claude"
       ],
       "targets": [
-        "source/skills/agent-harness-observability/SKILL.md"
+        "optional/skills/agent-harness-observability/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "agent-harness-traceability": {
       "disposition": "bundled",
@@ -93,14 +93,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "api-design": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/api-design/SKILL.md"
+        "optional/skills/api-design/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "arch-review-loop": {
       "disposition": "bundled",
@@ -153,14 +153,14 @@
       "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
     },
     "backend-patterns": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/backend-patterns/SKILL.md"
+        "optional/skills/backend-patterns/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "bead-goal-audit": {
       "disposition": "bundled",
@@ -223,14 +223,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "bun-runtime": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/bun-runtime/SKILL.md"
+        "optional/skills/bun-runtime/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "caveman": {
       "disposition": "optional",
@@ -263,14 +263,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "clickhouse-io": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/clickhouse-io/SKILL.md"
+        "optional/skills/clickhouse-io/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "code-graph": {
       "disposition": "bundled",
@@ -419,14 +419,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "content-hash-cache-pattern": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/content-hash-cache-pattern/SKILL.md"
+        "optional/skills/content-hash-cache-pattern/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "context-budget": {
       "disposition": "bundled",
@@ -439,14 +439,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "continuous-agent-loop": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/continuous-agent-loop/SKILL.md"
+        "optional/skills/continuous-agent-loop/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "continuous-learning-v2": {
       "disposition": "external",
@@ -471,14 +471,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "cost-aware-llm-pipeline": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/cost-aware-llm-pipeline/SKILL.md"
+        "optional/skills/cost-aware-llm-pipeline/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "create-pet": {
       "disposition": "external",
@@ -511,14 +511,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "database-migrations": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/database-migrations/SKILL.md"
+        "optional/skills/database-migrations/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "de-slopify": {
       "disposition": "covered",
@@ -541,24 +541,24 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "deployment-patterns": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/deployment-patterns/SKILL.md"
+        "optional/skills/deployment-patterns/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "design-system": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/design-system/SKILL.md"
+        "optional/skills/design-system/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "diagnosing-bugs": {
       "disposition": "bundled",
@@ -601,14 +601,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "django-patterns": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/django-patterns/SKILL.md"
+        "optional/skills/django-patterns/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "django-security": {
       "disposition": "bundled",
@@ -621,34 +621,34 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "django-tdd": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/django-tdd/SKILL.md"
+        "optional/skills/django-tdd/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "django-verification": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/django-verification/SKILL.md"
+        "optional/skills/django-verification/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "docker-patterns": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/docker-patterns/SKILL.md"
+        "optional/skills/docker-patterns/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "documentation-lookup": {
       "disposition": "bundled",
@@ -763,14 +763,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "frontend-patterns": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/frontend-patterns/SKILL.md"
+        "optional/skills/frontend-patterns/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "frontend-slides": {
       "disposition": "bundled",
@@ -1165,16 +1165,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "grill-with-docs": {
-      "disposition": "covered",
+      "disposition": "bundled",
       "origins": [
         "installed:claude"
       ],
       "targets": [
-        "source/skills/grill-me/SKILL.md",
-        "source/skills/domain-modeling/SKILL.md",
-        "source/skills/architecture-decision-records/SKILL.md"
+        "source/skills/grill-with-docs/SKILL.md"
       ],
-      "reason": "Interview, domain glossary, and ADR capture are composed from maintained procedures."
+      "reason": "Interview plus glossary and ADR capture, composed from grill-me and domain-modeling."
     },
     "grilling": {
       "disposition": "covered",
@@ -1245,14 +1243,14 @@
       "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
     },
     "iterative-retrieval": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/iterative-retrieval/SKILL.md"
+        "optional/skills/iterative-retrieval/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "maintain-space": {
       "disposition": "external",
@@ -1295,14 +1293,14 @@
       "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
     },
     "nextjs-turbopack": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/nextjs-turbopack/SKILL.md"
+        "optional/skills/nextjs-turbopack/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "no-ai-slop": {
       "disposition": "bundled",
@@ -1315,14 +1313,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "nuxt4-patterns": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/nuxt4-patterns/SKILL.md"
+        "optional/skills/nuxt4-patterns/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "obsidian-vault": {
       "disposition": "project-local",
@@ -1415,14 +1413,14 @@
       "reason": "Use the installed provider-owned skill or plugin so application contracts and tool permissions remain current."
     },
     "postgres-patterns": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/postgres-patterns/SKILL.md"
+        "optional/skills/postgres-patterns/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "premortem": {
       "disposition": "bundled",
@@ -1445,14 +1443,14 @@
       "reason": "Codeprobe adapter covers this CLI stage with explicit prerequisites, isolation, output validation, and version discovery."
     },
     "product-lens": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/product-lens/SKILL.md"
+        "optional/skills/product-lens/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "project-compass": {
       "disposition": "bundled",
@@ -1523,14 +1521,14 @@
       "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
     },
     "pytorch-patterns": {
-      "disposition": "bundled",
+      "disposition": "optional",
       "origins": [
         "collection:projects"
       ],
       "targets": [
-        "source/skills/pytorch-patterns/SKILL.md"
+        "optional/skills/pytorch-patterns/SKILL.md"
       ],
-      "reason": "Reusable procedure and its required portable resources are distributed to the manifest-selected runtimes."
+      "reason": "Framework or domain pattern pack kept available on demand instead of loading into every session; no default rule or skill depends on it."
     },
     "ratings": {
       "disposition": "covered",
@@ -2249,7 +2247,7 @@
       ],
       "targets": [
         "docs/tool-integrations.md",
-        "source/skills/agent-harness-observability/SKILL.md"
+        "optional/skills/agent-harness-observability/SKILL.md"
       ],
       "reason": "Procedure is available; executable, service, credentials, or connected plugin is configured separately and discovered at use time."
     },

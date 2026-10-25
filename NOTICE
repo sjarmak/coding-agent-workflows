@@ -23,3 +23,8 @@ External patterns referenced/incorporated:
 The no-ai-slop skill and its evaluation rubric retain their MIT license:
   Copyright (c) 2026 Peter Yang
   See source/skills/no-ai-slop/LICENSE.
+
+The domain-modeling, diagnosing-bugs, prototype, and writing-for-agents skills,
+and the composition behind grill-with-docs, are adapted from
+https://github.com/mattpocock/skills (MIT License):
+  Copyright (c) 2026 Matt Pocock

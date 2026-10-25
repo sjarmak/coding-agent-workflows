@@ -237,13 +237,6 @@
       "collection": "agent-systems",
       "requires": []
     },
-    "api-design": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
     "arch-review-loop": {
       "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
       "collection": "engineering",
@@ -261,13 +254,6 @@
       "collection": "engineering",
       "requires": []
     },
-    "backend-patterns": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
     "bead-goal-audit": {
       "origin": "user; adapted and reviewed 2026-10-01",
       "collection": "engineering",
@@ -278,21 +264,7 @@
       "collection": "engineering",
       "requires": []
     },
-    "bun-runtime": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
     "claude-api": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "clickhouse-io": {
       "origin": "ECC; adapted and reviewed 2026-10-01",
       "collection": "engineering",
       "requires": [
@@ -327,24 +299,9 @@
       "collection": "engineering",
       "requires": []
     },
-    "content-hash-cache-pattern": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": []
-    },
     "context-budget": {
       "origin": "ECC; adapted and reviewed 2026-10-01",
       "collection": "engineering",
-      "requires": []
-    },
-    "continuous-agent-loop": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": []
-    },
-    "cost-aware-llm-pipeline": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "agent-systems",
       "requires": []
     },
     "crosspost": {
@@ -354,13 +311,6 @@
         "content-engine"
       ]
     },
-    "database-migrations": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
     "deep-research": {
       "origin": "ECC; adapted and reviewed 2026-10-01",
       "collection": "engineering",
@@ -368,18 +318,6 @@
         "run-durable-research",
         "digest-workflow-research"
       ]
-    },
-    "deployment-patterns": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "design-system": {
-      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": []
     },
     "diagnosing-bugs": {
       "origin": "github.com/mattpocock/skills skills/engineering/diagnosing-bugs @ 74ca5fe; adapted and reviewed 2026-10-01",
@@ -391,35 +329,7 @@
       "collection": "engineering",
       "requires": []
     },
-    "django-patterns": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
     "django-security": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "django-tdd": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "django-verification": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "docker-patterns": {
       "origin": "ECC; adapted and reviewed 2026-10-01",
       "collection": "engineering",
       "requires": [
@@ -440,13 +350,6 @@
       "origin": "ECC; adapted and reviewed 2026-10-01",
       "collection": "engineering",
       "requires": []
-    },
-    "frontend-patterns": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
     },
     "frontend-slides": {
       "origin": "ECC; adapted and reviewed 2026-10-01",
@@ -479,43 +382,12 @@
         "browser-qa"
       ]
     },
-    "iterative-retrieval": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": []
-    },
     "mcp-server-patterns": {
       "origin": "ECC; adapted and reviewed 2026-10-01",
       "collection": "engineering",
       "requires": [
         "documentation-lookup"
       ]
-    },
-    "nextjs-turbopack": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "nuxt4-patterns": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "postgres-patterns": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "product-lens": {
-      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": []
     },
     "prompt-optimizer": {
       "origin": "community; adapted and reviewed 2026-10-01",
@@ -535,13 +407,6 @@
       ]
     },
     "python-testing": {
-      "origin": "ECC; adapted and reviewed 2026-10-01",
-      "collection": "engineering",
-      "requires": [
-        "documentation-lookup"
-      ]
-    },
-    "pytorch-patterns": {
       "origin": "ECC; adapted and reviewed 2026-10-01",
       "collection": "engineering",
       "requires": [
@@ -652,22 +517,18 @@
       "collection": "engineering",
       "requires": []
     },
-    "agent-harness-design": {
-      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
-      "collection": "agent-systems",
-      "requires": [
-        "agent-harness-observability"
-      ]
-    },
-    "agent-harness-observability": {
-      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
-      "collection": "agent-systems",
-      "requires": []
-    },
     "factory-reliability": {
       "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
       "collection": "agent-systems",
       "requires": []
+    },
+    "grill-with-docs": {
+      "origin": "Composition adapted from mattpocock/skills grill-with-docs @ 74ca5fe (MIT), rebuilt on grill-me 2026-10-25",
+      "collection": "core",
+      "requires": [
+        "grill-me",
+        "domain-modeling"
+      ]
     }
   },
   "rule_dependencies": {
@@ -733,6 +594,176 @@
       "path": "optional/skills/caveman",
       "origin": "Previously shipped Claude communication mode, baseline 7446e81",
       "collection": "optional",
+      "requires": []
+    },
+    "api-design": {
+      "path": "optional/skills/api-design",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "backend-patterns": {
+      "path": "optional/skills/backend-patterns",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "bun-runtime": {
+      "path": "optional/skills/bun-runtime",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "clickhouse-io": {
+      "path": "optional/skills/clickhouse-io",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "content-hash-cache-pattern": {
+      "path": "optional/skills/content-hash-cache-pattern",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "database-migrations": {
+      "path": "optional/skills/database-migrations",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "deployment-patterns": {
+      "path": "optional/skills/deployment-patterns",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "design-system": {
+      "path": "optional/skills/design-system",
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "django-patterns": {
+      "path": "optional/skills/django-patterns",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "django-tdd": {
+      "path": "optional/skills/django-tdd",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "django-verification": {
+      "path": "optional/skills/django-verification",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "docker-patterns": {
+      "path": "optional/skills/docker-patterns",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "frontend-patterns": {
+      "path": "optional/skills/frontend-patterns",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "nextjs-turbopack": {
+      "path": "optional/skills/nextjs-turbopack",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "nuxt4-patterns": {
+      "path": "optional/skills/nuxt4-patterns",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "postgres-patterns": {
+      "path": "optional/skills/postgres-patterns",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "pytorch-patterns": {
+      "path": "optional/skills/pytorch-patterns",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": [
+        "documentation-lookup"
+      ]
+    },
+    "agent-harness-design": {
+      "path": "optional/skills/agent-harness-design",
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": [
+        "agent-harness-observability"
+      ]
+    },
+    "agent-harness-observability": {
+      "path": "optional/skills/agent-harness-observability",
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "continuous-agent-loop": {
+      "path": "optional/skills/continuous-agent-loop",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "cost-aware-llm-pipeline": {
+      "path": "optional/skills/cost-aware-llm-pipeline",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "agent-systems",
+      "requires": []
+    },
+    "iterative-retrieval": {
+      "path": "optional/skills/iterative-retrieval",
+      "origin": "ECC; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
+      "requires": []
+    },
+    "product-lens": {
+      "path": "optional/skills/product-lens",
+      "origin": "Installed reusable skill collection; adapted and reviewed 2026-10-01",
+      "collection": "engineering",
       "requires": []
     }
   }
